@@ -102,7 +102,8 @@ One page or feature per task. Sequence: `/figma-page <slug>` (brief, no code) ->
 - Do only what was asked. No refactors, renames, dependency changes, config changes or design changes outside the request. If you see something worth changing, propose it and wait.
 - Before editing, list the files you will create or modify. Do not touch unrelated files.
 - Never edit `design/` (read-only). Never read `.env`.
-- Do not commit or push unless I ask. Work on the current feature branch.
+- Never run git write commands (`add`, `commit`, `push`, `pull`, `checkout`, `switch`, `merge`, `rebase`, `reset`, `stash`, `tag`) or the `gh` CLI. Read-only `git status`/`diff`/`log` is allowed. I do all git and GitHub work myself.
+- When a task is done, end with a suggested commit message (Conventional Commits), nothing else git-related.
 - Ask before: adding dependencies, creating a new top-level folder or layer-level convention, changing tokens, changing shared component APIs, changing tooling config (vite, tsconfig, eslint, steiger).
 
 ## 13. Commands
