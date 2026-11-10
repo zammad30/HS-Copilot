@@ -1,0 +1,33 @@
+@use "@/shared/styles/abstracts" as *;
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+
+  @include respond-below($bp-mobile) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.eyebrow {
+  margin: 0 0 var(--space-1);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.description {
+  max-width: 680px;
+  margin: var(--space-2) 0 0;
+  color: var(--text);
+}
+
+.action {
+  flex-shrink: 0;
+}

@@ -1,0 +1,27 @@
+@use "@/shared/styles/abstracts" as *;
+
+.meter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.value {
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  flex: 1;
+  height: 2px;
+  background: var(--line);
+}
+
+.fill {
+  display: block;
+  height: 2px;
+  background: var(--ink);
+}

@@ -1,0 +1,16 @@
+@use "@/shared/styles/abstracts" as *;
+
+.sampleLabel {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 2px var(--space-1);
+  border: var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+  background: var(--white);
+  font-size: 10px;
+  line-height: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}

@@ -11,9 +11,9 @@ Check here before creating any component. Update this file whenever a shared or 
 | TextInput, Textarea, Select, SearchField | labelled field with error text; controlled, native props    | built   |
 | FormField                                | label + control + error wrapper; useId, aria-invalid/describedby | built |
 | Checkbox, Toggle                         | table selection, settings switches; controlled              | built   |
-| Badge                                    | approved, rejected, needs-review, pending, neutral, accent | planned |
-| Meter                                    | value + 2px track                                          | planned |
-| Card                                     | default, flat (no shadow), selected                        | planned |
+| Badge                                    | approved, rejected, needs-review, pending, overridden (accent, never red/green); always color+icon+text | built |
+| Meter                                    | value 0-100 + 2px track; value-based aria-label            | built   |
+| Card                                     | default, flat (no shadow), selected                        | built   |
 | Modal                                    | dialog with focus trap (Radix inside)                      | planned |
 | Menu / Popover                           | row menu, topbar menus (portal, flip)                      | planned |
 | Drawer                                   | right panel                                                | planned |
@@ -22,9 +22,11 @@ Check here before creating any component. Update this file whenever a shared or 
 | Pagination                               | prev/next + range text                                     | planned |
 | FilterDropdown                           | multi-select with names                                    | planned |
 | Toast (provider + hook)                  | success, info                                              | planned |
-| Skeleton, EmptyState, ErrorState, Banner | state patterns                                             | planned |
-| PageHeader                               | eyebrow, title, description, action                        | planned |
-| Logo, SampleLabel, Eyebrow               | small primitives                                           | planned |
+| Skeleton, EmptyState, Banner             | state patterns; Skeleton aria-hidden/fade only, EmptyState icon aria-hidden (no compact), Banner amber/role=status | built |
+| ErrorState                               | state pattern                                              | planned |
+| PageHeader                               | eyebrow, title, description, action; action stacks under title at 720px | built |
+| Logo, SampleLabel                        | small primitives; Logo is a button with aria-label, SampleLabel defaults to "Sample data" | built |
+| Eyebrow                                  | small primitive                                            | planned |
 
 ## entities/*/ui
 

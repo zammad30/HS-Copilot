@@ -1,0 +1,45 @@
+@use "@/shared/styles/abstracts" as *;
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  width: fit-content;
+  min-height: 26px;
+  padding: 2px var(--space-1);
+  border-radius: var(--radius);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.approved {
+  color: var(--green);
+  border: 1px solid var(--green);
+  background: var(--green-tint);
+}
+
+.rejected {
+  color: var(--red);
+  border: 1px solid var(--red);
+  background: var(--red-tint);
+}
+
+.needsReview {
+  color: var(--amber);
+  border: 1px solid var(--amber-line);
+  background: var(--amber-tint);
+}
+
+.pending {
+  color: var(--text);
+  border: 1px solid var(--text);
+  background: var(--white);
+}
+
+.overridden {
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  background: var(--accent-tint);
+}
