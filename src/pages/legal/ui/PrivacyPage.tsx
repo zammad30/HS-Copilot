@@ -1,3 +1,3 @@
 export function PrivacyPage() {
-  return <div>Privacy policy placeholder.</div>
+  return <div>Privacy policy placeholder.</div>;
 }

@@ -1,1 +1,1 @@
-export { MethodologyPage } from './ui/MethodologyPage'
+export { MethodologyPage } from "./ui/MethodologyPage";

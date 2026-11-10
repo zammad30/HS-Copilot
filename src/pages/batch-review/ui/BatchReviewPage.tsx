@@ -1,3 +1,3 @@
 export function BatchReviewPage() {
-  return <div>Batch review page placeholder.</div>
+  return <div>Batch review page placeholder.</div>;
 }

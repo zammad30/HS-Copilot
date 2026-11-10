@@ -1,1 +1,1 @@
-export { ClassifyNewPage } from './ui/ClassifyNewPage'
+export { ClassifyNewPage } from "./ui/ClassifyNewPage";

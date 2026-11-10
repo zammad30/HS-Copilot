@@ -1,1 +1,1 @@
-export { BatchReviewPage } from './ui/BatchReviewPage'
+export { BatchReviewPage } from "./ui/BatchReviewPage";

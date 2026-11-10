@@ -1,17 +1,19 @@
 # Architecture (Feature-Sliced Design)
 
 ## Layers
-| Layer | Purpose | May import from |
-|---|---|---|
-| `app` | init: providers, router, layouts, global styles, MSW bootstrap, mocks | everything below |
-| `pages` | one slice per route; composes widgets, features, entities | widgets, features, entities, shared |
-| `widgets` | large reusable UI blocks used by several pages | features, entities, shared |
-| `features` | one user action with business value (approve, upload batch, sign in) | entities, shared |
-| `entities` | domain objects (classification, batch, member...) | shared |
-| `shared` | domain-free: ui kit, http client, config, lib, styles | nothing |
-Not used: the deprecated `processes` layer.
+
+| Layer                                       | Purpose                                                               | May import from                     |
+| ------------------------------------------- | --------------------------------------------------------------------- | ----------------------------------- |
+| `app`                                       | init: providers, router, layouts, global styles, MSW bootstrap, mocks | everything below                    |
+| `pages`                                     | one slice per route; composes widgets, features, entities             | widgets, features, entities, shared |
+| `widgets`                                   | large reusable UI blocks used by several pages                        | features, entities, shared          |
+| `features`                                  | one user action with business value (approve, upload batch, sign in)  | entities, shared                    |
+| `entities`                                  | domain objects (classification, batch, member...)                     | shared                              |
+| `shared`                                    | domain-free: ui kit, http client, config, lib, styles                 | nothing                             |
+| Not used: the deprecated `processes` layer. |
 
 ## Rules
+
 1. Import only downward. Never sideways between slices of one layer (compose upward).
 2. Cross-slice imports go through the slice `index.ts` using the `@/` alias. Inside a slice use relative imports.
 3. Segments: `ui`, `model`, `api`, `lib`, `config`. `app` and `shared` contain segments only.
@@ -20,6 +22,7 @@ Not used: the deprecated `processes` layer.
 6. Create slices on demand. Mocks are an `app`-layer concern and are never imported by UI.
 
 ## Where does it go?
+
 - Reusable, domain-free UI -> `shared/ui`. HTTP, env, route constants, hooks, formatters -> `shared/*`.
 - A noun of the business (Classification, Batch, Member) with schema, queries, small UI -> `entities/<noun>`.
 - A verb the user performs (approve, upload, invite) with its form/button/mutation -> `features/<verb>`.
@@ -28,24 +31,30 @@ Not used: the deprecated `processes` layer.
 - Router, providers, layouts, global styles, MSW -> `app`.
 
 ## Slice map (create on demand)
+
 - entities: `classification`, `batch`, `agent-run`, `member`, `workspace`, `session`, `review-rules`, `evaluation`
 - features: `review-decision` (approve, reject, override, request-info, undo), `classify-product`, `answer-clarification`, `bulk-review`, `upload-batch`, `auth`, `manage-members`, `edit-review-rules`, `edit-workspace`, `filter-classifications`, `export-data`
 - widgets: `app-shell` (sidebar, topbar, menus), `public-shell` (header, footer, mobile menu), `classification-table`, `audit-trail`, `agent-progress`, `evidence-drawer`
 - pages: `landing`, `methodology`, `auth`, `legal`, `public-try`, `home`, `classify-new`, `classification-detail`, `batch-upload`, `batch-review`, `library`, `settings`, `not-found`, `kit` (dev only)
 
 ## Routes (`app/router`, paths in `shared/config/routes.ts`)
+
 `/` landing | `/methodology` | `/signin` | `/privacy` | `/terms` | `/try` | `/app` home | `/app/classify/new` | `/app/classifications/:id` | `/app/batches/new` | `/app/batches/:id` | `/app/library` | `/app/settings/{general|members|rules}` | `/_kit` (dev only) | `*` not found. Pages are lazy-loaded. `/app/*` is behind the session guard (mock session in mock mode).
 
 ## Data flow
+
 `page/widget/feature UI` -> `entities|features api hooks (TanStack Query)` -> `shared/api/http.ts` -> network.
 In mock mode MSW intercepts the same request, so the code path is identical to production. Schemas (zod) in `entities/*/model` are the contract and parse every response.
 Local UI state stays in components. Server state stays in TanStack Query. Session/workspace live in `entities/session` and `entities/workspace` (React context in `model`).
 
 ## Mock structure (`src/app/mocks`)
+
 `browser.ts` (worker), `server.ts` (tests), `handlers/<entity>.handlers.ts`, `fixtures/<entity>.fixtures.ts`, `scenarios.ts` (latency, forced errors, throttling, cold start). Fixtures are typed with the entity types so drift fails typechecking.
 
 ## Env
+
 `VITE_USE_MOCKS` (`true`/`false`), `VITE_API_BASE_URL`. Read only in `shared/config/env.ts`.
 
 ## Decisions log
+
 - 2026-11: FSD + SCSS Modules + CSS variable tokens. MSW chosen over hand-written mock services so the real API can replace mocks without code changes.

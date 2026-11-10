@@ -1,1 +1,1 @@
-export { KitPage } from './ui/KitPage'
+export { KitPage } from "./ui/KitPage";

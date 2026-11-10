@@ -1,3 +1,3 @@
 export function LibraryPage() {
-  return <div>Library page placeholder.</div>
+  return <div>Library page placeholder.</div>;
 }

@@ -1,1 +1,1 @@
-export { ClassificationDetailPage } from './ui/ClassificationDetailPage'
+export { ClassificationDetailPage } from "./ui/ClassificationDetailPage";

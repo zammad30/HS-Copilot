@@ -1,1 +1,1 @@
-export { TryPage } from './ui/TryPage'
+export { TryPage } from "./ui/TryPage";

@@ -1,1 +1,1 @@
-export { http, ApiError, setAuthHeaderProvider, parseResponse } from './http'
+export { http, ApiError, setAuthHeaderProvider, parseResponse } from "./http";

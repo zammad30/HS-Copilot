@@ -1,19 +1,19 @@
-import { forwardRef } from 'react'
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
-import { Loader2 } from 'lucide-react'
-import clsx from 'clsx'
-import styles from './Button.module.scss'
+import { forwardRef } from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { Loader2 } from "lucide-react";
+import clsx from "clsx";
+import styles from "./Button.module.scss";
 
-export type ButtonVariant = 'primary' | 'secondary' | 'approve' | 'reject' | 'ghost'
+export type ButtonVariant = "primary" | "secondary" | "approve" | "reject" | "ghost";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant
-  isLoading?: boolean
-  icon?: ReactNode
+  variant?: ButtonVariant;
+  isLoading?: boolean;
+  icon?: ReactNode;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = 'primary', isLoading = false, icon, disabled, className, children, ...props },
+  { variant = "primary", isLoading = false, icon, disabled, className, children, ...props },
   ref,
 ) {
   return (
@@ -29,5 +29,5 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       {icon}
       <span className={styles.label}>{children}</span>
     </button>
-  )
-})
+  );
+});

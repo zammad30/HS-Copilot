@@ -2,6 +2,7 @@
 description: Create a page brief from the Figma reference (no code)
 argument-hint: <page-slug>
 ---
+
 Create `docs/pages/$ARGUMENTS.md` from `docs/pages/_template.md`. Do NOT write or change any application code.
 
 1. Read CLAUDE.md, design.md and docs/component-inventory.md.
@@ -10,4 +11,4 @@ Create `docs/pages/$ARGUMENTS.md` from `docs/pages/_template.md`. Do NOT write o
 4. Map every UI element to an existing shared/ui component from the inventory. List new components separately with proposed props.
 5. List entities, queries, mutations and the mock data needed (realistic, consistent).
 6. List prototype shortcuts that must be corrected (see CLAUDE.md section 10) and every ambiguity as a question.
-Then stop and wait for my approval. Do not invent design that is not in the reference.
+   Then stop and wait for my approval. Do not invent design that is not in the reference.

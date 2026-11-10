@@ -9,9 +9,11 @@ Read this file before every task. It is the source of truth for architecture, st
 @docs/api-contract.md
 
 ## 1. Product context
+
 HS Copilot helps importers and customs brokers classify products into HS tariff codes. AI suggests ranked codes with cited evidence; a human reviewer approves, rejects or overrides each one. This repository is the frontend only. The NestJS API and the FastAPI + LangGraph AI service come later. Until then every page runs on realistic mock data served by MSW.
 
 ## 2. Fixed stack
+
 - React + TypeScript (strict) + Vite
 - React Router (data router, lazy-loaded routes) via the `react-router` package (not `react-router-dom` — v7+ merged DOM bindings into the main package; import `createBrowserRouter`/`RouterProvider`/etc. from `react-router`)
 - TanStack Query for all server state
@@ -25,7 +27,9 @@ HS Copilot helps importers and customs brokers classify products into HS tariff 
 - Forbidden without my explicit approval: UI kits (MUI, Chakra, Ant, shadcn), Tailwind, CSS-in-JS, Redux/Zustand or any global store, axios, moment/dayjs/date-fns (use `Intl`), lodash, Storybook, and any other new dependency. If you think one is needed, ask first with the reason and the smallest alternative.
 
 ## 3. Architecture: Feature-Sliced Design (FSD)
+
 Layers, top to bottom: `app > pages > widgets > features > entities > shared`.
+
 - A module may import only from layers strictly below its own.
 - Never import sideways between slices of the same layer. Compose them in a higher layer (page or widget).
 - `app` and `shared` have no slices, only segments.
@@ -38,6 +42,7 @@ Layers, top to bottom: `app > pages > widgets > features > entities > shared`.
 - Slice map, routes and decision tree: docs/architecture.md. `npm run fsd` (Steiger) must pass.
 
 ## 4. Styling (SCSS Modules)
+
 - Every component has `Name.module.scss` beside it, imported as `styles`. Class names are camelCase.
 - Start each module with `@use "@/shared/styles/abstracts" as *;`. Never use `@import`.
 - Colors, spacing, radius, shadows, type sizes and z-index come from CSS custom properties defined in `shared/styles/base/_tokens.scss` and documented in design.md. No raw hex/rgb values and no ad-hoc spacing literals in component styles. Fixed sizes that design.md lists (control height, drawer width, etc.) are allowed.
@@ -49,6 +54,7 @@ Layers, top to bottom: `app > pages > widgets > features > entities > shared`.
 - Motion: opacity fades of 200-250 ms ease-out only. Respect `prefers-reduced-motion`.
 
 ## 5. Components
+
 - `shared/ui/<Name>/{Name.tsx, Name.module.scss, Name.test.tsx, index.ts}`. Presentational, domain-free, typed props, spreads native props, `forwardRef` where it makes sense, accessible by default.
 - Before creating any component, check docs/component-inventory.md and search the code. Reuse or extend; never duplicate.
 - After adding or changing a shared component, update docs/component-inventory.md and the dev-only `/_kit` page.
@@ -56,6 +62,7 @@ Layers, top to bottom: `app > pages > widgets > features > entities > shared`.
 - Changing the API of a shared component used by more than one page needs my approval.
 
 ## 6. Data and API
+
 - UI components never import mock data. They call hooks from `entities/*/api` or `features/*/api`.
 - All HTTP goes through `shared/api/http.ts` (fetch wrapper: base URL from env, JSON, normalized `ApiError`, auth-header hook).
 - Every response is parsed with the entity's zod schema at the boundary. TS types are `z.infer` of those schemas.
@@ -65,6 +72,7 @@ Layers, top to bottom: `app > pages > widgets > features > entities > shared`.
 - Query keys come from key factories in `entities/*/api/*.keys.ts`.
 
 ## 7. TypeScript and code standards
+
 - Strict mode. No `any` (use `unknown` and narrow). No non-null `!` unless provably safe. No enums (use union types or `as const`).
 - Function components and hooks only. Named exports only (lazy pages: `lazy(() => import(...).then(m => ({ default: m.XPage })))`).
 - No barrel files except slice `index.ts`. No circular imports. No commented-out code. Comments explain why, not what.
@@ -72,22 +80,27 @@ Layers, top to bottom: `app > pages > widgets > features > entities > shared`.
 - Accessibility baseline: semantic HTML, labels for every input, visible `:focus-visible`, full keyboard operation (tables rows, menus, modals), Esc closes overlays, focus trapped in modals, `aria-live` for toasts, color never the only signal, WCAG AA contrast.
 
 ## 8. Naming
+
 - Slice and route folders: `kebab-case` (`classification-detail`). Components and their files: `PascalCase`. Hooks: `useThing.ts`. Other files: `camelCase.ts`, with a role suffix where useful (`classification.schema.ts`, `classification.keys.ts`).
 - Props types: `NameProps`. Booleans: `isX` / `hasX`. Event props `onX`, handlers `handleX`.
 - Tests: `Name.test.tsx` beside the file. SCSS: `Name.module.scss`. CSS variables: `--kebab-case`.
 - Route paths come from `shared/config/routes.ts`. No hard-coded paths in components.
 
 ## 9. Figma fidelity
+
 Figma is the source of truth. Do not invent, redesign or "improve" UI that already exists in the design. Reference order:
+
 1. The approved page brief `docs/pages/<page>.md`.
 2. Figma via the Figma MCP. For Figma Make files use the fileKey from the URL and nodeId `0:1` with `get_design_context`. Treat returned code as a reference to port, not code to paste.
 3. `design/screens/<page>-<viewport>.png` screenshots as the visual target.
 4. `design/make-export/` (read-only snapshot of the prototype source).
+
 - Port into FSD + SCSS Modules and reuse shared/ui. Do not copy the prototype's single-file structure, plain CSS, timers or static data.
 - Match copy, spacing, sizes, colors and responsive behavior exactly. If something is missing or ambiguous in the design, ask. Never fill the gap with your own design.
 - Report every deliberate deviation at the end of a task.
 
 ## 10. Prototype corrections (behavior that must differ from the Make prototype)
+
 - Override keeps the decision final with `overridden: true`. Reject is a separate action.
 - Counts and derived copy come from data ("2 need attention" is computed).
 - No `window.alert` / `confirm`; use Modal and Toast.
@@ -96,9 +109,11 @@ Figma is the source of truth. Do not invent, redesign or "improve" UI that alrea
 - Row action menus render in a portal and flip near viewport edges; table rows are keyboard-operable.
 
 ## 11. Workflow
+
 One page or feature per task. Sequence: `/figma-page <slug>` (brief, no code) -> I approve -> `/new-page <slug>` (plan, then implement) -> `/check-architecture` -> I review. Full details and Definition of Done: docs/workflow.md.
 
 ## 12. Scope discipline (no drift)
+
 - Do only what was asked. No refactors, renames, dependency changes, config changes or design changes outside the request. If you see something worth changing, propose it and wait.
 - Before editing, list the files you will create or modify. Do not touch unrelated files.
 - Never edit `design/` (read-only). Never read `.env`.
@@ -107,4 +122,5 @@ One page or feature per task. Sequence: `/figma-page <slug>` (brief, no code) ->
 - Ask before: adding dependencies, creating a new top-level folder or layer-level convention, changing tokens, changing shared component APIs, changing tooling config (vite, tsconfig, eslint, steiger).
 
 ## 13. Commands
+
 `npm run dev` | `build` | `typecheck` | `lint` | `format` | `format:check` | `fsd` | `test` | `check` (typecheck + lint + fsd + test). `npm run check` must pass before you report a task as done.

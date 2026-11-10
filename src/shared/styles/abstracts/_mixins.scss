@@ -1,4 +1,4 @@
-@use 'breakpoints' as *;
+@use "breakpoints" as *;
 
 // Desktop-first: styles inside apply at and below the given breakpoint.
 @mixin respond-below($breakpoint) {

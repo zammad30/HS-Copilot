@@ -1,3 +1,3 @@
 export function BatchUploadPage() {
-  return <div>Batch upload page placeholder.</div>
+  return <div>Batch upload page placeholder.</div>;
 }
