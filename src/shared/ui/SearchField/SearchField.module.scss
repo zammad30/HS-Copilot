@@ -34,6 +34,10 @@
     @include focus-ring;
   }
 
+  &[aria-invalid='true'] {
+    border-color: var(--red);
+  }
+
   &:disabled {
     cursor: not-allowed;
     background: var(--surface);

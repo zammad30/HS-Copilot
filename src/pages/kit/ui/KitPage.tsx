@@ -90,6 +90,14 @@ export function KitPage() {
           aria-label="Search products or HS codes"
           placeholder="Search products or HS codes"
         />
+        <SearchField
+          value=""
+          onChange={() => {}}
+          aria-label="Search (error)"
+          placeholder="Error"
+          aria-invalid="true"
+        />
+        <SearchField value="Disabled" onChange={() => {}} aria-label="Search (disabled)" disabled />
       </div>
 
       <h2>FormField</h2>
