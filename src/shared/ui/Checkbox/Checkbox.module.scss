@@ -1,0 +1,30 @@
+@use "@/shared/styles/abstracts" as *;
+
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.wrap:has(.input:disabled) {
+  color: var(--muted);
+  cursor: not-allowed;
+}

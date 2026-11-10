@@ -7,10 +7,10 @@ Check here before creating any component. Update this file whenever a shared or 
 | Component                                | Purpose / variants                                         | Status  |
 | ---------------------------------------- | ---------------------------------------------------------- | ------- |
 | Button                                   | primary, secondary, approve, reject, ghost; icon, loading  | built   |
-| IconButton                               | 40px icon-only, aria-label required                        | planned |
-| TextInput, Textarea, Select, SearchField | labelled field with error text                             | planned |
-| FormField                                | label + control + error wrapper                            | planned |
-| Checkbox, Toggle                         | table selection, settings switches                         | planned |
+| IconButton                               | 40px icon-only, aria-label required                        | built   |
+| TextInput, Textarea, Select, SearchField | labelled field with error text; controlled, native props    | built   |
+| FormField                                | label + control + error wrapper; useId, aria-invalid/describedby | built |
+| Checkbox, Toggle                         | table selection, settings switches; controlled              | built   |
 | Badge                                    | approved, rejected, needs-review, pending, neutral, accent | planned |
 | Meter                                    | value + 2px track                                          | planned |
 | Card                                     | default, flat (no shadow), selected                        | planned |

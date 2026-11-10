@@ -124,3 +124,13 @@ One page or feature per task. Sequence: `/figma-page <slug>` (brief, no code) ->
 ## 13. Commands
 
 `npm run dev` | `build` | `typecheck` | `lint` | `format` | `format:check` | `fsd` | `test` | `check` (typecheck + lint + fsd + test). `npm run check` must pass before you report a task as done.
+
+## 14. Performance and quality
+
+- Lazy-load every route with `React.lazy`. Manual chunks only for vendor code, not app code.
+- No runtime CSS-in-JS. No icon-set barrel imports — import only the icons actually used (e.g. `import { Check } from "lucide-react"`, never `import * as Icons`).
+- No new dependencies without asking first.
+- Self-host Inter with `font-display: swap`, max 2 weights.
+- Responsive: mobile-first behavior at the 1000px and 720px breakpoints. No fixed widths. Touch targets >= 40px.
+- Every list renders with stable keys. Memoize only when measured to help, not by default.
+- Every component keeps strict TS: no `any`, no lint-rule suppression.

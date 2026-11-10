@@ -1,0 +1,31 @@
+@use "@/shared/styles/abstracts" as *;
+
+.input {
+  width: 100%;
+  height: var(--control-height);
+  padding: 0 var(--space-15);
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 20px;
+
+  &::placeholder {
+    color: var(--muted);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--red);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background: var(--surface);
+    color: var(--muted);
+  }
+}

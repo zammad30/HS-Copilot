@@ -1,0 +1,42 @@
+@use "@/shared/styles/abstracts" as *;
+
+.wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  left: var(--space-15);
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  height: var(--control-height);
+  padding: 0 var(--space-15) 0 var(--space-5);
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 20px;
+
+  &::placeholder {
+    color: var(--muted);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background: var(--surface);
+    color: var(--muted);
+  }
+}

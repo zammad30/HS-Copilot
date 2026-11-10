@@ -10,16 +10,26 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   isLoading?: boolean;
   icon?: ReactNode;
+  type?: "button" | "submit";
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = "primary", isLoading = false, icon, disabled, className, children, ...props },
+  {
+    variant = "primary",
+    isLoading = false,
+    icon,
+    disabled,
+    className,
+    children,
+    type = "button",
+    ...props
+  },
   ref,
 ) {
   return (
     <button
       ref={ref}
-      type="button"
+      type={type}
       aria-busy={isLoading || undefined}
       disabled={disabled || isLoading}
       className={clsx(styles.button, styles[variant], isLoading && styles.loading, className)}

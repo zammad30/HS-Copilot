@@ -1,0 +1,21 @@
+@use "@/shared/styles/abstracts" as *;
+
+.field {
+  display: grid;
+  gap: var(--space-1);
+  width: 100%;
+}
+
+.label {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.error {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--red);
+}
