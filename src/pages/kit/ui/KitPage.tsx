@@ -1,44 +1,51 @@
-import { useState } from 'react'
-import type { CSSProperties } from 'react'
-import { Button } from '@/shared/ui/Button'
-import type { ButtonVariant } from '@/shared/ui/Button'
-import { IconButton } from '@/shared/ui/IconButton'
-import { TextInput } from '@/shared/ui/TextInput'
-import { Textarea } from '@/shared/ui/Textarea'
-import { Select } from '@/shared/ui/Select'
-import { SearchField } from '@/shared/ui/SearchField'
-import { FormField } from '@/shared/ui/FormField'
-import { Checkbox } from '@/shared/ui/Checkbox'
-import { Toggle } from '@/shared/ui/Toggle'
-import { Badge } from '@/shared/ui/Badge'
-import type { BadgeStatus } from '@/shared/ui/Badge'
-import { Meter } from '@/shared/ui/Meter'
-import { Card } from '@/shared/ui/Card'
-import { Skeleton } from '@/shared/ui/Skeleton'
-import { EmptyState } from '@/shared/ui/EmptyState'
-import { Banner } from '@/shared/ui/Banner'
-import { PageHeader } from '@/shared/ui/PageHeader'
-import { Logo } from '@/shared/ui/Logo'
-import { SampleLabel } from '@/shared/ui/SampleLabel'
-import { FolderSearch2, Plus, X } from 'lucide-react'
+import { useState } from "react";
+import type { CSSProperties } from "react";
+import { Button } from "@/shared/ui/Button";
+import type { ButtonVariant } from "@/shared/ui/Button";
+import { IconButton } from "@/shared/ui/IconButton";
+import { TextInput } from "@/shared/ui/TextInput";
+import { Textarea } from "@/shared/ui/Textarea";
+import { Select } from "@/shared/ui/Select";
+import { SearchField } from "@/shared/ui/SearchField";
+import { FormField } from "@/shared/ui/FormField";
+import { Checkbox } from "@/shared/ui/Checkbox";
+import { Toggle } from "@/shared/ui/Toggle";
+import { Badge } from "@/shared/ui/Badge";
+import type { BadgeStatus } from "@/shared/ui/Badge";
+import { Meter } from "@/shared/ui/Meter";
+import { Card } from "@/shared/ui/Card";
+import { Skeleton } from "@/shared/ui/Skeleton";
+import { EmptyState } from "@/shared/ui/EmptyState";
+import { Banner } from "@/shared/ui/Banner";
+import { PageHeader } from "@/shared/ui/PageHeader";
+import { Logo } from "@/shared/ui/Logo";
+import { SampleLabel } from "@/shared/ui/SampleLabel";
+import { Eyebrow } from "@/shared/ui/Eyebrow";
+import { FolderSearch2, Plus, X } from "lucide-react";
 
-const variants: ButtonVariant[] = ['primary', 'secondary', 'approve', 'reject', 'ghost']
-const badgeStatuses: BadgeStatus[] = ['approved', 'rejected', 'needs-review', 'pending', 'overridden']
+const variants: ButtonVariant[] = ["primary", "secondary", "approve", "reject", "ghost"];
+const badgeStatuses: BadgeStatus[] = [
+  "approved",
+  "rejected",
+  "needs-review",
+  "pending",
+  "overridden",
+];
 
 const row: CSSProperties = {
-  display: 'flex',
-  gap: 'var(--space-2)',
-  flexWrap: 'wrap',
-  alignItems: 'flex-start',
-}
+  display: "flex",
+  gap: "var(--space-2)",
+  flexWrap: "wrap",
+  alignItems: "flex-start",
+};
 
 export function KitPage() {
-  const [text, setText] = useState('Men’s 100% cotton knitted crew-neck T-shirt')
-  const [description, setDescription] = useState('')
-  const [jurisdiction, setJurisdiction] = useState('us')
-  const [search, setSearch] = useState('')
-  const [checked, setChecked] = useState(false)
-  const [toggled, setToggled] = useState(false)
+  const [text, setText] = useState("Men’s 100% cotton knitted crew-neck T-shirt");
+  const [description, setDescription] = useState("");
+  const [jurisdiction, setJurisdiction] = useState("us");
+  const [search, setSearch] = useState("");
+  const [checked, setChecked] = useState(false);
+  const [toggled, setToggled] = useState(false);
 
   return (
     <div>
@@ -63,7 +70,11 @@ export function KitPage() {
 
       <h2>TextInput</h2>
       <div style={row}>
-        <TextInput value={text} onChange={(event) => setText(event.target.value)} placeholder="Default" />
+        <TextInput
+          value={text}
+          onChange={(event) => setText(event.target.value)}
+          placeholder="Default"
+        />
         <TextInput value="" onChange={() => {}} placeholder="Error" aria-invalid="true" />
         <TextInput value="Disabled" onChange={() => {}} disabled />
       </div>
@@ -129,7 +140,11 @@ export function KitPage() {
 
       <h2>Checkbox</h2>
       <div style={row}>
-        <Checkbox label="Unchecked" checked={checked} onChange={(event) => setChecked(event.target.checked)} />
+        <Checkbox
+          label="Unchecked"
+          checked={checked}
+          onChange={(event) => setChecked(event.target.checked)}
+        />
         <Checkbox label="Checked" checked onChange={() => {}} />
         <Checkbox label="Disabled" checked={false} onChange={() => {}} disabled />
       </div>
@@ -162,18 +177,18 @@ export function KitPage() {
 
       <h2>Card</h2>
       <div style={row}>
-        <Card style={{ padding: 'var(--space-2)' }}>Default (shadow)</Card>
-        <Card variant="flat" style={{ padding: 'var(--space-2)' }}>
+        <Card style={{ padding: "var(--space-2)" }}>Default (shadow)</Card>
+        <Card variant="flat" style={{ padding: "var(--space-2)" }}>
           Flat (no shadow)
         </Card>
-        <Card variant="selected" style={{ padding: 'var(--space-2)' }}>
+        <Card variant="selected" style={{ padding: "var(--space-2)" }}>
           Selected
         </Card>
       </div>
 
       <h2>Skeleton</h2>
       <div style={row}>
-        <div style={{ width: '280px' }}>
+        <div style={{ width: "280px" }}>
           <Skeleton lines={3} />
         </div>
       </div>
@@ -190,10 +205,7 @@ export function KitPage() {
 
       <h2>Banner</h2>
       <div style={row}>
-        <Banner
-          action={<Button variant="secondary">Resume</Button>}
-          onDismiss={() => {}}
-        >
+        <Banner action={<Button variant="secondary">Resume</Button>} onDismiss={() => {}}>
           <strong>Processing is throttled, resuming shortly</strong>
           <span>14 of 14 products classified. Completed results are ready to review.</span>
         </Banner>
@@ -219,6 +231,11 @@ export function KitPage() {
         <SampleLabel />
         <SampleLabel>Sample ruling</SampleLabel>
       </div>
+
+      <h2>Eyebrow</h2>
+      <div style={row}>
+        <Eyebrow>How it works</Eyebrow>
+      </div>
     </div>
-  )
+  );
 }

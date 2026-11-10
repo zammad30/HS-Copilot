@@ -1,3 +1,205 @@
+import { useRef, useState } from "react";
+import type { FormEvent } from "react";
+import { Link, useNavigate } from "react-router";
+import { ArrowRight, Plus } from "lucide-react";
+import { PublicHeader } from "./PublicHeader";
+import { PublicFooter } from "./PublicFooter";
+import { MobileMenu } from "./MobileMenu";
+import { Eyebrow } from "@/shared/ui/Eyebrow";
+import { Card } from "@/shared/ui/Card";
+import { FormField } from "@/shared/ui/FormField";
+import { TextInput } from "@/shared/ui/TextInput";
+import { Button } from "@/shared/ui/Button";
+import { SampleLabel } from "@/shared/ui/SampleLabel";
+import { routes } from "@/shared/config";
+import { evaluationSample } from "../model/evaluationSample.constants";
+import styles from "./LandingPage.module.scss";
+
+const TRY_TEXT_MAX_LENGTH = 200;
+
+const STEPS = [
+  {
+    number: "01",
+    title: "Describe",
+    body: "Add the product, material, intended use, and origin when known.",
+  },
+  {
+    number: "02",
+    title: "Research",
+    body: "The agent compares tariff text, rules, and relevant past rulings.",
+  },
+  {
+    number: "03",
+    title: "Review",
+    body: "Approve, override, or ask for more information before finalizing.",
+  },
+] as const;
+
+const FAQS = [
+  {
+    question: "Is a suggested code final?",
+    answer: "No. Every output remains a suggestion until a designated reviewer approves it.",
+  },
+  {
+    question: "Does this replace a customs broker?",
+    answer:
+      "No. HS Copilot organizes research and evidence; your qualified team owns the decision.",
+  },
+  {
+    question: "Which jurisdictions are supported?",
+    answer:
+      "The demo uses the US HTS. Additional national tariff schedules can be configured by workspace.",
+  },
+] as const;
+
 export function LandingPage() {
-  return <div>Landing page placeholder.</div>;
+  const navigate = useNavigate();
+  const [tryText, setTryText] = useState("Men's 100% cotton knitted crew-neck T-shirt");
+  const [tryError, setTryError] = useState<string | undefined>(undefined);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
+
+  function handleTrySubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const trimmed = tryText.trim();
+
+    if (!trimmed) {
+      setTryError("Enter a product description.");
+      return;
+    }
+
+    setTryError(undefined);
+    navigate(`${routes.try}?q=${encodeURIComponent(trimmed.slice(0, TRY_TEXT_MAX_LENGTH))}`);
+  }
+
+  function goHome() {
+    navigate(routes.landing);
+  }
+
+  function goToApp() {
+    navigate(routes.home);
+  }
+
+  function closeMenu() {
+    setMenuOpen(false);
+    hamburgerRef.current?.focus();
+  }
+
+  return (
+    <div className={styles.page}>
+      <PublicHeader
+        onLogoClick={goHome}
+        onOpenDemo={goToApp}
+        onOpenMenu={() => setMenuOpen(true)}
+        hamburgerRef={hamburgerRef}
+      />
+      {menuOpen && <MobileMenu onClose={closeMenu} onLogoClick={goHome} onOpenDemo={goToApp} />}
+
+      <main>
+        <section className={styles.hero}>
+          <Eyebrow className={styles.heroEyebrow}>Human-reviewed tariff classification</Eyebrow>
+          <h1 className={styles.heroTitle}>
+            Classify with evidence.
+            <br />
+            Decide with confidence.
+          </h1>
+          <p className={styles.heroCopy}>
+            HS Copilot researches tariff codes, explains its reasoning, and keeps a human reviewer
+            in control of every final decision.
+          </p>
+
+          <Card className={styles.tryBox}>
+            <form onSubmit={handleTrySubmit}>
+              <FormField label="Try one product" error={tryError}>
+                <TextInput value={tryText} onChange={(event) => setTryText(event.target.value)} />
+              </FormField>
+              <div className={styles.tryBoxRow}>
+                <Button type="submit" icon={<ArrowRight size={16} aria-hidden="true" />}>
+                  Classify
+                </Button>
+              </div>
+              <p className={styles.tryBoxHelp}>
+                No account required. Results are suggestions, not legal advice.
+              </p>
+            </form>
+          </Card>
+        </section>
+
+        <section className={styles.sectionBlock}>
+          <div className={styles.sectionHeading}>
+            <Eyebrow>How it works</Eyebrow>
+            <h2>From product detail to a reviewable decision</h2>
+          </div>
+          <div className={styles.steps}>
+            {STEPS.map((step) => (
+              <article className={styles.step} key={step.number}>
+                <span className={styles.stepNumber}>{step.number}</span>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className={styles.accuracy}>
+          <div className={styles.accuracyInner}>
+            <div className={styles.sectionHeading}>
+              <Eyebrow>Measured, not assumed</Eyebrow>
+              <h2>Accuracy you can inspect</h2>
+              <p>
+                Evaluated against a held-out set of reviewed classifications across 47 chapters.{" "}
+                <SampleLabel />
+              </p>
+              <Link className={styles.textLink} to={routes.methodology}>
+                Read our methodology <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </div>
+            <div className={styles.statsWrap}>
+              <SampleLabel className={styles.statsSampleLabel} />
+              <div className={styles.statGrid}>
+                <div>
+                  <strong>{evaluationSample.top3Recall}%</strong>
+                  <span>Top-3 code recall</span>
+                </div>
+                <div>
+                  <strong>{evaluationSample.top1ExactMatch}%</strong>
+                  <span>Top-1 exact match</span>
+                </div>
+                <div>
+                  <strong>{evaluationSample.reviewedTestCases.toLocaleString("en-US")}</strong>
+                  <span>Reviewed test cases</span>
+                </div>
+                <div>
+                  <strong>{evaluationSample.humanControlledRate}%</strong>
+                  <span>Human-controlled finals</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.sectionBlock}>
+          <div className={styles.faq}>
+            <div className={styles.sectionHeading}>
+              <Eyebrow>Important context</Eyebrow>
+              <h2>Designed to support professional judgment</h2>
+            </div>
+            <div className={styles.faqList}>
+              {FAQS.map((item) => (
+                <details className={styles.faqItem} key={item.question}>
+                  <summary className={styles.faqSummary}>
+                    {item.question}
+                    <Plus size={16} aria-hidden="true" />
+                  </summary>
+                  <p className={styles.faqAnswer}>{item.answer}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <PublicFooter onLogoClick={goHome} />
+    </div>
+  );
 }

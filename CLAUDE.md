@@ -91,7 +91,7 @@ Layers, top to bottom: `app > pages > widgets > features > entities > shared`.
 Figma is the source of truth. Do not invent, redesign or "improve" UI that already exists in the design. Reference order:
 
 1. The approved page brief `docs/pages/<page>.md`.
-2. Figma via the Figma MCP. For Figma Make files use the fileKey from the URL and nodeId `0:1` with `get_design_context`. Treat returned code as a reference to port, not code to paste.
+2. Figma via the Figma MCP. File: https://www.figma.com/make/v8wpvjs0lOovob7BIzYKzu/HS-Copilot-Classification-Workspace (fileKey `v8wpvjs0lOovob7BIzYKzu`, node `0:1`). For Figma Make files use the fileKey from the URL and nodeId `0:1` with `get_design_context`. Treat returned code as a reference to port, not code to paste.
 3. `design/screens/<page>-<viewport>.png` screenshots as the visual target.
 4. `design/make-export/` (read-only snapshot of the prototype source).
 

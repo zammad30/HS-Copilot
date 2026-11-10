@@ -1,0 +1,271 @@
+@use "@/shared/styles/abstracts" as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+// design.md §4: shell-width = min(100% - 64px, 1280px), centered.
+@mixin shell-width {
+  width: min(calc(100% - var(--space-8)), var(--content));
+  margin-inline: auto;
+
+  @include respond-below($bp-mobile) {
+    width: min(calc(100% - var(--space-4)), var(--content));
+  }
+}
+
+.hero {
+  @include shell-width;
+  min-height: 650px;
+  padding: 120px 0 var(--space-10);
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  column-gap: var(--space-8);
+  align-content: start;
+
+  @include respond-below($bp-mobile) {
+    min-height: auto;
+    padding: var(--space-10) 0 var(--space-8);
+    display: block;
+  }
+}
+
+.heroEyebrow {
+  grid-column: 1 / -1;
+  margin-bottom: var(--space-3);
+  color: var(--accent);
+
+  @include respond-below($bp-mobile) {
+    margin-bottom: var(--space-2);
+  }
+}
+
+.heroTitle {
+  font-size: 48px;
+  line-height: 56px;
+  max-width: 760px;
+
+  @include respond-below($bp-mobile) {
+    font-size: 40px;
+    line-height: 48px;
+  }
+}
+
+.heroCopy {
+  margin-top: var(--space-3);
+  max-width: 620px;
+  color: var(--text);
+
+  @include respond-below($bp-mobile) {
+    margin-top: var(--space-2);
+  }
+}
+
+.tryBox {
+  grid-column: 2;
+  grid-row: 2 / span 3;
+  padding: var(--space-4);
+  align-self: center;
+
+  @include respond-below($bp-mobile) {
+    grid-column: 1;
+    grid-row: auto;
+    margin-top: var(--space-6);
+    padding: var(--space-2);
+  }
+}
+
+.tryBoxRow {
+  margin-top: var(--space-1);
+}
+
+.tryBoxHelp {
+  margin-top: var(--space-15);
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--muted);
+}
+
+.sectionBlock {
+  @include shell-width;
+  padding-block: 112px;
+
+  @include respond-below($bp-mobile) {
+    padding-block: var(--space-10);
+  }
+}
+
+.sectionHeading {
+  max-width: 620px;
+
+  h2 {
+    margin-top: var(--space-1);
+  }
+
+  h2 + p {
+    margin-top: var(--space-2);
+  }
+}
+
+.steps {
+  margin-top: var(--space-8);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+
+  @include respond-below($bp-mobile) {
+    margin-top: var(--space-5);
+    gap: var(--space-6);
+    grid-template-columns: 1fr;
+  }
+}
+
+.step {
+  padding-top: var(--space-3);
+  border-top: 2px solid var(--ink);
+
+  p {
+    margin-top: var(--space-1);
+    max-width: 36ch;
+  }
+}
+
+.stepNumber {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: var(--space-8);
+
+  @include respond-below($bp-mobile) {
+    margin-bottom: var(--space-4);
+  }
+}
+
+.accuracy {
+  background: var(--surface);
+}
+
+.accuracyInner {
+  @include shell-width;
+  padding-block: 112px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-10);
+  align-items: center;
+
+  @include respond-below($bp-mobile) {
+    padding-block: var(--space-10);
+    gap: var(--space-6);
+    grid-template-columns: 1fr;
+  }
+}
+
+.textLink {
+  margin-top: var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: none;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.statsWrap {
+  position: relative;
+}
+
+.statsSampleLabel {
+  position: absolute;
+  z-index: 1;
+  top: -24px;
+  right: 0;
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+
+  > div {
+    padding: var(--space-4);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    gap: var(--space-1);
+
+    @include respond-below($bp-mobile) {
+      padding: var(--space-2);
+    }
+  }
+
+  strong {
+    font-size: 32px;
+    line-height: 40px;
+    font-weight: 600;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+
+    @include respond-below($bp-mobile) {
+      font-size: 24px;
+      line-height: 32px;
+    }
+  }
+
+  span {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+
+.faq {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: var(--space-8);
+
+  @include respond-below($bp-mobile) {
+    gap: var(--space-5);
+    grid-template-columns: 1fr;
+  }
+}
+
+.faqList {
+  border-top: var(--border);
+}
+
+.faqItem {
+  border-bottom: var(--border);
+  padding: var(--space-3) 0;
+}
+
+.faqSummary {
+  display: flex;
+  justify-content: space-between;
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  list-style: none;
+  cursor: pointer;
+
+  &::marker,
+  &::-webkit-details-marker {
+    content: "";
+    display: none;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.faqAnswer {
+  margin-top: var(--space-2);
+  max-width: 64ch;
+}

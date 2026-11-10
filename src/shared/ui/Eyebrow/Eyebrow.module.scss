@@ -1,0 +1,11 @@
+@use "@/shared/styles/abstracts" as *;
+
+.eyebrow {
+  margin: 0;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}

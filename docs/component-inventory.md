@@ -4,29 +4,29 @@ Check here before creating any component. Update this file whenever a shared or 
 
 ## shared/ui
 
-| Component                                | Purpose / variants                                         | Status  |
-| ---------------------------------------- | ---------------------------------------------------------- | ------- |
-| Button                                   | primary, secondary, approve, reject, ghost; icon, loading  | built   |
-| IconButton                               | 40px icon-only, aria-label required                        | built   |
-| TextInput, Textarea, Select, SearchField | labelled field with error text; controlled, native props    | built   |
-| FormField                                | label + control + error wrapper; useId, aria-invalid/describedby | built |
-| Checkbox, Toggle                         | table selection, settings switches; controlled              | built   |
-| Badge                                    | approved, rejected, needs-review, pending, overridden (accent, never red/green); always color+icon+text | built |
-| Meter                                    | value 0-100 + 2px track; value-based aria-label            | built   |
-| Card                                     | default, flat (no shadow), selected                        | built   |
-| Modal                                    | dialog with focus trap (Radix inside)                      | planned |
-| Menu / Popover                           | row menu, topbar menus (portal, flip)                      | planned |
-| Drawer                                   | right panel                                                | planned |
-| Tabs                                     | settings nav                                               | planned |
-| DataTable                                | sortable columns, selection, row menu, keyboard rows       | planned |
-| Pagination                               | prev/next + range text                                     | planned |
-| FilterDropdown                           | multi-select with names                                    | planned |
-| Toast (provider + hook)                  | success, info                                              | planned |
-| Skeleton, EmptyState, Banner             | state patterns; Skeleton aria-hidden/fade only, EmptyState icon aria-hidden (no compact), Banner amber/role=status | built |
-| ErrorState                               | state pattern                                              | planned |
-| PageHeader                               | eyebrow, title, description, action; action stacks under title at 720px | built |
-| Logo, SampleLabel                        | small primitives; Logo is a button with aria-label, SampleLabel defaults to "Sample data" | built |
-| Eyebrow                                  | small primitive                                            | planned |
+| Component                                | Purpose / variants                                                                                                 | Status  |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------- |
+| Button                                   | primary, secondary, approve, reject, ghost; icon, loading                                                          | built   |
+| IconButton                               | 40px icon-only, aria-label required                                                                                | built   |
+| TextInput, Textarea, Select, SearchField | labelled field with error text; controlled, native props                                                           | built   |
+| FormField                                | label + control + error wrapper; useId, aria-invalid/describedby                                                   | built   |
+| Checkbox, Toggle                         | table selection, settings switches; controlled                                                                     | built   |
+| Badge                                    | approved, rejected, needs-review, pending, overridden (accent, never red/green); always color+icon+text            | built   |
+| Meter                                    | value 0-100 + 2px track; value-based aria-label                                                                    | built   |
+| Card                                     | default, flat (no shadow), selected                                                                                | built   |
+| Modal                                    | dialog with focus trap (Radix inside)                                                                              | planned |
+| Menu / Popover                           | row menu, topbar menus (portal, flip)                                                                              | planned |
+| Drawer                                   | right panel                                                                                                        | planned |
+| Tabs                                     | settings nav                                                                                                       | planned |
+| DataTable                                | sortable columns, selection, row menu, keyboard rows                                                               | planned |
+| Pagination                               | prev/next + range text                                                                                             | planned |
+| FilterDropdown                           | multi-select with names                                                                                            | planned |
+| Toast (provider + hook)                  | success, info                                                                                                      | planned |
+| Skeleton, EmptyState, Banner             | state patterns; Skeleton aria-hidden/fade only, EmptyState icon aria-hidden (no compact), Banner amber/role=status | built   |
+| ErrorState                               | state pattern                                                                                                      | planned |
+| PageHeader                               | eyebrow, title, description, action; action stacks under title at 720px                                            | built   |
+| Logo, SampleLabel                        | small primitives; Logo is a button with aria-label, SampleLabel defaults to "Sample data"                          | built   |
+| Eyebrow                                  | 12/16 500 uppercase, 0.08em tracking, `--muted`                                                                    | built   |
 
 ## entities/*/ui
 
@@ -34,4 +34,11 @@ Check here before creating any component. Update this file whenever a shared or 
 
 ## widgets
 
-app-shell, public-shell, classification-table, audit-trail, agent-progress, evidence-drawer.
+| Widget               | Purpose                                   | Status                                                                                                                                                                                    |
+| -------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| public-shell         | Public header, mobile nav overlay, footer | planned — built page-local in `pages/landing/ui/{PublicHeader,MobileMenu,PublicFooter}` for now (Steiger flags a widget with one consumer); re-extract once a second public page needs it |
+| app-shell            | Sidebar, topbar, menus                    | planned                                                                                                                                                                                   |
+| classification-table | Sortable/selectable classification rows   | planned                                                                                                                                                                                   |
+| audit-trail          | Audit entry drawer                        | planned                                                                                                                                                                                   |
+| agent-progress       | Agent research progress steps             | planned                                                                                                                                                                                   |
+| evidence-drawer      | Evidence detail drawer                    | planned                                                                                                                                                                                   |

@@ -1,0 +1,45 @@
+@use "@/shared/styles/abstracts" as *;
+
+.nav {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: var(--border);
+  padding: 0 var(--space-4);
+
+  @include respond-below($bp-mobile) {
+    height: 64px;
+  }
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+
+  @include respond-below($bp-mobile) {
+    display: none;
+  }
+}
+
+.navLink {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.mobileMenuButton {
+  display: none;
+
+  @include respond-below($bp-mobile) {
+    display: inline-grid;
+    place-items: center;
+  }
+}
