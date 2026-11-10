@@ -13,7 +13,7 @@ HS Copilot helps importers and customs brokers classify products into HS tariff 
 
 ## 2. Fixed stack
 - React + TypeScript (strict) + Vite
-- React Router (data router, lazy-loaded routes)
+- React Router (data router, lazy-loaded routes) via the `react-router` package (not `react-router-dom` — v7+ merged DOM bindings into the main package; import `createBrowserRouter`/`RouterProvider`/etc. from `react-router`)
 - TanStack Query for all server state
 - SCSS Modules (`sass`) for all styling; design tokens are CSS custom properties
 - zod for runtime validation at the API boundary; types are inferred from schemas
@@ -106,4 +106,4 @@ One page or feature per task. Sequence: `/figma-page <slug>` (brief, no code) ->
 - Ask before: adding dependencies, creating a new top-level folder or layer-level convention, changing tokens, changing shared component APIs, changing tooling config (vite, tsconfig, eslint, steiger).
 
 ## 13. Commands
-`npm run dev` | `build` | `typecheck` | `lint` | `fsd` | `test` | `check` (typecheck + lint + fsd + test). `npm run check` must pass before you report a task as done.
+`npm run dev` | `build` | `typecheck` | `lint` | `format` | `format:check` | `fsd` | `test` | `check` (typecheck + lint + fsd + test). `npm run check` must pass before you report a task as done.

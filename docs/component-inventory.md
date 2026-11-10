@@ -4,7 +4,7 @@ Check here before creating any component. Update this file whenever a shared or 
 ## shared/ui
 | Component | Purpose / variants | Status |
 |---|---|---|
-| Button | primary, secondary, approve, reject, ghost; icon, loading | planned |
+| Button | primary, secondary, approve, reject, ghost; icon, loading | built |
 | IconButton | 40px icon-only, aria-label required | planned |
 | TextInput, Textarea, Select, SearchField | labelled field with error text | planned |
 | FormField | label + control + error wrapper | planned |

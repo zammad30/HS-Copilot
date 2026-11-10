@@ -1,0 +1,57 @@
+// Design tokens as CSS custom properties. Source of truth: design.md section 1.
+// Values must match design.md exactly; change both files together.
+:root {
+  /* color */
+  --white: #ffffff;
+  --ink: #101418;
+  --text: #3a424d;
+  --muted: #6b7480;
+  --line: #e2e6ec;
+  --surface: #f4f6f9;
+  --accent: #1d3a6e;
+  --accent-hover: #16305c;
+  --accent-tint: #e9eef7;
+  --green: #1f7a4d;
+  --green-tint: #e8f4ec;
+  --red: #b3342f;
+  --red-tint: #fbeceb;
+  --amber: #7a5200;
+  --amber-tint: #fff4d6;
+  --amber-line: #e3c16f;
+
+  /* spacing (4px base) */
+  --space-05: 4px;
+  --space-1: 8px;
+  --space-15: 12px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --space-10: 80px;
+
+  /* shape and elevation */
+  --radius: 8px;
+  --border: 1px solid var(--line);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  /* layout */
+  --content: 1280px;
+  --sidebar-width: 240px;
+  --topbar-height: 64px;
+  --control-height: 40px;
+  --drawer-width: 320px;
+  --modal-width: 520px;
+  --toast-width: 360px;
+
+  /* z-index scale */
+  --z-sticky: 4;
+  --z-sidebar: 5;
+  --z-popover: 30;
+  --z-drawer: 40;
+  --z-modal: 50;
+  --z-toast: 60;
+
+  font-family: 'Inter', sans-serif;
+}

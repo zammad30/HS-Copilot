@@ -1,0 +1,99 @@
+@use "@/shared/styles/abstracts" as *;
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  height: var(--control-height);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius);
+  border: 1.5px solid transparent;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background: var(--line);
+    border-color: var(--line);
+    color: var(--text);
+  }
+}
+
+.label {
+  @include truncate;
+}
+
+.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--white);
+
+  &:hover:not(:disabled) {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+  }
+}
+
+.secondary {
+  background: var(--white);
+  border-color: var(--ink);
+  color: var(--ink);
+
+  &:hover:not(:disabled) {
+    background: var(--surface);
+  }
+}
+
+.approve {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--white);
+
+  &:hover:not(:disabled) {
+    background: var(--green);
+    opacity: 0.9;
+  }
+}
+
+.reject {
+  background: var(--white);
+  border-color: var(--red);
+  color: var(--red);
+
+  &:hover:not(:disabled) {
+    background: var(--red-tint);
+  }
+}
+
+.ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--accent);
+
+  &:hover:not(:disabled) {
+    background: var(--accent-tint);
+  }
+}
+
+.loading {
+  color: transparent;
+  pointer-events: none;
+}
+
+.spinner {
+  position: absolute;
+}
+
+@include respond-below($bp-mobile) {
+  .button {
+    width: 100%;
+  }
+}

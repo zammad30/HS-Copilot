@@ -1,0 +1,82 @@
+// Type scale from design.md section 3. Inter everywhere.
+@use '../abstracts' as *;
+
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  margin: 0;
+}
+
+h1 {
+  font-size: 32px;
+  line-height: 40px;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.015em;
+}
+
+h3 {
+  font-size: 18px;
+  line-height: 28px;
+}
+
+p {
+  margin: 0;
+  max-width: 72ch;
+}
+
+// Utility classes for styles without a dedicated semantic element.
+.text-display {
+  font-size: 48px;
+  line-height: 56px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+
+  @include respond-below($bp-mobile) {
+    font-size: 40px;
+    line-height: 48px;
+  }
+}
+
+.text-ui {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.text-small {
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.text-caption {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.text-eyebrow {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
