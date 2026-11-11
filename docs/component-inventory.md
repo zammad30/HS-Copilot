@@ -34,11 +34,11 @@ Check here before creating any component. Update this file whenever a shared or 
 
 ## widgets
 
-| Widget               | Purpose                                   | Status                                                                                                                                                                                    |
-| -------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| public-shell         | Public header, mobile nav overlay, footer | planned — built page-local in `pages/landing/ui/{PublicHeader,MobileMenu,PublicFooter}` for now (Steiger flags a widget with one consumer); re-extract once a second public page needs it |
-| app-shell            | Sidebar, topbar, menus                    | planned                                                                                                                                                                                   |
-| classification-table | Sortable/selectable classification rows   | planned                                                                                                                                                                                   |
-| audit-trail          | Audit entry drawer                        | planned                                                                                                                                                                                   |
-| agent-progress       | Agent research progress steps             | planned                                                                                                                                                                                   |
-| evidence-drawer      | Evidence detail drawer                    | planned                                                                                                                                                                                   |
+| Widget               | Purpose                                   | Status                                                              |
+| -------------------- | ----------------------------------------- | ------------------------------------------------------------------- |
+| public-shell         | Public header, mobile nav overlay, footer | built — `widgets/public-shell`; consumed by Landing and Methodology |
+| app-shell            | Sidebar, topbar, menus                    | planned                                                             |
+| classification-table | Sortable/selectable classification rows   | planned                                                             |
+| audit-trail          | Audit entry drawer                        | planned                                                             |
+| agent-progress       | Agent research progress steps             | planned                                                             |
+| evidence-drawer      | Evidence detail drawer                    | planned                                                             |

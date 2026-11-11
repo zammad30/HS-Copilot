@@ -85,17 +85,17 @@ HS codes and other monospaced numerals use `--font-mono` (system monospace stack
 
 ## 3. Typography (Inter only, everywhere: headings, body, inputs, tables, codes)
 
-| Style                                                                                              | Size / line          | Weight              | Notes                                     |
-| -------------------------------------------------------------------------------------------------- | -------------------- | ------------------- | ----------------------------------------- |
-| Display                                                                                            | 48/56 (mobile 40/48) | 600                 | landing hero only, letter-spacing -0.02em |
-| H1                                                                                                 | 32/40                | 600                 | -0.02em                                   |
-| H2                                                                                                 | 24/32                | 600                 | -0.015em                                  |
-| H3                                                                                                 | 18/28                | 600                 |                                           |
-| Body                                                                                               | 16/24                | 400                 | max line length 72ch                      |
-| UI                                                                                                 | 14/20                | 400, 500 for labels | controls, tables, nav                     |
-| Small                                                                                              | 13/20                | 400                 | menus, reasoning text                     |
-| Caption                                                                                            | 12/16                | 500                 | `--muted`                                 |
-| Eyebrow                                                                                            | 12/16                | 500                 | uppercase, letter-spacing 0.08em          |
+| Style                                                                                              | Size / line          | Weight              | Notes                                             |
+| -------------------------------------------------------------------------------------------------- | -------------------- | ------------------- | ------------------------------------------------- |
+| Display                                                                                            | 48/56 (mobile 40/48) | 600                 | hero and key stat numbers, letter-spacing -0.02em |
+| H1                                                                                                 | 32/40                | 600                 | -0.02em                                           |
+| H2                                                                                                 | 24/32                | 600                 | -0.015em                                          |
+| H3                                                                                                 | 18/28                | 600                 |                                                   |
+| Body                                                                                               | 16/24                | 400                 | max line length 72ch                              |
+| UI                                                                                                 | 14/20                | 400, 500 for labels | controls, tables, nav                             |
+| Small                                                                                              | 13/20                | 400                 | menus, reasoning text                             |
+| Caption                                                                                            | 12/16                | 500                 | `--muted`                                         |
+| Eyebrow                                                                                            | 12/16                | 500                 | uppercase, letter-spacing 0.08em                  |
 | HS codes and numbers use tabular numerals (`font-variant-numeric: tabular-nums`) in the same font. |
 
 ## 4. Layout

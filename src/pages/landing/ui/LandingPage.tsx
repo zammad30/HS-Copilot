@@ -2,9 +2,7 @@ import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
 import { ArrowRight, Plus } from "lucide-react";
-import { PublicHeader } from "./PublicHeader";
-import { PublicFooter } from "./PublicFooter";
-import { MobileMenu } from "./MobileMenu";
+import { PublicHeader, PublicFooter, MobileMenu } from "@/widgets/public-shell";
 import { Eyebrow } from "@/shared/ui/Eyebrow";
 import { Card } from "@/shared/ui/Card";
 import { FormField } from "@/shared/ui/FormField";
@@ -12,7 +10,7 @@ import { TextInput } from "@/shared/ui/TextInput";
 import { Button } from "@/shared/ui/Button";
 import { SampleLabel } from "@/shared/ui/SampleLabel";
 import { routes } from "@/shared/config";
-import { evaluationSample } from "../model/evaluationSample.constants";
+import { evaluationSummary } from "@/entities/evaluation";
 import styles from "./LandingPage.module.scss";
 
 const TRY_TEXT_MAX_LENGTH = 200;
@@ -158,19 +156,19 @@ export function LandingPage() {
               <SampleLabel className={styles.statsSampleLabel} />
               <div className={styles.statGrid}>
                 <div>
-                  <strong>{evaluationSample.top3Recall}%</strong>
+                  <strong>{evaluationSummary.top3Recall}%</strong>
                   <span>Top-3 code recall</span>
                 </div>
                 <div>
-                  <strong>{evaluationSample.top1ExactMatch}%</strong>
+                  <strong>{evaluationSummary.top1ExactMatch}%</strong>
                   <span>Top-1 exact match</span>
                 </div>
                 <div>
-                  <strong>{evaluationSample.reviewedTestCases.toLocaleString("en-US")}</strong>
+                  <strong>{evaluationSummary.reviewedTestCases.toLocaleString("en-US")}</strong>
                   <span>Reviewed test cases</span>
                 </div>
                 <div>
-                  <strong>{evaluationSample.humanControlledRate}%</strong>
+                  <strong>{evaluationSummary.humanControlledRate}%</strong>
                   <span>Human-controlled finals</span>
                 </div>
               </div>

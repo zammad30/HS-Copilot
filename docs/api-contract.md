@@ -105,6 +105,16 @@ interface ReviewRules {
   secondApproverChapters: string[];
   auditRetention: "12m" | "24m" | "7y" | "indefinite";
 }
+interface EvaluationSummary {
+  top3Recall: number;
+  top1ExactMatch: number;
+  reviewedTestCases: number;
+  humanControlledRate: number;
+  htsSnapshot: string;
+  lastUpdatedAt: string;
+  chapterRecall: { code: string; name: string; recallPercent: number }[];
+  isSample: boolean;
+}
 ```
 
 Business rules the UI relies on: cannot remove or demote yourself or the last admin; override requires a reason when `requireOverrideReason`; `overridden` items keep `status: 'approved'` with `finalCode`.
