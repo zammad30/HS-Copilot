@@ -1,23 +1,28 @@
 // Design tokens as CSS custom properties. Source of truth: design.md section 1.
 // Values must match design.md exactly; change both files together.
 :root {
-  /* color */
+  /* color: "Customs Paper" theme — warm paper, ink text, petrol-teal accent */
   --white: #ffffff;
-  --ink: #101418;
-  --text: #3a424d;
-  --muted: #6b7480;
-  --line: #e2e6ec;
-  --surface: #f4f6f9;
-  --accent: #1d3a6e;
-  --accent-hover: #16305c;
-  --accent-tint: #e9eef7;
-  --green: #1f7a4d;
-  --green-tint: #e8f4ec;
-  --red: #b3342f;
-  --red-tint: #fbeceb;
-  --amber: #7a5200;
-  --amber-tint: #fff4d6;
-  --amber-line: #e3c16f;
+  --ink: #1b1a17;
+  --text: #3d3a34;
+  --muted: #6f6a5f;
+  --line: #e4dfd3;
+  --surface: #f6f3ec;
+  --accent: #0e4a5c;
+  --accent-hover: #0a3846;
+  --accent-tint: #e1edf0;
+  --green: #2d6a3e;
+  --green-tint: #e6f1e8;
+  --green-line: #b9d6bf;
+  --red: #a8322b;
+  --red-tint: #f8e5e2;
+  --red-line: #e6b8b2;
+  --amber: #7a4f00;
+  --amber-tint: #fbf0d5;
+  --amber-line: #e8cf94;
+
+  /* typography */
+  --font-mono: ui-monospace, "SF Mono", Consolas, monospace;
 
   /* spacing (4px base) */
   --space-05: 4px;

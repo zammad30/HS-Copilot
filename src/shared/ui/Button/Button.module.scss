@@ -35,7 +35,8 @@
   @include truncate;
 }
 
-.primary {
+.primary,
+.approve {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--white);
@@ -56,24 +57,14 @@
   }
 }
 
-.approve {
-  background: var(--green);
-  border-color: var(--green);
-  color: var(--white);
-
-  &:hover:not(:disabled) {
-    background: var(--green);
-    opacity: 0.9;
-  }
-}
-
 .reject {
-  background: var(--white);
-  border-color: var(--red);
+  background: transparent;
+  border-color: var(--line);
   color: var(--red);
 
   &:hover:not(:disabled) {
     background: var(--red-tint);
+    border-color: var(--red-line);
   }
 }
 
@@ -87,13 +78,8 @@
   }
 }
 
-.loading {
-  color: transparent;
-  pointer-events: none;
-}
-
 .spinner {
-  position: absolute;
+  flex-shrink: 0;
 }
 
 @include respond-below($bp-mobile) {

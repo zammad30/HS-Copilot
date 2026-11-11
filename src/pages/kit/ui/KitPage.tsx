@@ -59,6 +59,9 @@ export function KitPage() {
           </Button>
         ))}
         <Button isLoading>Loading</Button>
+        <Button isLoading icon={<Plus />}>
+          Loading with icon
+        </Button>
         <Button disabled>Disabled</Button>
       </div>
 

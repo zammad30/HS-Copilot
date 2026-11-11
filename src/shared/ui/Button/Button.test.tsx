@@ -33,6 +33,20 @@ describe("Button", () => {
     expect(button).toHaveAttribute("aria-busy", "true");
   });
 
+  it("shows the spinner before the label while loading, hiding the icon instead of stacking both", () => {
+    render(
+      <Button isLoading icon={<span data-testid="icon" />}>
+        Save
+      </Button>,
+    );
+    const button = screen.getByRole("button");
+
+    expect(screen.queryByTestId("icon")).not.toBeInTheDocument();
+    expect(screen.getByText("Save")).toBeVisible();
+    expect(button.firstElementChild?.tagName.toLowerCase()).toBe("svg");
+    expect(button.firstElementChild?.nextElementSibling).toHaveTextContent("Save");
+  });
+
   it("loads the SCSS module with real, non-empty hashed class names", () => {
     // Proves the "@use '@/shared/styles/abstracts' as *;" alias resolves and
     // the module pipeline (not an empty-object stub) is active end to end.

@@ -119,6 +119,7 @@ One page or feature per task. Sequence: `/figma-page <slug>` (brief, no code) ->
 - Never edit `design/` (read-only). Never read `.env`.
 - Never run git write commands (`add`, `commit`, `push`, `pull`, `checkout`, `switch`, `merge`, `rebase`, `reset`, `stash`, `tag`) or the `gh` CLI. Read-only `git status`/`diff`/`log` is allowed. I do all git and GitHub work myself.
 - When a task is done, end with a suggested commit message (Conventional Commits), nothing else git-related.
+- Never run `npm run format` project-wide — it reformats unrelated files. Format only the files you changed: `npx prettier --write <files>`.
 - Ask before: adding dependencies, creating a new top-level folder or layer-level convention, changing tokens, changing shared component APIs, changing tooling config (vite, tsconfig, eslint, steiger).
 
 ## 13. Commands

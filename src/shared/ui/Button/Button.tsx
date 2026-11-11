@@ -32,11 +32,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       type={type}
       aria-busy={isLoading || undefined}
       disabled={disabled || isLoading}
-      className={clsx(styles.button, styles[variant], isLoading && styles.loading, className)}
+      className={clsx(styles.button, styles[variant], className)}
       {...props}
     >
-      {isLoading && <Loader2 className={styles.spinner} size={16} aria-hidden="true" />}
-      {icon}
+      {isLoading ? <Loader2 className={styles.spinner} size={16} aria-hidden="true" /> : icon}
       <span className={styles.label}>{children}</span>
     </button>
   );
