@@ -105,6 +105,29 @@ interface ReviewRules {
   secondApproverChapters: string[];
   auditRetention: "12m" | "24m" | "7y" | "indefinite";
 }
+interface Session {
+  userId: string;
+  email: string;
+  workspaceId: string;
+}
+interface SignInRequest {
+  email: string;
+  password: string;
+}
+interface SignUpRequest {
+  name: string;
+  email: string;
+  password: string;
+}
+interface ResetRequest {
+  email: string;
+}
+interface AuthResponse {
+  session: Session;
+}
+interface ResetResponse {
+  ok: true;
+}
 interface EvaluationSummary {
   top3Recall: number;
   top1ExactMatch: number;

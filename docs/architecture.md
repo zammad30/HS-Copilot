@@ -20,6 +20,7 @@
 4. Reads (queries) live in `entities/*/api`. Writes (mutations) live in `features/*/api` and invalidate entity keys.
 5. If two features need the same logic, move it down (entity or shared) or up (widget). If two entities reference each other, keep references by id; if truly needed use FSD `@x` cross-imports and record it in the decisions log.
 6. Create slices on demand. Mocks are an `app`-layer concern and are never imported by UI.
+7. Page-local mutations live in `pages/<slug>/api` until a second consumer exists, then move to a feature.
 
 ## Where does it go?
 

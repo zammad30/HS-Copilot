@@ -1,0 +1,60 @@
+@use "@/shared/styles/abstracts" as *;
+
+.page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: var(--space-4);
+
+  @include respond-below($bp-mobile) {
+    padding: var(--space-2);
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.backHome {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--accent);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  text-decoration: none;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.backHomeLabel {
+  @include respond-below($bp-mobile) {
+    @include visually-hidden;
+  }
+}
+
+.card {
+  width: min(100%, 480px);
+  align-self: center;
+  justify-self: center;
+  padding: var(--space-5);
+
+  @include respond-below($bp-mobile) {
+    padding: var(--space-3);
+  }
+}
+
+.note {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}

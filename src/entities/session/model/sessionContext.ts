@@ -1,9 +1,17 @@
 import { createContext } from "react";
-import type { Session } from "./session.types";
+import type { Session } from "./session.schema";
 
-export const SessionContext = createContext<Session | null>(null);
+export interface SessionContextValue {
+  session: Session | null;
+  setSession: (session: Session | null) => void;
+}
 
-// Until the real auth endpoint exists, mock mode always has a signed-in reviewer.
+export const SessionContext = createContext<SessionContextValue>({
+  session: null,
+  setSession: () => {},
+});
+
+// Until the real auth endpoint exists, mock mode always starts with a signed-in reviewer.
 export const MOCK_SESSION: Session = {
   userId: "user_mock_1",
   email: "reviewer@hs-copilot.test",

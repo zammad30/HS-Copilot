@@ -8,6 +8,10 @@ const MethodologyPage = lazy(() =>
   import("@/pages/methodology").then((m) => ({ default: m.MethodologyPage })),
 );
 const SignInPage = lazy(() => import("@/pages/auth").then((m) => ({ default: m.SignInPage })));
+const SignUpPage = lazy(() => import("@/pages/auth").then((m) => ({ default: m.SignUpPage })));
+const ResetPasswordPage = lazy(() =>
+  import("@/pages/auth").then((m) => ({ default: m.ResetPasswordPage })),
+);
 const PrivacyPage = lazy(() => import("@/pages/legal").then((m) => ({ default: m.PrivacyPage })));
 const TermsPage = lazy(() => import("@/pages/legal").then((m) => ({ default: m.TermsPage })));
 const TryPage = lazy(() => import("@/pages/public-try").then((m) => ({ default: m.TryPage })));
@@ -55,6 +59,8 @@ export const router = createBrowserRouter([
   { path: routes.landing, Component: LandingPage },
   { path: routes.methodology, Component: MethodologyPage },
   { path: routes.signIn, Component: SignInPage },
+  { path: routes.signUp, Component: SignUpPage },
+  { path: routes.resetPassword, Component: ResetPasswordPage },
   { path: routes.privacy, Component: PrivacyPage },
   { path: routes.terms, Component: TermsPage },
   { path: routes.try, Component: TryPage },

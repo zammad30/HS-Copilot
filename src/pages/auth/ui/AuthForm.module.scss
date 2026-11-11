@@ -1,0 +1,62 @@
+@use "@/shared/styles/abstracts" as *;
+
+.banner {
+  margin-top: var(--space-4);
+}
+
+.form {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.forgotLink {
+  justify-self: end;
+  color: var(--accent);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  text-decoration: none;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.switchLine {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-1);
+  margin-top: var(--space-4);
+  font-size: 14px;
+
+  a {
+    color: var(--accent);
+    font-weight: 500;
+    text-decoration: none;
+
+    &:focus-visible {
+      @include focus-ring;
+    }
+  }
+}
+
+.backLink,
+.demoLink {
+  width: 100%;
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: var(--border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
