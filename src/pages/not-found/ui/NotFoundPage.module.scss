@@ -1,0 +1,44 @@
+@use "@/shared/styles/abstracts" as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.flowState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  text-align: center;
+  padding: var(--space-6) var(--space-3);
+
+  p {
+    max-width: 52ch;
+  }
+}
+
+.code {
+  font-size: 48px;
+  line-height: 56px;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.backHome {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  color: var(--accent);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
