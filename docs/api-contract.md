@@ -9,7 +9,7 @@ Base path `/api/v1`. The NestJS/FastAPI backend will implement this. When it cha
 | GET                         | /health                                   | cold-start check (200 `{status:"ok"}`)                                 |
 | POST                        | /auth/sign-in, /auth/sign-up, /auth/reset | session                                                                |
 | GET                         | /me                                       | current user + workspaces                                              |
-| GET                         | /classifications                          | query: `search, status[], confidenceBand[], page, pageSize, sort`      |
+| GET                         | /classifications                          | query: `search, status[], confidenceBand[], page, pageSize, sort` — array params are comma-separated, e.g. `?status=needs_review,pending` |
 | POST                        | /classifications                          | create + start agent run -> `{classificationId, agentRunId}`           |
 | GET                         | /classifications/:id                      | detail incl. candidates, evidence, auditTrail                          |
 | POST                        | /classifications/:id/decision             | body `{action:'approve'                                                | 'reject' | 'override' | 'request_info' | 'undo', code?, reason?, assigneeId?, note?}` |
@@ -109,6 +109,8 @@ interface Session {
   userId: string;
   email: string;
   workspaceId: string;
+  name?: string;
+  workspaceName?: string;
 }
 interface SignInRequest {
   email: string;

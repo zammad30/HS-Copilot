@@ -1,7 +1,18 @@
 import { lazy } from "react";
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Outlet } from "react-router";
 import { RequireSession } from "@/entities/session";
 import { routes } from "@/shared/config";
+import { HealthGate } from "@/widgets/app-shell";
+
+// Plain wrapper for now — sidebar/topbar land in a later task. Gates every
+// /app/* route on the cold-start health check before anything inside renders.
+function AppShellLayout() {
+  return (
+    <HealthGate>
+      <Outlet />
+    </HealthGate>
+  );
+}
 
 const LandingPage = lazy(() => import("@/pages/landing").then((m) => ({ default: m.LandingPage })));
 const MethodologyPage = lazy(() =>
@@ -67,15 +78,20 @@ export const router = createBrowserRouter([
   {
     Component: RequireSession,
     children: [
-      { path: routes.home, Component: HomePage },
-      { path: routes.classifyNew, Component: ClassifyNewPage },
-      { path: "/app/classifications/:id", Component: ClassificationDetailPage },
-      { path: routes.batchUpload, Component: BatchUploadPage },
-      { path: "/app/batches/:id", Component: BatchReviewPage },
-      { path: routes.library, Component: LibraryPage },
-      { path: routes.settingsGeneral, Component: SettingsGeneralPage },
-      { path: routes.settingsMembers, Component: SettingsMembersPage },
-      { path: routes.settingsRules, Component: SettingsRulesPage },
+      {
+        Component: AppShellLayout,
+        children: [
+          { path: routes.home, Component: HomePage },
+          { path: routes.classifyNew, Component: ClassifyNewPage },
+          { path: "/app/classifications/:id", Component: ClassificationDetailPage },
+          { path: routes.batchUpload, Component: BatchUploadPage },
+          { path: "/app/batches/:id", Component: BatchReviewPage },
+          { path: routes.library, Component: LibraryPage },
+          { path: routes.settingsGeneral, Component: SettingsGeneralPage },
+          { path: routes.settingsMembers, Component: SettingsMembersPage },
+          { path: routes.settingsRules, Component: SettingsRulesPage },
+        ],
+      },
     ],
   },
   ...devOnlyRoutes,

@@ -10,6 +10,17 @@ export function randomLatency(): Promise<void> {
 }
 
 /**
+ * Lets any handler simulate an extra-slow (but eventually successful) response
+ * on demand via `?forceDelay=<ms>`, independent of a forced failure.
+ */
+export async function applyForceDelay(request: Request): Promise<void> {
+  const forceDelay = Number(new URL(request.url).searchParams.get("forceDelay"));
+  if (Number.isFinite(forceDelay) && forceDelay > 0) {
+    await new Promise((resolve) => setTimeout(resolve, forceDelay));
+  }
+}
+
+/**
  * Lets any handler simulate a failure on demand via `?forceError=<code>`,
  * without hard-coding error cases per endpoint.
  */
