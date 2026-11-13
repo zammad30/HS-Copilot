@@ -2,7 +2,8 @@
 
 .footer {
   margin-top: auto;
-  border-top: var(--border);
+  background: var(--chrome);
+  border-top: 1px solid var(--chrome-line);
 }
 
 .inner {
@@ -23,6 +24,8 @@
 }
 
 .tagline {
+  color: var(--chrome-muted);
+
   @include respond-below($bp-mobile) {
     order: 3;
   }
@@ -32,13 +35,15 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  color: var(--chrome-muted);
 
   a {
-    color: var(--text);
+    color: var(--chrome-text);
     text-decoration: none;
 
     &:focus-visible {
-      @include focus-ring;
+      outline: 2px solid var(--chrome-text);
+      outline-offset: 2px;
     }
   }
 }

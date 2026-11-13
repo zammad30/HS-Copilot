@@ -1,28 +1,53 @@
 // Design tokens as CSS custom properties. Source of truth: design.md section 1.
 // Values must match design.md exactly; change both files together.
+//
+// Design reset Phase A (2026-11-13): "Modern Enterprise" direction — cool
+// blue/slate neutrals on a near-white ground, a restrained slate-teal accent,
+// light chrome, Inter for UI text and IBM Plex Mono for technical data.
+// Replaces "Docket"/"Harbour"/"Customs Paper". design.md and docs/pages
+// briefs are not updated yet; every token name used by components is
+// unchanged so no component code changes.
 :root {
-  /* color: "Customs Paper" theme — warm paper, ink text, petrol-teal accent */
+  /* color: "Modern Enterprise" theme — cool slate neutrals, slate-teal accent */
+  --surface: #f7f8fa;
   --white: #ffffff;
-  --ink: #1b1a17;
-  --text: #3d3a34;
-  --muted: #6f6a5f;
-  --line: #e4dfd3;
-  --surface: #f6f3ec;
-  --accent: #0e4a5c;
-  --accent-hover: #0a3846;
-  --accent-tint: #e1edf0;
-  --green: #2d6a3e;
-  --green-tint: #e6f1e8;
-  --green-line: #b9d6bf;
-  --red: #a8322b;
-  --red-tint: #f8e5e2;
-  --red-line: #e6b8b2;
-  --amber: #7a4f00;
-  --amber-tint: #fbf0d5;
-  --amber-line: #e8cf94;
+  --ink: #172b3a;
+  --text: #172b3a;
+  --muted: #52616d;
+  --line: #dce2e8;
+  --accent: #426a78;
+  --accent-hover: #365762; /* derived: accent darkened ~18% for hover/active states */
+  --accent-tint: #e8edef; /* derived: accent mixed 12% into white, for selected rows/tabs */
+  --green: #286344;
+  --green-tint: #e5ece9; /* derived: green mixed 12% into white */
+  --green-line: #b4c8be; /* derived: green mixed 35% into white, decorative border only */
+  --red: #983f3a;
+  --red-tint: #f3e8e7; /* derived: red mixed 12% into white */
+  --red-line: #dbbcba; /* derived: red mixed 35% into white, decorative border only */
+  --amber: #826329;
+  --amber-tint: #eee9e1; /* derived: amber mixed 14% into white */
+  --amber-line: #d0c4ae; /* derived: amber mixed 38% into white, decorative border only */
+
+  /* status colors beyond approved/rejected/needs-review — classification status only, never branding */
+  --status-pending: #526b7a;
+  --status-overridden: #67527d;
+
+  /* --subtle is NON-TEXT decoration only (dividers, icons, chart strokes) — never use it for text; it fails text contrast on both --white and --surface */
+  --subtle: #a6b7b9;
+  --hover: #eef1f4; /* hover background for neutral interactive elements */
+  --disabled: #929da6; /* disabled text and controls; WCAG exempts inactive controls from the 4.5:1 text minimum */
+  --line-strong: #84888b; /* derived: line darkened for input/checkbox edges, 3.57:1 on --white (>= 3:1 non-text minimum) */
+
+  /* chrome (app sidebar/topbar, public header/footer) — white and light, not dark */
+  --chrome: #ffffff;
+  --chrome-text: #172b3a;
+  --chrome-muted: #52616d;
+  --chrome-line: #dce2e8;
 
   /* typography */
-  --font-mono: ui-monospace, "SF Mono", Consolas, monospace;
+  --font-heading: "Inter", -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-sans: "Inter", -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Consolas, monospace;
 
   /* spacing (4px base) */
   --space-05: 4px;
@@ -37,9 +62,10 @@
   --space-10: 80px;
 
   /* shape and elevation */
-  --radius: 8px;
+  --radius: 4px;
   --border: 1px solid var(--line);
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow: none;
+  --shadow-menu: 0 4px 16px rgba(23, 43, 58, 0.14); /* menus, popovers and dialogs only */
 
   /* layout */
   --content: 1280px;
@@ -58,5 +84,5 @@
   --z-modal: 50;
   --z-toast: 60;
 
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-sans);
 }

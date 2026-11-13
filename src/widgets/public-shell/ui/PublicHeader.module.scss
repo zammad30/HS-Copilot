@@ -5,7 +5,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: var(--border);
+  background: var(--chrome);
+  border-bottom: 1px solid var(--chrome-line);
   padding: 0 var(--space-4);
 
   @include respond-below($bp-mobile) {
@@ -27,11 +28,12 @@
   font-size: 14px;
   line-height: 20px;
   font-weight: 500;
-  color: var(--ink);
+  color: var(--chrome-text);
   text-decoration: none;
 
   &:focus-visible {
-    @include focus-ring;
+    outline: 2px solid var(--chrome-text);
+    outline-offset: 2px;
   }
 }
 
