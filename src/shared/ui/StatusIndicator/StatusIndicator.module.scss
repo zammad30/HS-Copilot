@@ -1,0 +1,40 @@
+@use "@/shared/styles/abstracts" as *;
+
+.statusIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  width: fit-content;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.approved {
+  background: var(--green);
+}
+
+.rejected {
+  background: var(--red);
+}
+
+.needsReview {
+  background: var(--amber);
+}
+
+.pending {
+  background: var(--status-pending);
+}
+
+.overridden {
+  background: var(--status-overridden);
+}

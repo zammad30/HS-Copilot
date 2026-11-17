@@ -66,6 +66,7 @@
   --border: 1px solid var(--line);
   --shadow: none;
   --shadow-menu: 0 4px 16px rgba(23, 43, 58, 0.14); /* menus, popovers and dialogs only */
+  --overlay: rgba(23, 43, 58, 0.36); /* modal/drawer overlay backdrop, derived from --ink */
 
   /* layout */
   --content: 1280px;

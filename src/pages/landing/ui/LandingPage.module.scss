@@ -7,35 +7,28 @@
 }
 
 // design.md §4: shell-width = min(100% - 64px, 1280px), centered.
+// Mobile margins are 24px per side (space-6 = 48px total), per this page's brief.
 @mixin shell-width {
   width: min(calc(100% - var(--space-8)), var(--content));
   margin-inline: auto;
 
   @include respond-below($bp-mobile) {
-    width: min(calc(100% - var(--space-4)), var(--content));
+    width: min(calc(100% - var(--space-6)), var(--content));
   }
 }
 
 .hero {
   @include shell-width;
-  min-height: 650px;
-  padding: 120px 0 var(--space-10);
-  display: grid;
-  grid-template-columns: 7fr 5fr;
-  column-gap: var(--space-8);
-  align-content: start;
+  padding: 96px 0 var(--space-10);
 
   @include respond-below($bp-mobile) {
-    min-height: auto;
     padding: var(--space-10) 0 var(--space-8);
-    display: block;
   }
 }
 
 .heroEyebrow {
-  grid-column: 1 / -1;
-  margin-bottom: var(--space-3);
   color: var(--accent);
+  margin-bottom: var(--space-3);
 
   @include respond-below($bp-mobile) {
     margin-bottom: var(--space-2);
@@ -43,14 +36,7 @@
 }
 
 .heroTitle {
-  font-size: 48px;
-  line-height: 56px;
-  max-width: 760px;
-
-  @include respond-below($bp-mobile) {
-    font-size: 40px;
-    line-height: 48px;
-  }
+  max-width: 640px;
 }
 
 .heroCopy {
@@ -64,21 +50,45 @@
 }
 
 .tryBox {
-  grid-column: 2;
-  grid-row: 2 / span 3;
+  margin-top: var(--space-6);
+  max-width: 560px;
   padding: var(--space-4);
-  align-self: center;
 
   @include respond-below($bp-mobile) {
-    grid-column: 1;
-    grid-row: auto;
-    margin-top: var(--space-6);
+    margin-top: var(--space-5);
     padding: var(--space-2);
   }
 }
 
+.tryBoxLabel {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
 .tryBoxRow {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-1);
+
+  > :first-child {
+    flex: 1;
+  }
+
+  @include respond-below($bp-mobile) {
+    flex-direction: column;
+  }
+}
+
+.tryBoxError {
   margin-top: var(--space-1);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--red);
 }
 
 .tryBoxHelp {
@@ -91,6 +101,7 @@
 .sectionBlock {
   @include shell-width;
   padding-block: 112px;
+  border-top: 1px solid var(--line);
 
   @include respond-below($bp-mobile) {
     padding-block: var(--space-10);
@@ -110,40 +121,43 @@
 }
 
 .steps {
-  margin-top: var(--space-8);
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-4);
-
-  @include respond-below($bp-mobile) {
-    margin-top: var(--space-5);
-    gap: var(--space-6);
-    grid-template-columns: 1fr;
-  }
+  margin-top: var(--space-6);
+  display: flex;
+  flex-direction: column;
 }
 
 .step {
-  padding-top: var(--space-3);
-  border-top: 2px solid var(--ink);
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--line);
+
+  &:last-child {
+    border-bottom: 1px solid var(--line);
+  }
 
   p {
     margin-top: var(--space-1);
-    max-width: 36ch;
+    max-width: 52ch;
+  }
+
+  @include respond-below($bp-mobile) {
+    gap: var(--space-2);
   }
 }
 
 .stepNumber {
-  display: block;
-  font-size: 12px;
+  flex-shrink: 0;
+  width: 32px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 24px;
   font-weight: 500;
-  margin-bottom: var(--space-8);
-
-  @include respond-below($bp-mobile) {
-    margin-bottom: var(--space-4);
-  }
+  color: var(--muted);
 }
 
 .accuracy {
+  border-top: 1px solid var(--line);
   background: var(--surface);
 }
 
@@ -176,51 +190,42 @@
   }
 }
 
-.statsWrap {
-  position: relative;
+.statListHeader {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-1);
 }
 
-.statsSampleLabel {
-  position: absolute;
-  z-index: 1;
-  top: -24px;
-  right: 0;
+.statList {
+  margin: 0;
 }
 
-.statGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-top: 1px solid var(--line);
-  border-left: 1px solid var(--line);
+.statRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-15) 0;
+  border-bottom: 1px solid var(--line);
 
-  > div {
-    padding: var(--space-4);
-    border-right: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    display: grid;
-    gap: var(--space-1);
-
-    @include respond-below($bp-mobile) {
-      padding: var(--space-2);
-    }
+  &:first-child {
+    border-top: 1px solid var(--line);
   }
 
-  strong {
-    font-size: 32px;
-    line-height: 40px;
+  dt {
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--text);
+  }
+
+  dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 20px;
+    line-height: 28px;
     font-weight: 600;
     color: var(--ink);
     font-variant-numeric: tabular-nums;
-
-    @include respond-below($bp-mobile) {
-      font-size: 24px;
-      line-height: 32px;
-    }
-  }
-
-  span {
-    font-size: 14px;
-    line-height: 20px;
   }
 }
 

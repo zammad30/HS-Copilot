@@ -1,9 +1,9 @@
-import type { HTMLAttributes } from 'react'
-import clsx from 'clsx'
-import styles from './Skeleton.module.scss'
+import type { HTMLAttributes } from "react";
+import clsx from "clsx";
+import styles from "./Skeleton.module.scss";
 
 export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
-  lines?: number
+  lines?: number;
 }
 
 export function Skeleton({ lines = 3, className, ...props }: SkeletonProps) {
@@ -13,5 +13,5 @@ export function Skeleton({ lines = 3, className, ...props }: SkeletonProps) {
         <span key={index} className={styles.line} />
       ))}
     </div>
-  )
+  );
 }

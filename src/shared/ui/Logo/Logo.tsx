@@ -1,7 +1,7 @@
-import styles from './Logo.module.scss'
+import styles from "./Logo.module.scss";
 
 export interface LogoProps {
-  onClick: () => void
+  onClick: () => void;
 }
 
 export function Logo({ onClick }: LogoProps) {
@@ -9,5 +9,5 @@ export function Logo({ onClick }: LogoProps) {
     <button type="button" className={styles.logo} onClick={onClick} aria-label="HS Copilot home">
       <span className={styles.mark}>HS</span> Copilot
     </button>
-  )
+  );
 }

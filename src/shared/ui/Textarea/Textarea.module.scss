@@ -4,7 +4,7 @@
   width: 100%;
   min-height: 120px;
   padding: var(--space-15) var(--space-15);
-  border: var(--border);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   background: var(--white);
   color: var(--ink);
@@ -20,13 +20,13 @@
     @include focus-ring;
   }
 
-  &[aria-invalid='true'] {
+  &[aria-invalid="true"] {
     border-color: var(--red);
   }
 
   &:disabled {
     cursor: not-allowed;
-    background: var(--surface);
-    color: var(--muted);
+    background: var(--hover);
+    color: var(--disabled);
   }
 }

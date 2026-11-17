@@ -1,21 +1,21 @@
-import type { HTMLAttributes, ReactNode } from 'react'
-import { AlertCircle, X } from 'lucide-react'
-import clsx from 'clsx'
-import { IconButton } from '../IconButton'
-import styles from './Banner.module.scss'
+import type { HTMLAttributes, ReactNode } from "react";
+import { AlertCircle, X } from "lucide-react";
+import clsx from "clsx";
+import { IconButton } from "../IconButton";
+import styles from "./Banner.module.scss";
 
 export interface BannerProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode
-  action?: ReactNode
-  onDismiss?: () => void
-  dismissLabel?: string
+  children: ReactNode;
+  action?: ReactNode;
+  onDismiss?: () => void;
+  dismissLabel?: string;
 }
 
 export function Banner({
   children,
   action,
   onDismiss,
-  dismissLabel = 'Dismiss',
+  dismissLabel = "Dismiss",
   className,
   ...props
 }: BannerProps) {
@@ -26,5 +26,5 @@ export function Banner({
       {action}
       {onDismiss && <IconButton icon={<X />} aria-label={dismissLabel} onClick={onDismiss} />}
     </div>
-  )
+  );
 }

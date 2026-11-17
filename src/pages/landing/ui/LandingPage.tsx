@@ -1,11 +1,11 @@
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
 import { ArrowRight, Plus } from "lucide-react";
+import clsx from "clsx";
 import { PublicHeader, PublicFooter, MobileMenu } from "@/widgets/public-shell";
 import { Eyebrow } from "@/shared/ui/Eyebrow";
 import { Card } from "@/shared/ui/Card";
-import { FormField } from "@/shared/ui/FormField";
 import { TextInput } from "@/shared/ui/TextInput";
 import { Button } from "@/shared/ui/Button";
 import { SampleLabel } from "@/shared/ui/SampleLabel";
@@ -56,6 +56,8 @@ export function LandingPage() {
   const [tryError, setTryError] = useState<string | undefined>(undefined);
   const [menuOpen, setMenuOpen] = useState(false);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
+  const tryInputId = useId();
+  const tryErrorId = useId();
 
   function handleTrySubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -96,7 +98,7 @@ export function LandingPage() {
       <main>
         <section className={styles.hero}>
           <Eyebrow className={styles.heroEyebrow}>Human-reviewed tariff classification</Eyebrow>
-          <h1 className={styles.heroTitle}>
+          <h1 className={clsx(styles.heroTitle, "text-display")}>
             Classify with evidence.
             <br />
             Decide with confidence.
@@ -108,14 +110,26 @@ export function LandingPage() {
 
           <Card className={styles.tryBox}>
             <form onSubmit={handleTrySubmit}>
-              <FormField label="Try one product" error={tryError}>
-                <TextInput value={tryText} onChange={(event) => setTryText(event.target.value)} />
-              </FormField>
+              <label htmlFor={tryInputId} className={styles.tryBoxLabel}>
+                Try one product
+              </label>
               <div className={styles.tryBoxRow}>
+                <TextInput
+                  id={tryInputId}
+                  value={tryText}
+                  onChange={(event) => setTryText(event.target.value)}
+                  aria-invalid={tryError ? "true" : undefined}
+                  aria-describedby={tryError ? tryErrorId : undefined}
+                />
                 <Button type="submit" icon={<ArrowRight size={16} aria-hidden="true" />}>
                   Classify
                 </Button>
               </div>
+              {tryError && (
+                <p id={tryErrorId} className={styles.tryBoxError}>
+                  {tryError}
+                </p>
+              )}
               <p className={styles.tryBoxHelp}>
                 No account required. Results are suggestions, not legal advice.
               </p>
@@ -130,11 +144,13 @@ export function LandingPage() {
           </div>
           <div className={styles.steps}>
             {STEPS.map((step) => (
-              <article className={styles.step} key={step.number}>
+              <div className={styles.step} key={step.number}>
                 <span className={styles.stepNumber}>{step.number}</span>
-                <h3>{step.title}</h3>
-                <p>{step.body}</p>
-              </article>
+                <div>
+                  <h3>{step.title}</h3>
+                  <p>{step.body}</p>
+                </div>
+              </div>
             ))}
           </div>
         </section>
@@ -153,25 +169,27 @@ export function LandingPage() {
               </Link>
             </div>
             <div className={styles.statsWrap}>
-              <SampleLabel className={styles.statsSampleLabel} />
-              <div className={styles.statGrid}>
-                <div>
-                  <strong>{evaluationSummary.top3Recall}%</strong>
-                  <span>Top-3 code recall</span>
-                </div>
-                <div>
-                  <strong>{evaluationSummary.top1ExactMatch}%</strong>
-                  <span>Top-1 exact match</span>
-                </div>
-                <div>
-                  <strong>{evaluationSummary.reviewedTestCases.toLocaleString("en-US")}</strong>
-                  <span>Reviewed test cases</span>
-                </div>
-                <div>
-                  <strong>{evaluationSummary.humanControlledRate}%</strong>
-                  <span>Human-controlled finals</span>
-                </div>
+              <div className={styles.statListHeader}>
+                <SampleLabel />
               </div>
+              <dl className={styles.statList}>
+                <div className={styles.statRow}>
+                  <dt>Top-3 code recall</dt>
+                  <dd>{evaluationSummary.top3Recall}%</dd>
+                </div>
+                <div className={styles.statRow}>
+                  <dt>Top-1 exact match</dt>
+                  <dd>{evaluationSummary.top1ExactMatch}%</dd>
+                </div>
+                <div className={styles.statRow}>
+                  <dt>Reviewed test cases</dt>
+                  <dd>{evaluationSummary.reviewedTestCases.toLocaleString("en-US")}</dd>
+                </div>
+                <div className={styles.statRow}>
+                  <dt>Human-controlled finals</dt>
+                  <dd>{evaluationSummary.humanControlledRate}%</dd>
+                </div>
+              </dl>
             </div>
           </div>
         </section>

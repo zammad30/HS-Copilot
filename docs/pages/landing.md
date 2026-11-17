@@ -3,6 +3,8 @@
 Status: approved
 Route: `/` | FSD slice: `pages/landing`
 
+> Layout restyled in the design reset; copy and behavior unchanged.
+
 ## Design reference
 
 - Figma URL / node: https://www.figma.com/make/v8wpvjs0lOovob7BIzYKzu/HS-Copilot-Classification-Workspace (fileKey `v8wpvjs0lOovob7BIzYKzu`, node `0:1`) — now recorded in `CLAUDE.md` §9. Queried via `get_design_context`: for this Figma Make file the tool returns resource links into the same frozen source (`src/App.tsx`, `src/index.css`, etc.) already mirrored at `design/make-export/` — no new visual information beyond what the screenshots and make-export already give.

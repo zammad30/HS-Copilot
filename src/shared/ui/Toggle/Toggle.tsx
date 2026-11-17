@@ -1,13 +1,13 @@
-import { forwardRef } from 'react'
-import type { ChangeEventHandler } from 'react'
-import styles from './Toggle.module.scss'
+import { forwardRef } from "react";
+import type { ChangeEventHandler } from "react";
+import styles from "./Toggle.module.scss";
 
 export interface ToggleProps {
-  label: string
-  description?: string
-  checked: boolean
-  onChange: ChangeEventHandler<HTMLInputElement>
-  disabled?: boolean
+  label: string;
+  description?: string;
+  checked: boolean;
+  onChange: ChangeEventHandler<HTMLInputElement>;
+  disabled?: boolean;
 }
 
 export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(function Toggle(
@@ -31,5 +31,5 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(function Toggle(
       />
       <i aria-hidden="true" className={styles.track} />
     </label>
-  )
-})
+  );
+});

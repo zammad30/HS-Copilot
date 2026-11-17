@@ -1,10 +1,10 @@
-import { forwardRef } from 'react'
-import type { InputHTMLAttributes, ReactNode } from 'react'
-import clsx from 'clsx'
-import styles from './Checkbox.module.scss'
+import { forwardRef } from "react";
+import type { InputHTMLAttributes, ReactNode } from "react";
+import clsx from "clsx";
+import styles from "./Checkbox.module.scss";
 
 export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: ReactNode
+  label?: ReactNode;
 }
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
@@ -16,5 +16,5 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
       <input ref={ref} {...props} type="checkbox" className={styles.input} />
       {label}
     </label>
-  )
-})
+  );
+});

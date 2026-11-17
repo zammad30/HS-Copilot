@@ -1,10 +1,10 @@
-import { forwardRef } from 'react'
-import type { SelectHTMLAttributes } from 'react'
-import { ChevronDown } from 'lucide-react'
-import clsx from 'clsx'
-import styles from './Select.module.scss'
+import { forwardRef } from "react";
+import type { SelectHTMLAttributes } from "react";
+import { ChevronDown } from "lucide-react";
+import clsx from "clsx";
+import styles from "./Select.module.scss";
 
-export type SelectProps = SelectHTMLAttributes<HTMLSelectElement>
+export type SelectProps = SelectHTMLAttributes<HTMLSelectElement>;
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
   { className, children, ...props },
@@ -17,5 +17,5 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
       </select>
       <ChevronDown className={styles.chevron} size={16} aria-hidden="true" />
     </span>
-  )
-})
+  );
+});

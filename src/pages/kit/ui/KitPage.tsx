@@ -10,8 +10,8 @@ import { SearchField } from "@/shared/ui/SearchField";
 import { FormField } from "@/shared/ui/FormField";
 import { Checkbox } from "@/shared/ui/Checkbox";
 import { Toggle } from "@/shared/ui/Toggle";
-import { Badge } from "@/shared/ui/Badge";
-import type { BadgeStatus } from "@/shared/ui/Badge";
+import { StatusIndicator } from "@/shared/ui/StatusIndicator";
+import type { StatusIndicatorStatus } from "@/shared/ui/StatusIndicator";
 import { Meter } from "@/shared/ui/Meter";
 import { Card } from "@/shared/ui/Card";
 import { Skeleton } from "@/shared/ui/Skeleton";
@@ -24,7 +24,7 @@ import { Eyebrow } from "@/shared/ui/Eyebrow";
 import { FolderSearch2, Plus, X } from "lucide-react";
 
 const variants: ButtonVariant[] = ["primary", "secondary", "approve", "reject", "ghost"];
-const badgeStatuses: BadgeStatus[] = [
+const statusIndicatorStatuses: StatusIndicatorStatus[] = [
   "approved",
   "rejected",
   "needs-review",
@@ -164,10 +164,10 @@ export function KitPage() {
         <Toggle label="Disabled" checked={false} onChange={() => {}} disabled />
       </div>
 
-      <h2>Badge</h2>
+      <h2>StatusIndicator</h2>
       <div style={row}>
-        {badgeStatuses.map((status) => (
-          <Badge key={status} status={status} />
+        {statusIndicatorStatuses.map((status) => (
+          <StatusIndicator key={status} status={status} />
         ))}
       </div>
 

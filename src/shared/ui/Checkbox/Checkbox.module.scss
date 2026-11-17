@@ -13,6 +13,8 @@
 .input {
   width: 16px;
   height: 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
   accent-color: var(--accent);
 
   &:focus-visible {
@@ -21,10 +23,11 @@
 
   &:disabled {
     cursor: not-allowed;
+    border-color: var(--hover);
   }
 }
 
 .wrap:has(.input:disabled) {
-  color: var(--muted);
+  color: var(--disabled);
   cursor: not-allowed;
 }
