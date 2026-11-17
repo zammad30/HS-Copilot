@@ -40,6 +40,8 @@ The cold-start gate protects the whole authenticated app, not just Home, so it l
 
 ## Task 2 — Sign-out, and session additions
 
+> **Amended 2026-11-18:** sign-out now calls a real `POST /auth/sign-out` (204) and clears the TanStack Query cache, superseding the "pure state, no endpoint" decision below. The local session is still cleared first and a failed request is not surfaced to the user — a real cookie-backed session could still be live server-side after a failed sign-out call; show a toast when `Toast` exists to surface that case instead of swallowing it silently forever.
+
 - **Contract first**: `docs/api-contract.md`'s `Session` interface gets two new optional fields, `name?: string` and `workspaceName?: string`. `entities/session`'s `sessionSchema` and `MOCK_SESSION` fixture follow.
 - Greeting is **by local hour**, independent of whether a name exists: "Good morning"/"Good afternoon"/"Good evening" from `new Date().getHours()`. If `session.name` is present, append ", {name}."; if absent, the greeting stands alone with a period — **no name is ever derived from the email.**
 - `entities/session/model/useSignOut.ts`: `useSignOut(): () => void`, calling `useSetSession()` to set the session to `null`. Pure state, no endpoint — `docs/api-contract.md` has no `/auth/sign-out`, matching the in-memory-only session decision from the Auth task.
@@ -75,12 +77,12 @@ The cold-start gate protects the whole authenticated app, not just Home, so it l
 
 ### New shared/ui this task adds
 
-| Component | Why Home needs it now | design.md spec |
-| --- | --- | --- |
-| `Modal` | `DataTable`'s delete-confirm dialog. | §5 Modal |
-| `Menu`/`Popover` | Topbar Help/Account menus, and `DataTable`'s row-action menu. One primitive, two call sites. | §5 Popover/Menu |
-| `DataTable` | Both of Home's tables need row-keyboard-operability + a row-action menu; building one generic table now avoids rebuilding the same logic for Library/Batch review later. | §5 DataTable |
-| `Toast` (provider + hook) | Row actions (approve, copy code, delete+undo) all give toast feedback. | §5 Toast |
+| Component                 | Why Home needs it now                                                                                                                                                    | design.md spec  |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------- |
+| `Modal`                   | `DataTable`'s delete-confirm dialog.                                                                                                                                     | §5 Modal        |
+| `Menu`/`Popover`          | Topbar Help/Account menus, and `DataTable`'s row-action menu. One primitive, two call sites.                                                                             | §5 Popover/Menu |
+| `DataTable`               | Both of Home's tables need row-keyboard-operability + a row-action menu; building one generic table now avoids rebuilding the same logic for Library/Batch review later. | §5 DataTable    |
+| `Toast` (provider + hook) | Row actions (approve, copy code, delete+undo) all give toast feedback.                                                                                                   | §5 Toast        |
 
 **Can wait** for Library/Batch review/Settings: `Tabs` (Settings nav only), `Pagination` (Home's lists are small, fixed, unpaginated), `FilterDropdown` (no filters on Home).
 
@@ -90,10 +92,10 @@ Approved for `Modal` (`@radix-ui/react-dialog`) and `Menu`/`Popover` (`@radix-ui
 
 Checked via `npm view <pkg> version time --json` (full version/time history, not just the latest dist-tag) for the newest stable (no `-rc`) release at least 14 days old as of 2026-11-13, and `npm view <pkg>@<version> peerDependencies --json` for React compatibility:
 
-| Package | Exact version to pin | Published | Next version after it | React peer range | Compatible with our `react@^19.3.1`? |
-| --- | --- | --- | --- | --- | --- |
-| `@radix-ui/react-dialog` | `1.3.1` | 2026-10-12T21:03:50Z (32 days old) | `1.3.2-rc...` (prerelease only, 2026-10-13) | `^16.8 \|\| ^17.0 \|\| ^18.0 \|\| ^19.0 \|\| ^19.0.0-rc` | Yes |
-| `@radix-ui/react-dropdown-menu` | `2.2.1` | 2026-10-12T21:02:48Z (32 days old) | `2.2.2-rc...` (prerelease only, 2026-10-13) | `^16.8 \|\| ^17.0 \|\| ^18.0 \|\| ^19.0 \|\| ^19.0.0-rc` | Yes |
+| Package                         | Exact version to pin | Published                          | Next version after it                       | React peer range                                         | Compatible with our `react@^19.3.1`? |
+| ------------------------------- | -------------------- | ---------------------------------- | ------------------------------------------- | -------------------------------------------------------- | ------------------------------------ |
+| `@radix-ui/react-dialog`        | `1.3.1`              | 2026-10-12T21:03:50Z (32 days old) | `1.3.2-rc...` (prerelease only, 2026-10-13) | `^16.8 \|\| ^17.0 \|\| ^18.0 \|\| ^19.0 \|\| ^19.0.0-rc` | Yes                                  |
+| `@radix-ui/react-dropdown-menu` | `2.2.1`              | 2026-10-12T21:02:48Z (32 days old) | `2.2.2-rc...` (prerelease only, 2026-10-13) | `^16.8 \|\| ^17.0 \|\| ^18.0 \|\| ^19.0 \|\| ^19.0.0-rc` | Yes                                  |
 
 Both packages' most recent release of any kind after the pinned version is a `-rc` prerelease (`1.3.2-rc.*`, `2.2.2-rc.*`) — there is no newer stable release being skipped over. This is the list to review before anything is installed — nothing has been installed yet; `/new-page home` will pin exactly these two versions when implementation starts, pending your go-ahead on this list specifically.
 
@@ -108,7 +110,7 @@ Both packages' most recent release of any kind after the pinned version is a `-r
 - `api/classifications.query.ts` — `useClassifications(params)` → `GET /classifications`, parsed as `{ items, total, page, pageSize }`. Home calls this **once** (sorted by `updatedAt` desc, a reasonable `pageSize`) and derives both of its lists client-side:
   - **Review queue** = items where `status` is `needs_review` or `pending`.
   - **Recent classifications** = the same list, first 8.
-  This keeps "N need attention" genuinely derived from data (Shortcut 2), not a separate hardcoded count, and avoids a second round-trip.
+    This keeps "N need attention" genuinely derived from data (Shortcut 2), not a separate hardcoded count, and avoids a second round-trip.
 - `ui/ClassificationStatusBadge.tsx` — domain wrapper around shared `Badge`, mapping contract `needs_review` (snake_case) to `Badge`'s `needs-review` (kebab) status prop.
 - Mock data: the 14 seed records are ported verbatim from the export's `products` array (108-235) — same descriptions, HS codes, confidences, statuses — translated into the full contract shape (citations → `evidence`, `reasoning` → candidate reasoning, `ruling`/`rulingRef` → a ruling-kind `Evidence` entry, `alternatives` → two extra `Candidate` entries). This seeds `classification-detail` later with internally-consistent data instead of redoing it then.
 - MSW: `src/app/mocks/handlers/classifications.handlers.ts` — `GET /classifications` (honors `status` as comma-separated, per the `api-contract.md` clarification added this round, plus `sort`/`page`/`pageSize`), latency + `forceError` + `forceDelay` scenarios. `POST /classifications/:id/decision` (approve) and `DELETE /classifications/:id` (see Delete/Undo below).
@@ -141,20 +143,20 @@ No exception to architecture rule 7 this round: approve/delete mutations are pag
 
 ## Components
 
-| Element | Component | Existing / New |
-| --- | --- | --- |
-| Page header | `PageHeader` | Existing |
-| Review queue / quick-add cards | `Card` | Existing |
-| Confidence meter | `Meter` | Existing |
-| Status | `ClassificationStatusBadge` (wraps `Badge`) | New, entity-local (`entities/classification/ui`) |
-| Quick-add field | `TextInput` | Existing |
-| Buttons | `Button` | Existing |
-| Sidebar / topbar / mobile drawer | `widgets/app-shell` | New, lazy-loaded layout route |
-| Help/account popovers, row-action menu | `Menu`/`Popover` | New shared/ui (Radix — approved, see Task 3) |
-| Delete-confirm dialog | `Modal` | New shared/ui (Radix — approved, see Task 3) |
-| Recent/review tables | `DataTable` | New shared/ui |
-| Action feedback | `Toast` (provider + hook) | New shared/ui |
-| Waking / error full-page states | `WakingScreen` / `ErrorScreen` | New, widget-local (`widgets/app-shell/ui`) |
+| Element                                | Component                                   | Existing / New                                   |
+| -------------------------------------- | ------------------------------------------- | ------------------------------------------------ |
+| Page header                            | `PageHeader`                                | Existing                                         |
+| Review queue / quick-add cards         | `Card`                                      | Existing                                         |
+| Confidence meter                       | `Meter`                                     | Existing                                         |
+| Status                                 | `ClassificationStatusBadge` (wraps `Badge`) | New, entity-local (`entities/classification/ui`) |
+| Quick-add field                        | `TextInput`                                 | Existing                                         |
+| Buttons                                | `Button`                                    | Existing                                         |
+| Sidebar / topbar / mobile drawer       | `widgets/app-shell`                         | New, lazy-loaded layout route                    |
+| Help/account popovers, row-action menu | `Menu`/`Popover`                            | New shared/ui (Radix — approved, see Task 3)     |
+| Delete-confirm dialog                  | `Modal`                                     | New shared/ui (Radix — approved, see Task 3)     |
+| Recent/review tables                   | `DataTable`                                 | New shared/ui                                    |
+| Action feedback                        | `Toast` (provider + hook)                   | New shared/ui                                    |
+| Waking / error full-page states        | `WakingScreen` / `ErrorScreen`              | New, widget-local (`widgets/app-shell/ui`)       |
 
 No `Tabs`, `Pagination`, or `FilterDropdown` this task.
 
@@ -191,7 +193,7 @@ No `Tabs`, `Pagination`, or `FilterDropdown` this task.
 
 - **Shortcut 2** (hardcoded counts): "`{n}` need attention" and the description count are both derived from the fetched list, never hardcoded. The batch-mini footer's "`X` of `X` products classified" (always 100% by construction) is cut rather than ported broken.
 - **Shortcut 3** (override/reject conflation): "Override code" is **dropped** from the row menu — in the export it's a no-op identical to "Open" (line 460), and the real override flow doesn't exist until `classification-detail` is built. Re-add it, wired to a real inline override, when that page exists.
-- **Reject, checked against the export**: the export's dedicated Reject modal (1981-2015) *does* ask for a reason (a "Reason (optional)" textarea, defaulting to a canned string when left blank if submitted). A one-click, reason-less row-menu "Reject" would skip that entirely. Decided: **"Reject" is dropped from the row menu this task**, for the same reason "Override code" is — the real reject-with-reason flow belongs to `classification-detail`, not a dense row menu. Re-add it there, with the reason field, when that page is built.
+- **Reject, checked against the export**: the export's dedicated Reject modal (1981-2015) _does_ ask for a reason (a "Reason (optional)" textarea, defaulting to a canned string when left blank if submitted). A one-click, reason-less row-menu "Reject" would skip that entirely. Decided: **"Reject" is dropped from the row menu this task**, for the same reason "Override code" is — the real reject-with-reason flow belongs to `classification-detail`, not a dense row menu. Re-add it there, with the reason field, when that page is built.
 - **Re-run research — dropped**, along with its toast: no contract endpoint exists for restarting an agent run on an already-classified item, and a toast-only action that looks like it did something but didn't is worse than not having the menu item. Add it back, wired to a real restart, once `classify-new`/agent-progress exists.
 - **Shortcut 4** (waking/error triggers): replaced with a real `/health` query per Task 1, with a timeout, retries, and a delay threshold before showing the waking screen at all; both full-page components are ported as presentation, only their triggers change.
 - **Shortcut 5** (state-based navigation): every `go(...)` call becomes a real route (`Link`/`navigate`).

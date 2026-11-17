@@ -4,26 +4,27 @@ Base path `/api/v1`. The NestJS/FastAPI backend will implement this. When it cha
 
 ## Endpoints
 
-| Method                      | Path                                      | Purpose                                                                |
-| --------------------------- | ----------------------------------------- | ---------------------------------------------------------------------- |
-| GET                         | /health                                   | cold-start check (200 `{status:"ok"}`)                                 |
-| POST                        | /auth/sign-in, /auth/sign-up, /auth/reset | session                                                                |
-| GET                         | /me                                       | current user + workspaces                                              |
+| Method                      | Path                                      | Purpose                                                                                                                                   |
+| --------------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| GET                         | /health                                   | cold-start check (200 `{status:"ok"}`)                                                                                                    |
+| POST                        | /auth/sign-in, /auth/sign-up, /auth/reset | session                                                                                                                                   |
+| POST                        | /auth/sign-out                            | ends the session; 204 no body                                                                                                             |
+| GET                         | /me                                       | current user + workspaces                                                                                                                 |
 | GET                         | /classifications                          | query: `search, status[], confidenceBand[], page, pageSize, sort` — array params are comma-separated, e.g. `?status=needs_review,pending` |
-| POST                        | /classifications                          | create + start agent run -> `{classificationId, agentRunId}`           |
-| GET                         | /classifications/:id                      | detail incl. candidates, evidence, auditTrail                          |
-| POST                        | /classifications/:id/decision             | body `{action:'approve'                                                | 'reject' | 'override' | 'request_info' | 'undo', code?, reason?, assigneeId?, note?}` |
-| DELETE                      | /classifications/:id                      | delete (undo handled client-side within a grace window or via restore) |
-| GET                         | /agent-runs/:id                           | poll steps (SSE later)                                                 |
-| POST                        | /agent-runs/:id/answer                    | `{optionIndex}` answers the clarifying question                        |
-| POST                        | /batches                                  | multipart CSV + `{mapping, jurisdiction}`                              |
-| GET                         | /batches/:id, /batches/:id/items          | progress and rows (same filters as classifications)                    |
-| POST                        | /batches/:id/pause, /resume               | processing control                                                     |
-| POST                        | /batches/:id/bulk-approve                 | `{minConfidence}`                                                      |
-| GET / POST / PATCH / DELETE | /members, /members/invite, /members/:id   | team                                                                   |
-| GET / PUT                   | /review-rules                             | review rules                                                           |
-| GET                         | /evaluation/summary                       | methodology numbers (flag `isSample`)                                  |
-| GET                         | /export/classifications                   | CSV                                                                    |
+| POST                        | /classifications                          | create + start agent run -> `{classificationId, agentRunId}`                                                                              |
+| GET                         | /classifications/:id                      | detail incl. candidates, evidence, auditTrail                                                                                             |
+| POST                        | /classifications/:id/decision             | body `{action:'approve'                                                                                                                   | 'reject' | 'override' | 'request_info' | 'undo', code?, reason?, assigneeId?, note?}` |
+| DELETE                      | /classifications/:id                      | delete (undo handled client-side within a grace window or via restore)                                                                    |
+| GET                         | /agent-runs/:id                           | poll steps (SSE later)                                                                                                                    |
+| POST                        | /agent-runs/:id/answer                    | `{optionIndex}` answers the clarifying question                                                                                           |
+| POST                        | /batches                                  | multipart CSV + `{mapping, jurisdiction}`                                                                                                 |
+| GET                         | /batches/:id, /batches/:id/items          | progress and rows (same filters as classifications)                                                                                       |
+| POST                        | /batches/:id/pause, /resume               | processing control                                                                                                                        |
+| POST                        | /batches/:id/bulk-approve                 | `{minConfidence}`                                                                                                                         |
+| GET / POST / PATCH / DELETE | /members, /members/invite, /members/:id   | team                                                                                                                                      |
+| GET / PUT                   | /review-rules                             | review rules                                                                                                                              |
+| GET                         | /evaluation/summary                       | methodology numbers (flag `isSample`)                                                                                                     |
+| GET                         | /export/classifications                   | CSV                                                                                                                                       |
 
 ## Types (zod schemas are the source; these are the shapes)
 

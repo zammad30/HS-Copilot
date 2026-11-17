@@ -38,4 +38,9 @@ export const authHandlers = [
     // Always succeeds for any syntactically valid email — never reveals whether an account exists.
     return forcedErrorResponse(request) ?? HttpResponse.json({ ok: true });
   }),
+
+  http.post(`${env.apiBaseUrl}/auth/sign-out`, async ({ request }) => {
+    await randomLatency();
+    return forcedErrorResponse(request) ?? new HttpResponse(null, { status: 204 });
+  }),
 ];

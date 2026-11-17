@@ -27,6 +27,7 @@
 - Reusable, domain-free UI -> `shared/ui`. HTTP, env, route constants, hooks, formatters -> `shared/*`.
 - A noun of the business (Classification, Batch, Member) with schema, queries, small UI -> `entities/<noun>`.
 - A verb the user performs (approve, upload, invite) with its form/button/mutation -> `features/<verb>`.
+- Session lifecycle (sign-in state, sign-out) lives in `entities/session`, not a feature, because both the auth pages and `widgets/app-shell` depend on it.
 - A composed block reused on 2+ pages (app shell, classification table, audit drawer) -> `widgets/<name>`.
 - Page-specific composition, layout and route-level data wiring -> `pages/<route>`.
 - Router, providers, layouts, global styles, MSW -> `app`.
