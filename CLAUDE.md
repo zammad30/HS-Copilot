@@ -88,15 +88,15 @@ Layers, top to bottom: `app > pages > widgets > features > entities > shared`.
 
 ## 9. Figma fidelity
 
-Figma is the source of truth. Do not invent, redesign or "improve" UI that already exists in the design. Reference order:
+Layout and copy come from the page brief and Figma; all visuals (color, font, radius, shadow) come only from design.md. Do not invent, redesign or "improve" UI that already exists in the design. Reference order:
 
 1. The approved page brief `docs/pages/<page>.md`.
-2. Figma via the Figma MCP. File: https://www.figma.com/make/v8wpvjs0lOovob7BIzYKzu/HS-Copilot-Classification-Workspace (fileKey `v8wpvjs0lOovob7BIzYKzu`, node `0:1`). For Figma Make files use the fileKey from the URL and nodeId `0:1` with `get_design_context`. Treat returned code as a reference to port, not code to paste.
-3. `design/screens/<page>-<viewport>.png` screenshots as the visual target.
-4. `design/make-export/` (read-only snapshot of the prototype source).
+2. Figma via the Figma MCP, for layout and copy only. File: https://www.figma.com/make/v8wpvjs0lOovob7BIzYKzu/HS-Copilot-Classification-Workspace (fileKey `v8wpvjs0lOovob7BIzYKzu`, node `0:1`). For Figma Make files use the fileKey from the URL and nodeId `0:1` with `get_design_context`. Treat returned code as a reference to port, not code to paste.
+3. `design/screens/<page>-<viewport>.png` and `design/make-export/` for layout and copy only — neither is a visual reference; their colors, fonts, radius and shadows are stale.
+4. design.md for every visual value.
 
 - Port into FSD + SCSS Modules and reuse shared/ui. Do not copy the prototype's single-file structure, plain CSS, timers or static data.
-- Match copy, spacing, sizes, colors and responsive behavior exactly. If something is missing or ambiguous in the design, ask. Never fill the gap with your own design.
+- Match copy, spacing, sizes and responsive behavior from Figma/the export; match colors, fonts, radius and shadows from design.md. If something is missing or ambiguous, ask. Never fill the gap with your own design.
 - Report every deliberate deviation at the end of a task.
 
 ## 10. Prototype corrections (behavior that must differ from the Make prototype)

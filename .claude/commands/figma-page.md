@@ -6,7 +6,7 @@ argument-hint: <page-slug>
 Create `docs/pages/$ARGUMENTS.md` from `docs/pages/_template.md`. Do NOT write or change any application code.
 
 1. Read CLAUDE.md, design.md and docs/component-inventory.md.
-2. Gather the design reference: the Figma MCP (`get_design_context`; for Figma Make files use the fileKey from the URL and nodeId `0:1`), screenshots in `design/screens/$ARGUMENTS*`, and the matching screen in `design/make-export/`. If a reference is missing, say which and stop.
+2. Gather the design reference: the Figma MCP (`get_design_context`; for Figma Make files use the fileKey from the URL and nodeId `0:1`), screenshots in `design/screens/$ARGUMENTS*`, and the matching screen in `design/make-export/`. Take layout and copy from these; take every visual value (color, font, radius, shadow) only from design.md. If a reference is missing, say which and stop.
    Before opening `design/make-export/src/App.tsx` itself, read `docs/make-export-index.md` first and read only the line ranges it names for the relevant screen/component.
 3. Fill every section of the template: layout, exact copy, states, interactions, responsive behavior.
 4. Map every UI element to an existing shared/ui component from the inventory. List new components separately with proposed props.

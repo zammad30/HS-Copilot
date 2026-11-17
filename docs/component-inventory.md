@@ -11,7 +11,7 @@ Check here before creating any component. Update this file whenever a shared or 
 | TextInput, Textarea, Select, SearchField | labelled field with error text; controlled, native props                                                           | built   |
 | FormField                                | label + control + error wrapper; useId, aria-invalid/describedby                                                   | built   |
 | Checkbox, Toggle                         | table selection, settings switches; controlled                                                                     | built   |
-| Badge                                    | approved, rejected, needs-review, pending, overridden (accent, never red/green); always color+icon+text            | built   |
+| Badge                                    | status dot (8px) + plain text label: approved, rejected, needs-review, pending, overridden; status never color alone | built   |
 | Meter                                    | value 0-100 + 2px track; value-based aria-label                                                                    | built   |
 | Card                                     | default, flat (no shadow), selected                                                                                | built   |
 | Modal                                    | dialog with focus trap (Radix inside)                                                                              | planned |
@@ -26,7 +26,7 @@ Check here before creating any component. Update this file whenever a shared or 
 | ErrorState                               | state pattern                                                                                                      | planned |
 | PageHeader                               | eyebrow, title, description, action; action stacks under title at 720px                                            | built   |
 | Logo, SampleLabel                        | small primitives; Logo is a button with aria-label, SampleLabel defaults to "Sample data"                          | built   |
-| Eyebrow                                  | 12/16 500 uppercase, 0.08em tracking, `--muted`                                                                    | built   |
+| Eyebrow                                  | label style, 12/16 500, no uppercase/tracking, `--muted`                                                           | built   |
 
 ## entities/*/ui
 
