@@ -7,12 +7,13 @@
 }
 
 // design.md §4: shell-width = min(100% - 64px, 1280px), centered.
+// Mobile margins are 24px per side (space-6 = 48px total), matching Landing.
 @mixin shell-width {
   width: min(calc(100% - var(--space-8)), var(--content));
   margin-inline: auto;
 
   @include respond-below($bp-mobile) {
-    width: min(calc(100% - var(--space-4)), var(--content));
+    width: min(calc(100% - var(--space-6)), var(--content));
   }
 }
 
@@ -20,7 +21,7 @@
   @include shell-width;
   display: grid;
   gap: var(--space-3);
-  max-width: 760px;
+  max-width: 68ch;
   padding-top: var(--space-10);
   padding-bottom: 112px;
 
@@ -30,6 +31,8 @@
 
   h2 {
     margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--line);
   }
 }
 

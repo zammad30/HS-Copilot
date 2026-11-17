@@ -38,7 +38,6 @@ export function NotFoundPage() {
       {menuOpen && <MobileMenu onClose={closeMenu} onLogoClick={goHome} onOpenDemo={goToApp} />}
 
       <div className={styles.flowState}>
-        <strong className={styles.code}>404</strong>
         <h1>Page not found</h1>
         <p>The link may be outdated or the page may have moved.</p>
         <Link className={styles.backHome} to={routes.landing}>

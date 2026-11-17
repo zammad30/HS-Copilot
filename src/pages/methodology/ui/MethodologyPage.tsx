@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { PublicHeader, PublicFooter, MobileMenu } from "@/widgets/public-shell";
 import { Eyebrow } from "@/shared/ui/Eyebrow";
-import { Card } from "@/shared/ui/Card";
 import { PageHeader } from "@/shared/ui/PageHeader";
 import { SampleLabel } from "@/shared/ui/SampleLabel";
 import { routes } from "@/shared/config";
@@ -11,22 +10,22 @@ import styles from "./MethodologyPage.module.scss";
 
 const METHOD_STEPS = [
   {
-    number: "1",
+    number: "01",
     title: "Extracts product facts",
     body: "Identifies composition, function, construction, and presentation from the description and attachments.",
   },
   {
-    number: "2",
+    number: "02",
     title: "Builds a candidate set",
     body: "Retrieves relevant heading text, section notes, explanatory notes, and analogous rulings.",
   },
   {
-    number: "3",
+    number: "03",
     title: "Applies classification rules",
     body: "Tests candidates against the General Rules of Interpretation and jurisdiction-specific guidance.",
   },
   {
-    number: "4",
+    number: "04",
     title: "Surfaces uncertainty",
     body: "Returns ranked suggestions, evidence, confidence, and questions where decisive facts are missing.",
   },
@@ -71,30 +70,33 @@ export function MethodologyPage() {
         <div className={styles.methodGrid}>
           <section className={styles.prose}>
             <h2>How the agent works</h2>
-            {METHOD_STEPS.map((step) => (
-              <div className={styles.methodStep} key={step.number}>
-                <span className={styles.stepCircle}>{step.number}</span>
-                <div>
-                  <h3>{step.title}</h3>
-                  <p>{step.body}</p>
+            <div className={styles.steps}>
+              {METHOD_STEPS.map((step) => (
+                <div className={styles.step} key={step.number}>
+                  <span className={styles.stepNumber}>{step.number}</span>
+                  <div>
+                    <h3>{step.title}</h3>
+                    <p>{step.body}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </section>
 
-          <Card className={styles.evaluationCard}>
-            <div className={styles.evaluationEyebrow}>
+          <section className={styles.evaluation}>
+            <div className={styles.evaluationHeading}>
               <Eyebrow>Current evaluation</Eyebrow>
               <SampleLabel />
             </div>
-            <strong className={styles.bigNumber}>
-              {evaluationSummary.reviewedTestCases.toLocaleString("en-US")}
-            </strong>
-            <p>
+            <p className={styles.evaluationIntro}>
               expert-reviewed records, stratified across 47 tariff chapters and withheld from prompt
               and retrieval tuning.
             </p>
             <dl className={styles.evaluationList}>
+              <div>
+                <dt>Reviewed records</dt>
+                <dd>{evaluationSummary.reviewedTestCases.toLocaleString("en-US")}</dd>
+              </div>
               <div>
                 <dt>Snapshot</dt>
                 <dd>{evaluationSummary.htsSnapshot}</dd>
@@ -112,7 +114,7 @@ export function MethodologyPage() {
                 <dd>{evaluationSummary.lastUpdatedAt}</dd>
               </div>
             </dl>
-          </Card>
+          </section>
         </div>
 
         <section className={styles.chartSection}>

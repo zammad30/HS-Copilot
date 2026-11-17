@@ -6,26 +6,30 @@
   min-height: 100dvh;
 }
 
+// design.md §4: shell-width = min(100% - 64px, 1280px), centered.
+// Mobile margins are 24px per side (space-6 = 48px total), matching Landing.
+@mixin shell-width {
+  width: min(calc(100% - var(--space-8)), var(--content));
+  margin-inline: auto;
+
+  @include respond-below($bp-mobile) {
+    width: min(calc(100% - var(--space-6)), var(--content));
+  }
+}
+
 .flowState {
+  @include shell-width;
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   gap: var(--space-2);
-  text-align: center;
-  padding: var(--space-6) var(--space-3);
+  padding-block: var(--space-6);
 
   p {
     max-width: 52ch;
   }
-}
-
-.code {
-  font-size: 48px;
-  line-height: 56px;
-  color: var(--accent);
-  font-variant-numeric: tabular-nums;
 }
 
 .backHome {

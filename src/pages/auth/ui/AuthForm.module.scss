@@ -25,7 +25,7 @@
 
 .switchLine {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--space-1);
   margin-top: var(--space-4);
   font-size: 14px;
@@ -46,9 +46,9 @@
   width: 100%;
   margin-top: var(--space-3);
   padding-top: var(--space-3);
-  border-top: var(--border);
+  border-top: 1px solid var(--line);
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: var(--space-1);
   color: var(--accent);
