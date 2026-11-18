@@ -86,41 +86,41 @@ This file mirrors `shared/styles/base/_tokens.scss` exactly; change both togethe
 
 ## 2. Color roles (semantic rules, never break them)
 
-| Role | Token | Use |
-| --- | --- | --- |
-| Page background | `--surface` | page background only |
-| Surfaces | `--white` | cards, panels, tables, inputs, menus, modals |
-| Heading / primary text | `--ink` | headings, key values |
-| Body text | `--text` | paragraphs, table cells |
-| Muted | `--muted` | secondary text, captions, metadata — always passes 4.5:1, safe for text |
-| Non-text decoration | `--subtle` | icon strokes, chart lines, decorative marks — never text |
-| Dividers | `--line` | 1px borders, skeletons, meter tracks |
-| Input / checkbox edges | `--line-strong` | visible control borders (>= 3:1 on white) |
-| Neutral hover | `--hover` | hover background for neutral interactive elements (rows, menu items, icon buttons) |
-| Disabled | `--disabled` | disabled text and controls |
-| Accent | `--accent` (+hover, +tint) | primary actions, links, focus ring, active nav |
-| Chrome | `--chrome` (+text, +muted, +line) | app sidebar/topbar and public header/footer surface |
-| Approved | `--green` (+tint, +line) | approved status only |
-| Rejected / error | `--red` (+tint, +line) | rejected status, errors, destructive actions |
-| Needs review / warning | `--amber` (+tint, +line) | needs-review status, warning banners |
-| Pending | `--status-pending` | pending status only |
-| Overridden | `--status-overridden` | overridden status only |
+| Role                   | Token                             | Use                                                                                |
+| ---------------------- | --------------------------------- | ---------------------------------------------------------------------------------- |
+| Page background        | `--surface`                       | page background only                                                               |
+| Surfaces               | `--white`                         | cards, panels, tables, inputs, menus, modals                                       |
+| Heading / primary text | `--ink`                           | headings, key values                                                               |
+| Body text              | `--text`                          | paragraphs, table cells                                                            |
+| Muted                  | `--muted`                         | secondary text, captions, metadata — always passes 4.5:1, safe for text            |
+| Non-text decoration    | `--subtle`                        | icon strokes, chart lines, decorative marks — never text                           |
+| Dividers               | `--line`                          | 1px borders, skeletons, meter tracks                                               |
+| Input / checkbox edges | `--line-strong`                   | visible control borders (>= 3:1 on white)                                          |
+| Neutral hover          | `--hover`                         | hover background for neutral interactive elements (rows, menu items, icon buttons) |
+| Disabled               | `--disabled`                      | disabled text and controls                                                         |
+| Accent                 | `--accent` (+hover, +tint)        | primary actions, links, focus ring, active nav                                     |
+| Chrome                 | `--chrome` (+text, +muted, +line) | app sidebar/topbar and public header/footer surface                                |
+| Approved               | `--green` (+tint, +line)          | approved status only                                                               |
+| Rejected / error       | `--red` (+tint, +line)            | rejected status, errors, destructive actions                                       |
+| Needs review / warning | `--amber` (+tint, +line)          | needs-review status, warning banners                                               |
+| Pending                | `--status-pending`                | pending status only                                                                |
+| Overridden             | `--status-overridden`             | overridden status only                                                             |
 
 Status colors (green/red/amber/status-pending/status-overridden) are only for classification status and error or warning states — never for branding or primary actions. Status is never color alone: every status always shows as a color dot plus a text label (see Status indicator, section 5).
 
 ## 3. Typography (Inter for all UI text; IBM Plex Mono for HS codes, tariff numbers, percentages, IDs and other technical data)
 
-| Style | Size / line | Weight | Notes |
-| --- | --- | --- | --- |
-| Display | 40/48 (mobile 32/40) | 600 | landing hero only, -0.01em; never use for in-app headings |
-| H1 | 28/36 (mobile 24/32) | 600 | -0.01em |
-| H2 | 20/28 | 600 | |
-| H3 | 16/24 | 600 | |
-| Body | 16/26 | 400 | max line length 72ch |
-| UI | 14/20 | 400, 500 for labels | controls, tables, nav |
-| Small | 13/20 | 400 | menus, reasoning text |
-| Caption | 12/16 | 500 | `--muted` |
-| Label | 12/16 | 500 | form labels and other standalone labels |
+| Style   | Size / line          | Weight              | Notes                                                     |
+| ------- | -------------------- | ------------------- | --------------------------------------------------------- |
+| Display | 40/48 (mobile 32/40) | 600                 | landing hero only, -0.01em; never use for in-app headings |
+| H1      | 28/36 (mobile 24/32) | 600                 | -0.01em                                                   |
+| H2      | 20/28                | 600                 |                                                           |
+| H3      | 16/24                | 600                 |                                                           |
+| Body    | 16/26                | 400                 | max line length 72ch                                      |
+| UI      | 14/20                | 400, 500 for labels | controls, tables, nav                                     |
+| Small   | 13/20                | 400                 | menus, reasoning text                                     |
+| Caption | 12/16                | 500                 | `--muted`                                                 |
+| Label   | 12/16                | 500                 | form labels and other standalone labels                   |
 
 Headings use weight 600 with at most -0.01em tracking (Display and H1 only; H2/H3 have no tracking). No oversized text and no uppercase/letter-spaced eyebrow treatment — moderate headings throughout. HS codes and other technical numbers always use `--font-mono` with tabular numerals (`font-variant-numeric: tabular-nums`).
 
@@ -143,7 +143,7 @@ Headings use weight 600 with at most -0.01em tracking (Display and H1 only; H2/H
 - **Modal**: width min(100%, 520px), padding 24, overlay `rgba(23, 43, 58, 0.36)` (derived from `--ink`), `--shadow-menu`, Esc and outside click close, focus trapped.
 - **Popover / Menu**: min-width 280 (row menu 184), padding 8, items 40px high, 14/20, hover `--hover`, `--shadow-menu`, closes on outside click and Esc.
 - **Drawer** (audit trail, evidence): right side, 320px, sticky under the topbar, `--shadow-menu`; full overlay at <=1000px.
-- **Toast**: 360px, bottom-right, 3s, white background, success uses `--green` border, info/delete use `--line` border.
+- **Toast**: 360px, bottom-right, white background, success uses `--green` border, info/delete use `--line` border. Dismisses after 3s, or after 6s when it carries an action (e.g. Undo); the timer pauses on hover or focus and resumes on leave/blur. An action is reachable by keyboard and announced via `role="status"`.
 - **Toggle**: 40x22, accent when on. **Tabs** (settings nav): active uses `--accent-tint` background + accent text.
 - **Skeleton**: `--line` blocks with a 1.2s opacity fade; never spinners. **EmptyState**: `--surface` card, icon, one line, one action. **Banner**: `--amber-tint` background with `--amber-line` border (dismissible) — a warning state, not branding.
 - **SampleLabel**: 10/14, `--muted` text, no background or border — marks any placeholder claim.
