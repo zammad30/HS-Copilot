@@ -16,6 +16,7 @@ import { Meter } from "@/shared/ui/Meter";
 import { Card } from "@/shared/ui/Card";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { EmptyState } from "@/shared/ui/EmptyState";
+import { ErrorState } from "@/shared/ui/ErrorState";
 import { Banner } from "@/shared/ui/Banner";
 import { PageHeader } from "@/shared/ui/PageHeader";
 import { Logo } from "@/shared/ui/Logo";
@@ -231,6 +232,16 @@ export function KitPage() {
           title="No classifications yet"
           description="Start with one product to build your reviewed library."
           action={<Button icon={<Plus />}>New classification</Button>}
+        />
+      </div>
+
+      <h2>ErrorState</h2>
+      <div style={row}>
+        <ErrorState title="We couldn't load the research progress" onRetry={() => {}} />
+        <ErrorState
+          title="Run not found"
+          description="This research run is no longer available. Start a new one."
+          action={<Button variant="secondary">Start again</Button>}
         />
       </div>
 

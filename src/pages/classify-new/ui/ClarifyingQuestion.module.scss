@@ -1,0 +1,81 @@
+@use "@/shared/styles/abstracts" as *;
+
+.block {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-1);
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.text {
+  margin: 0 0 var(--space-2);
+  color: var(--text);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+  width: 100%;
+  min-height: var(--control-height);
+  padding: var(--space-1) var(--space-15);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--white);
+  text-align: left;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: var(--hover);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &:disabled {
+    color: var(--disabled);
+    border-color: var(--line);
+    cursor: default;
+  }
+}
+
+.optionLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.option:disabled .optionLabel {
+  color: var(--disabled);
+}
+
+.optionHint {
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--muted);
+}
+
+.error {
+  margin-top: var(--space-1);
+  color: var(--red);
+  font-size: 12px;
+  line-height: 16px;
+}

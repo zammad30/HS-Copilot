@@ -1,0 +1,64 @@
+@use "@/shared/styles/abstracts" as *;
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.step {
+  display: flex;
+  gap: var(--space-15);
+  padding: var(--space-15) 0;
+  border-bottom: 1px solid var(--line);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  color: var(--subtle);
+}
+
+.done .icon {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.active .icon,
+.paused .icon {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.text {
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.detail {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--muted);
+}
+
+.liveRegion {
+  @include visually-hidden;
+}
