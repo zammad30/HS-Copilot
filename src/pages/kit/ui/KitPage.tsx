@@ -23,7 +23,28 @@ import { SampleLabel } from "@/shared/ui/SampleLabel";
 import { Eyebrow } from "@/shared/ui/Eyebrow";
 import { Menu } from "@/shared/ui/Menu";
 import { Drawer } from "@/shared/ui/Drawer";
-import { FolderSearch2, Plus, Settings, X } from "lucide-react";
+import { Modal } from "@/shared/ui/Modal";
+import { DataTable } from "@/shared/ui/DataTable";
+import type { DataTableColumn } from "@/shared/ui/DataTable";
+import { useToast } from "@/shared/ui/Toast";
+import { ClassificationStatusBadge } from "@/entities/classification";
+import { FolderSearch2, MoreHorizontal, Plus, Settings, X } from "lucide-react";
+
+interface KitRow {
+  id: string;
+  name: string;
+  code: string;
+}
+
+const KIT_ROWS: KitRow[] = [
+  { id: "1", name: "Men's cotton T-shirt", code: "6109.10" },
+  { id: "2", name: "Wireless Bluetooth earbuds", code: "8518.30" },
+];
+
+const KIT_COLUMNS: DataTableColumn<KitRow>[] = [
+  { key: "name", header: "Product", render: (item) => item.name },
+  { key: "code", header: "Suggested code", render: (item) => item.code },
+];
 
 const variants: ButtonVariant[] = ["primary", "secondary", "approve", "reject", "ghost"];
 const statusIndicatorStatuses: StatusIndicatorStatus[] = [
@@ -50,6 +71,9 @@ export function KitPage() {
   const [toggled, setToggled] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const drawerTriggerRef = useRef<HTMLButtonElement>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const modalTriggerRef = useRef<HTMLButtonElement>(null);
+  const { show } = useToast();
 
   return (
     <div>
@@ -279,6 +303,79 @@ export function KitPage() {
             <Button onClick={() => setDrawerOpen(false)}>Close</Button>
           </div>
         </Drawer>
+      </div>
+
+      <h2>Modal</h2>
+      <div style={row}>
+        <Button ref={modalTriggerRef} onClick={() => setModalOpen(true)}>
+          Open modal
+        </Button>
+        <Modal
+          open={modalOpen}
+          onOpenChange={setModalOpen}
+          title="Delete classification?"
+          description={`This removes "Men's 100% cotton knitted crew-neck T-shirt" from the workspace.`}
+          returnFocusRef={modalTriggerRef}
+        >
+          <div style={{ display: "flex", gap: "var(--space-1)", justifyContent: "flex-end" }}>
+            <Button variant="secondary" onClick={() => setModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="reject" onClick={() => setModalOpen(false)}>
+              Delete
+            </Button>
+          </div>
+        </Modal>
+      </div>
+
+      <h2>DataTable</h2>
+      <div style={row}>
+        <Card style={{ width: "100%" }}>
+          <DataTable
+            columns={KIT_COLUMNS}
+            rows={KIT_ROWS}
+            getRowKey={(item) => item.id}
+            rowHref={(item) => `/app/classifications/${item.id}`}
+            isRowHighlighted={(item) => item.id === "2"}
+            renderActions={(item) => (
+              <Menu
+                trigger={
+                  <IconButton icon={<MoreHorizontal />} aria-label={`Actions for ${item.name}`} />
+                }
+                items={[
+                  { label: "Open", href: `/app/classifications/${item.id}` },
+                  { label: "Approve", onSelect: () => {} },
+                  { label: "Delete", onSelect: () => {} },
+                ]}
+              />
+            )}
+          />
+        </Card>
+      </div>
+
+      <h2>Toast</h2>
+      <div style={row}>
+        <Button onClick={() => show("HS code copied")}>Show info toast</Button>
+        <Button onClick={() => show("Classification approved", { tone: "success" })}>
+          Show success toast
+        </Button>
+        <Button
+          onClick={() =>
+            show("Classification deleted", {
+              tone: "delete",
+              action: { label: "Undo", onClick: () => {} },
+            })
+          }
+        >
+          Show toast with Undo
+        </Button>
+      </div>
+
+      <h2>entities/classification: ClassificationStatusBadge</h2>
+      <div style={row}>
+        <ClassificationStatusBadge status="needs_review" />
+        <ClassificationStatusBadge status="approved" />
+        <ClassificationStatusBadge status="approved" overridden />
       </div>
     </div>
   );
