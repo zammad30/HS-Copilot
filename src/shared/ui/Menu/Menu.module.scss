@@ -1,0 +1,76 @@
+@use "@/shared/styles/abstracts" as *;
+
+.content {
+  min-width: 280px;
+  padding: var(--space-1);
+  background: var(--white);
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-menu);
+  z-index: var(--z-popover);
+}
+
+.header {
+  padding: var(--space-1) var(--space-15);
+
+  strong {
+    display: block;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  span {
+    display: block;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 20px;
+    @include truncate;
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: var(--control-height);
+  padding: 0 var(--space-15);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+
+  svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover,
+  &[data-highlighted] {
+    background: var(--hover);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.itemButton {
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+
+.footer {
+  margin: var(--space-1) 0 0;
+  padding: var(--space-1) var(--space-15);
+  border-top: var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 16px;
+}

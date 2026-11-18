@@ -1,16 +1,19 @@
-import { lazy } from "react";
-import { createBrowserRouter, Outlet } from "react-router";
+import { lazy, Suspense } from "react";
+import { createBrowserRouter } from "react-router";
 import { RequireSession } from "@/entities/session";
 import { routes } from "@/shared/config";
-import { HealthGate } from "@/widgets/app-shell";
 
-// Plain wrapper for now — sidebar/topbar land in a later task. Gates every
-// /app/* route on the cold-start health check before anything inside renders.
+const LazyAppShellLayout = lazy(() =>
+  import("@/widgets/app-shell").then((m) => ({ default: m.AppShellLayout })),
+);
+
+// No spinner, per design.md's motion rule — this only covers the instant the
+// shell's own lazy chunk is loading, separate from HealthGate's cold-start UI.
 function AppShellLayout() {
   return (
-    <HealthGate>
-      <Outlet />
-    </HealthGate>
+    <Suspense fallback={null}>
+      <LazyAppShellLayout />
+    </Suspense>
   );
 }
 

@@ -16,4 +16,6 @@ export const MOCK_SESSION: Session = {
   userId: "user_mock_1",
   email: "reviewer@hs-copilot.test",
   workspaceId: "workspace_mock_1",
+  name: "Sam Rivera",
+  workspaceName: "Sample workspace",
 };

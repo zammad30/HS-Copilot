@@ -7,5 +7,6 @@ export function buildSessionFixture(email: string): Session {
     userId: `user_${localPart}`,
     email,
     workspaceId: "workspace_mock_1",
+    workspaceName: "Sample workspace",
   };
 }

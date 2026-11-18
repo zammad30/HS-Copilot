@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { Button } from "@/shared/ui/Button";
 import type { ButtonVariant } from "@/shared/ui/Button";
@@ -21,7 +21,9 @@ import { PageHeader } from "@/shared/ui/PageHeader";
 import { Logo } from "@/shared/ui/Logo";
 import { SampleLabel } from "@/shared/ui/SampleLabel";
 import { Eyebrow } from "@/shared/ui/Eyebrow";
-import { FolderSearch2, Plus, X } from "lucide-react";
+import { Menu } from "@/shared/ui/Menu";
+import { Drawer } from "@/shared/ui/Drawer";
+import { FolderSearch2, Plus, Settings, X } from "lucide-react";
 
 const variants: ButtonVariant[] = ["primary", "secondary", "approve", "reject", "ghost"];
 const statusIndicatorStatuses: StatusIndicatorStatus[] = [
@@ -46,6 +48,8 @@ export function KitPage() {
   const [search, setSearch] = useState("");
   const [checked, setChecked] = useState(false);
   const [toggled, setToggled] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const drawerTriggerRef = useRef<HTMLButtonElement>(null);
 
   return (
     <div>
@@ -238,6 +242,43 @@ export function KitPage() {
       <h2>Eyebrow</h2>
       <div style={row}>
         <Eyebrow>How it works</Eyebrow>
+      </div>
+
+      <h2>Menu</h2>
+      <div style={row}>
+        <Menu
+          trigger={<IconButton icon={<Settings />} aria-label="Open menu" />}
+          header={
+            <>
+              <strong>Sam Rivera</strong>
+              <span>sam@hs-copilot.test</span>
+            </>
+          }
+          items={[
+            { label: "Account settings", href: "/app/settings/general" },
+            { label: "Sign out", onSelect: () => {} },
+          ]}
+          footer="Suggestions are not legal advice."
+        />
+      </div>
+
+      <h2>Drawer</h2>
+      <div style={row}>
+        <Button ref={drawerTriggerRef} onClick={() => setDrawerOpen(true)}>
+          Open drawer
+        </Button>
+        <Drawer
+          open={drawerOpen}
+          onOpenChange={setDrawerOpen}
+          title="Navigation"
+          side="left"
+          returnFocusRef={drawerTriggerRef}
+        >
+          <div style={{ padding: "var(--space-2)" }}>
+            <p>Drawer content</p>
+            <Button onClick={() => setDrawerOpen(false)}>Close</Button>
+          </div>
+        </Drawer>
       </div>
     </div>
   );

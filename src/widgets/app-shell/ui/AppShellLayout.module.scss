@@ -1,0 +1,67 @@
+@use "@/shared/styles/abstracts" as *;
+
+.shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  min-height: 100dvh;
+
+  @include respond-below($bp-mobile) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.skipLink {
+  position: absolute;
+  top: -40px;
+  left: var(--space-2);
+  z-index: var(--z-modal);
+  background: var(--accent);
+  color: var(--white);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius);
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: none;
+  transition: top 200ms ease-out;
+
+  &:focus-visible {
+    top: var(--space-2);
+  }
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background: var(--chrome);
+  border-right: 1px solid var(--chrome-line);
+
+  @include respond-below($bp-mobile) {
+    display: none;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  height: var(--topbar-height);
+  padding: 0 var(--space-2);
+  border-bottom: 1px solid var(--chrome-line);
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.content {
+  flex: 1;
+  max-width: var(--content);
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-4) var(--space-8);
+
+  @include respond-below($bp-mobile) {
+    padding: var(--space-3) var(--space-2) var(--space-6);
+  }
+}

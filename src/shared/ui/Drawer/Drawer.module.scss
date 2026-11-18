@@ -1,0 +1,57 @@
+@use "@/shared/styles/abstracts" as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  z-index: var(--z-drawer);
+
+  &[data-state="open"] {
+    animation: fade-in 200ms ease-out;
+  }
+}
+
+.content {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: var(--drawer-width);
+  max-width: 100%;
+  background: var(--white);
+  box-shadow: var(--shadow-menu);
+  z-index: var(--z-drawer);
+  outline: none;
+
+  &[data-state="open"] {
+    animation: fade-in 200ms ease-out;
+  }
+
+  @include respond-below($bp-tablet) {
+    width: 100%;
+  }
+}
+
+.left {
+  left: 0;
+}
+
+.right {
+  right: 0;
+}
+
+.visuallyHiddenTitle {
+  @include visually-hidden;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay[data-state="open"],
+  .content[data-state="open"] {
+    animation: none;
+  }
+}
