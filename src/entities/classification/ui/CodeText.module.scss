@@ -1,0 +1,14 @@
+@use "@/shared/styles/abstracts" as *;
+
+.codeText {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.hero {
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}

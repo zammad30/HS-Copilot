@@ -16,13 +16,39 @@ interface SeedInput {
   code: string;
   confidence: number;
   status: Status;
-  alternatives: [string, string];
+  /** 0-2 alternative codes; most records carry two, two edge-case records fewer. */
+  alternatives: string[];
   subject: string;
   createdHoursAgo: number;
   updatedHoursAgo: number;
   overridden?: boolean;
   finalCode?: string;
+  /** Edge case: a classification whose research found no comparable ruling. */
+  includeRuling?: boolean;
 }
+
+const ALTERNATIVE_REASONING: { title: string; body: string }[][] = [
+  [
+    {
+      title: "Narrower heading coverage",
+      body: "This subheading covers a narrower slice of the product and does not match its full description.",
+    },
+    {
+      title: "Weaker precedent support",
+      body: "Fewer comparable reviewed rulings were found supporting this subheading.",
+    },
+  ],
+  [
+    {
+      title: "Essential character mismatch",
+      body: "The product's essential character points away from this heading's principal use.",
+    },
+    {
+      title: "Section note conflict",
+      body: "A section or chapter note directs materially similar goods elsewhere.",
+    },
+  ],
+];
 
 /** Mirrors the Figma export's `sampleProduct()` factory, filling the full
  * contract shape (candidates/evidence/auditTrail) from a few seed inputs so
@@ -40,6 +66,7 @@ function buildClassification(input: SeedInput): Classification {
     updatedHoursAgo,
     overridden = false,
     finalCode,
+    includeRuling = true,
   } = input;
   const chapter = code.split(".")[0];
 
@@ -67,18 +94,12 @@ function buildClassification(input: SeedInput): Classification {
         },
       ],
     },
-    {
-      code: alternatives[0],
+    ...alternatives.map((altCode, index) => ({
+      code: altCode,
       title: `${subject} (alternative)`,
-      confidence: Math.max(confidence - 18, 5),
-      reasoning: [],
-    },
-    {
-      code: alternatives[1],
-      title: `${subject} (alternative)`,
-      confidence: Math.max(confidence - 27, 5),
-      reasoning: [],
-    },
+      confidence: Math.max(confidence - 18 * (index + 1), 5),
+      reasoning: ALTERNATIVE_REASONING[index % ALTERNATIVE_REASONING.length],
+    })),
   ];
 
   const evidence: Evidence[] = [
@@ -95,12 +116,17 @@ function buildClassification(input: SeedInput): Classification {
       excerpt:
         "General Rules of Interpretation 1 and 6 govern classification by heading text and subheading comparison.",
     },
-    {
-      kind: "ruling",
-      title: `${subject} ruling`,
-      reference: `HQ ${code.replace(".", "")}-26`,
-      excerpt: `A materially similar ${subject.toLowerCase()} was classified under ${code} after review of its essential character and principal use.`,
-    },
+    ...(includeRuling
+      ? [
+          {
+            kind: "ruling" as const,
+            title: `${subject} ruling`,
+            reference: `HQ ${code.replace(".", "")}-26`,
+            excerpt: `A materially similar ${subject.toLowerCase()} was classified under ${code} after review of its essential character and principal use.`,
+            isSample: true,
+          },
+        ]
+      : []),
   ];
 
   const auditTrail: AuditEntry[] = [
@@ -109,32 +135,47 @@ function buildClassification(input: SeedInput): Classification {
       at: isoHoursAgo(createdHoursAgo),
       actor: "AI agent",
       action: "created",
-      detail: "Classification suggested after automated research.",
+      detail: "Created after automated research.",
+    },
+    {
+      id: `${id}_audit_2`,
+      at: isoHoursAgo(createdHoursAgo - 0.02),
+      actor: "AI agent",
+      action: "research_completed",
+      detail: `${candidates.length === 1 ? "One candidate" : `${candidates.length} candidates`} ranked from ${evidence.length} sources.`,
     },
   ];
   if (overridden) {
     auditTrail.push({
-      id: `${id}_audit_2`,
+      id: `${id}_audit_3`,
       at: isoHoursAgo(updatedHoursAgo),
       actor: "reviewer@hs-copilot.test",
       action: "overridden",
-      detail: `Overridden to ${finalCode}.`,
+      detail: `${code} changed to ${finalCode}. Reason: better matches the product's principal use.`,
     });
   } else if (status === "approved") {
     auditTrail.push({
-      id: `${id}_audit_2`,
+      id: `${id}_audit_3`,
       at: isoHoursAgo(updatedHoursAgo),
       actor: "reviewer@hs-copilot.test",
       action: "approved",
-      detail: `Approved suggested code ${code}.`,
+      detail: `reviewer@hs-copilot.test approved ${code}.`,
     });
   } else if (status === "rejected") {
     auditTrail.push({
-      id: `${id}_audit_2`,
+      id: `${id}_audit_3`,
       at: isoHoursAgo(updatedHoursAgo),
       actor: "reviewer@hs-copilot.test",
       action: "rejected",
-      detail: "Rejected after review.",
+      detail: "Rejected by reviewer@hs-copilot.test. Reason: does not match the suggested heading.",
+    });
+  } else if (status === "pending") {
+    auditTrail.push({
+      id: `${id}_audit_3`,
+      at: isoHoursAgo(updatedHoursAgo),
+      actor: "reviewer@hs-copilot.test",
+      action: "info_requested",
+      detail: "Assigned to Mina Patel for follow-up.",
     });
   }
 
@@ -155,6 +196,7 @@ function buildClassification(input: SeedInput): Classification {
     createdAt: isoHoursAgo(createdHoursAgo),
     updatedAt: isoHoursAgo(updatedHoursAgo),
     createdBy: "reviewer@hs-copilot.test",
+    model: { version: "hs-copilot-classifier-v1", isSample: true },
   };
 }
 
@@ -237,6 +279,8 @@ const SEEDS: SeedInput[] = [
     subject: "Roasted coffee",
     createdHoursAgo: 28,
     updatedHoursAgo: 24,
+    // Edge case: research did not find a comparable past ruling.
+    includeRuling: false,
   },
   {
     id: "cls_008",
@@ -310,7 +354,8 @@ const SEEDS: SeedInput[] = [
     code: "8211.92",
     confidence: 97,
     status: "approved",
-    alternatives: ["8211.91", "8208.30"],
+    // Edge case: research found only one viable candidate.
+    alternatives: [],
     subject: "Fixed-blade kitchen knives",
     createdHoursAgo: 4,
     updatedHoursAgo: 0.5,
@@ -325,7 +370,30 @@ function createClassificationsFixtures(): Classification[] {
  * within a session, mirroring how a real backend would behave. */
 export const classificationsStore: Classification[] = createClassificationsFixtures();
 
+interface DecisionSnapshot {
+  status: Status;
+  finalCode?: string;
+  overridden: boolean;
+}
+
+/** Mock-only bookkeeping (not part of the contract) so `undo` can restore the
+ * state from immediately before the most recently applied decision. */
+const previousStates = new Map<string, DecisionSnapshot>();
+
+export function getPreviousState(id: string): DecisionSnapshot | undefined {
+  return previousStates.get(id);
+}
+
+export function setPreviousState(id: string, snapshot: DecisionSnapshot): void {
+  previousStates.set(id, snapshot);
+}
+
+export function clearPreviousState(id: string): void {
+  previousStates.delete(id);
+}
+
 /** Test-only: restores the store to its original 14 seed records. */
 export function resetClassificationsStore(): void {
   classificationsStore.splice(0, classificationsStore.length, ...createClassificationsFixtures());
+  previousStates.clear();
 }

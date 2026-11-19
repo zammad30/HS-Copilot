@@ -72,6 +72,19 @@ describe("classificationSchema", () => {
     delete withoutCode.suggestedCode;
     expect(() => classificationSchema.parse(withoutCode)).toThrow();
   });
+
+  it("parses without a model field", () => {
+    const result = classificationSchema.parse(VALID_CLASSIFICATION);
+    expect(result.model).toBeUndefined();
+  });
+
+  it("accepts an optional model field with isSample", () => {
+    const result = classificationSchema.parse({
+      ...VALID_CLASSIFICATION,
+      model: { version: "hts-classifier-v3", isSample: true },
+    });
+    expect(result.model).toEqual({ version: "hts-classifier-v3", isSample: true });
+  });
 });
 
 describe("statusSchema", () => {

@@ -30,7 +30,7 @@ Check here before creating any component. Update this file whenever a shared or 
 
 ## entities/*/ui
 
-`classification`: ClassificationStatusBadge, ConfidenceMeter, CodeText. `batch`: BatchProgress. `member`: RoleSelect, MemberAvatar.
+`classification`: ClassificationStatusBadge, CodeText (`size="default"|"hero"`, mono font, tabular numerals; `ConfidenceMeter` not built — the raw shared `Meter` is used directly, as Home already does). `batch`: BatchProgress. `member`: RoleSelect, MemberAvatar.
 
 ## widgets
 

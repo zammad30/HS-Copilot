@@ -9,6 +9,9 @@ export interface ClassificationsListParams {
 
 export const classificationKeys = {
   all: ["classifications"] as const,
+  lists: () => [...classificationKeys.all, "list"] as const,
   list: (params: ClassificationsListParams = {}) =>
-    [...classificationKeys.all, "list", params] as const,
+    [...classificationKeys.lists(), params] as const,
+  details: () => [...classificationKeys.all, "detail"] as const,
+  detail: (id: string) => [...classificationKeys.details(), id] as const,
 };

@@ -42,6 +42,12 @@ export const auditEntrySchema = z.object({
 });
 export type AuditEntry = z.infer<typeof auditEntrySchema>;
 
+export const modelInfoSchema = z.object({
+  version: z.string(),
+  isSample: z.boolean().optional(),
+});
+export type ModelInfo = z.infer<typeof modelInfoSchema>;
+
 export const classificationSchema = z.object({
   id: z.string(),
   workspaceId: z.string(),
@@ -63,6 +69,7 @@ export const classificationSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
   createdBy: z.string(),
+  model: modelInfoSchema.optional(),
 });
 export type Classification = z.infer<typeof classificationSchema>;
 
