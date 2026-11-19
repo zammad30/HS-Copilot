@@ -1,0 +1,80 @@
+@use "@/shared/styles/abstracts" as *;
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--space-3);
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.meta {
+  margin: var(--space-3) 0 0;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+
+  div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  dt {
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  dd {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-05);
+    color: var(--text);
+    font-size: 13px;
+    text-align: right;
+  }
+}
+
+.entries {
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  li {
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--line);
+  }
+
+  strong {
+    display: block;
+    color: var(--ink);
+  }
+
+  p {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 20px;
+  }
+}
+
+.entryTime {
+  display: block;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+}

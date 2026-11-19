@@ -1,0 +1,61 @@
+@use "@/shared/styles/abstracts" as *;
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+
+  @include respond-below($bp-mobile) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.card h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.card blockquote {
+  margin: 0;
+  padding-left: var(--space-2);
+  border-left: 2px solid var(--line);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 26px;
+}
+
+.card p {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 26px;
+}
+
+.link {
+  align-self: flex-start;
+  min-height: 40px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--accent-hover);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}

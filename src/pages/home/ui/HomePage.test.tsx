@@ -5,10 +5,10 @@ import { createMemoryRouter, RouterProvider, useLocation } from "react-router";
 import { useSession } from "@/entities/session";
 import { useClassifications } from "@/entities/classification";
 import type { Classification } from "@/entities/classification";
+import { useReviewDecision } from "@/features/review-decision";
 import { ToastProvider } from "@/shared/ui/Toast";
 import type { ToastDurations } from "@/shared/ui/Toast";
 import { HomePage } from "./HomePage";
-import { useApproveClassification } from "../api/useApproveClassification";
 import { useDeleteClassification } from "../api/useDeleteClassification";
 
 vi.mock("@/entities/session", async () => {
@@ -21,12 +21,17 @@ vi.mock("@/entities/classification", async () => {
   );
   return { ...actual, useClassifications: vi.fn() };
 });
-vi.mock("../api/useApproveClassification", () => ({ useApproveClassification: vi.fn() }));
+vi.mock("@/features/review-decision", async () => {
+  const actual = await vi.importActual<typeof import("@/features/review-decision")>(
+    "@/features/review-decision",
+  );
+  return { ...actual, useReviewDecision: vi.fn() };
+});
 vi.mock("../api/useDeleteClassification", () => ({ useDeleteClassification: vi.fn() }));
 
 const mockedUseSession = vi.mocked(useSession);
 const mockedUseClassifications = vi.mocked(useClassifications);
-const mockedUseApprove = vi.mocked(useApproveClassification);
+const mockedUseReviewDecision = vi.mocked(useReviewDecision);
 const mockedUseDelete = vi.mocked(useDeleteClassification);
 
 type QueryResult = ReturnType<typeof useClassifications>;
@@ -93,9 +98,9 @@ describe("HomePage", () => {
       email: "reviewer@hs-copilot.test",
       workspaceId: "workspace_1",
     });
-    mockedUseApprove.mockReturnValue({
+    mockedUseReviewDecision.mockReturnValue({
       mutate: approveMutate,
-    } as unknown as ReturnType<typeof useApproveClassification>);
+    } as unknown as ReturnType<typeof useReviewDecision>);
     mockedUseDelete.mockReturnValue({
       mutate: deleteMutate,
     } as unknown as ReturnType<typeof useDeleteClassification>);
@@ -222,7 +227,7 @@ describe("HomePage", () => {
     mockedUseClassifications.mockReturnValue(
       queryResult({ data: { items, total: 1, page: 1, pageSize: 50 } }),
     );
-    approveMutate.mockImplementation((_id: string, options?: { onSuccess?: () => void }) =>
+    approveMutate.mockImplementation((_input: unknown, options?: { onSuccess?: () => void }) =>
       options?.onSuccess?.(),
     );
     const user = userEvent.setup();
@@ -231,7 +236,10 @@ describe("HomePage", () => {
     await user.click(screen.getByRole("button", { name: "Actions for Men's cotton T-shirt" }));
     await user.click(await screen.findByRole("menuitem", { name: "Approve" }));
 
-    expect(approveMutate).toHaveBeenCalledWith("cls_1", expect.anything());
+    expect(approveMutate).toHaveBeenCalledWith(
+      { id: "cls_1", action: "approve" },
+      expect.anything(),
+    );
     expect(await screen.findByRole("status")).toHaveTextContent("Classification approved");
   });
 

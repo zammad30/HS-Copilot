@@ -20,7 +20,7 @@ import { useClassifications, ClassificationStatusBadge } from "@/entities/classi
 import type { Classification } from "@/entities/classification";
 import { routes } from "@/shared/config";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
-import { useApproveClassification } from "../api/useApproveClassification";
+import { useReviewDecision } from "@/features/review-decision";
 import { useDeleteClassification } from "../api/useDeleteClassification";
 import styles from "./HomePage.module.scss";
 
@@ -44,7 +44,7 @@ export function HomePage() {
   const actionTriggerRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
 
   const { data, isPending, isError, refetch } = useClassifications({ sort: "-updatedAt" });
-  const approveMutation = useApproveClassification();
+  const reviewDecision = useReviewDecision();
   const deleteMutation = useDeleteClassification();
 
   const items = useMemo(
@@ -72,9 +72,10 @@ export function HomePage() {
   }
 
   function handleApprove(item: Classification) {
-    approveMutation.mutate(item.id, {
-      onSuccess: () => show("Classification approved", { tone: "success" }),
-    });
+    reviewDecision.mutate(
+      { id: item.id, action: "approve" },
+      { onSuccess: () => show("Classification approved", { tone: "success" }) },
+    );
   }
 
   function handleDeleteSelected(item: Classification) {
