@@ -134,7 +134,7 @@ export function ClassifyNewPage() {
 
       <div className={styles.grid}>
         <Card className={styles.formCard}>
-          <form onSubmit={handleSubmit} noValidate>
+          <form onSubmit={handleSubmit} noValidate className={styles.form}>
             <FormField label="Product description" error={errors.description}>
               <Textarea
                 ref={descriptionRef}
@@ -164,7 +164,7 @@ export function ClassifyNewPage() {
               </FormField>
             </div>
 
-            <FormField label="Country of origin (optional)">
+            <FormField label="Country of origin">
               <Select
                 value={origin}
                 onChange={(event) => setOrigin(event.target.value)}
