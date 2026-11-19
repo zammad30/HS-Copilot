@@ -6,10 +6,10 @@ import { useSession } from "@/entities/session";
 import { useClassifications } from "@/entities/classification";
 import type { Classification } from "@/entities/classification";
 import { useReviewDecision } from "@/features/review-decision";
+import { useDeleteClassification } from "@/features/delete-classification";
 import { ToastProvider } from "@/shared/ui/Toast";
 import type { ToastDurations } from "@/shared/ui/Toast";
 import { HomePage } from "./HomePage";
-import { useDeleteClassification } from "../api/useDeleteClassification";
 
 vi.mock("@/entities/session", async () => {
   const actual = await vi.importActual<typeof import("@/entities/session")>("@/entities/session");
@@ -27,7 +27,7 @@ vi.mock("@/features/review-decision", async () => {
   );
   return { ...actual, useReviewDecision: vi.fn() };
 });
-vi.mock("../api/useDeleteClassification", () => ({ useDeleteClassification: vi.fn() }));
+vi.mock("@/features/delete-classification", () => ({ useDeleteClassification: vi.fn() }));
 
 const mockedUseSession = vi.mocked(useSession);
 const mockedUseClassifications = vi.mocked(useClassifications);

@@ -1,0 +1,26 @@
+@use "@/shared/styles/abstracts" as *;
+
+.wrap {
+  transition: opacity 0.2s ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.fetching {
+  opacity: 0.6;
+}
+
+.statuses {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-1);
+  margin-top: var(--space-3);
+}

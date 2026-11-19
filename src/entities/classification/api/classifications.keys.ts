@@ -1,6 +1,7 @@
 import type { Status } from "../model/classification.schema";
 
 export interface ClassificationsListParams {
+  search?: string;
   status?: Status[];
   sort?: string;
   page?: number;

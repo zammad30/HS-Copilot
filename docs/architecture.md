@@ -35,7 +35,7 @@
 ## Slice map (create on demand)
 
 - entities: `classification`, `batch`, `agent-run`, `member`, `workspace`, `session`, `review-rules`, `evaluation`
-- features: `review-decision` (approve, reject, override, request-info, undo), `classify-product`, `answer-clarification`, `bulk-review`, `upload-batch`, `auth`, `manage-members`, `edit-review-rules`, `edit-workspace`, `filter-classifications`, `export-data`
+- features: `review-decision` (approve, reject, override, request-info, undo), `delete-classification` (delete with Undo grace window), `classify-product`, `answer-clarification`, `bulk-review`, `upload-batch`, `auth`, `manage-members`, `edit-review-rules`, `edit-workspace`, `filter-classifications`, `export-data`
 - widgets: `app-shell` (sidebar, topbar, menus), `public-shell` (header, footer, mobile menu), `classification-table`, `audit-trail`, `agent-progress`, `evidence-drawer`
 - pages: `landing`, `methodology`, `auth`, `legal`, `public-try`, `home`, `classify-new`, `classification-detail`, `batch-upload`, `batch-review`, `library`, `settings`, `not-found`, `kit` (dev only)
 

@@ -56,14 +56,23 @@ export const classificationsHandlers = [
     const url = new URL(request.url);
     const statusParam = url.searchParams.get("status");
     const statusFilter = statusParam ? statusParam.split(",") : null;
+    const searchParam = url.searchParams.get("search")?.trim().toLowerCase() || null;
     const page = Number(url.searchParams.get("page") ?? "1");
     const pageSize = Number(url.searchParams.get("pageSize") ?? "50");
 
-    const filtered = statusFilter
+    let filtered = statusFilter
       ? classificationsStore.filter((item) => statusFilter.includes(item.status))
       : classificationsStore;
+    if (searchParam) {
+      filtered = filtered.filter(
+        (item) =>
+          item.description.toLowerCase().includes(searchParam) ||
+          item.suggestedCode.toLowerCase().includes(searchParam) ||
+          (item.finalCode?.toLowerCase().includes(searchParam) ?? false),
+      );
+    }
     // Only sort supported so far: most-recently-updated first, the only
-    // ordering any current consumer (Home) asks for.
+    // ordering any current consumer (Home, Library) asks for.
     const sorted = [...filtered].sort(
       (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
     );

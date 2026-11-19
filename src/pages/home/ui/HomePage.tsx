@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { ArrowRight, FolderSearch2, MoreHorizontal, Plus } from "lucide-react";
+import { ArrowRight, FolderSearch2, Plus } from "lucide-react";
 import { PageHeader } from "@/shared/ui/PageHeader";
 import { Card } from "@/shared/ui/Card";
 import { Eyebrow } from "@/shared/ui/Eyebrow";
@@ -9,19 +9,11 @@ import { Button } from "@/shared/ui/Button";
 import { Meter } from "@/shared/ui/Meter";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { EmptyState } from "@/shared/ui/EmptyState";
-import { DataTable } from "@/shared/ui/DataTable";
-import type { DataTableColumn } from "@/shared/ui/DataTable";
-import { Modal } from "@/shared/ui/Modal";
-import { Menu } from "@/shared/ui/Menu";
-import { IconButton } from "@/shared/ui/IconButton";
-import { useToast } from "@/shared/ui/Toast";
 import { useSession } from "@/entities/session";
 import { useClassifications, ClassificationStatusBadge } from "@/entities/classification";
-import type { Classification } from "@/entities/classification";
 import { routes } from "@/shared/config";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
-import { useReviewDecision } from "@/features/review-decision";
-import { useDeleteClassification } from "../api/useDeleteClassification";
+import { ClassificationTable } from "@/widgets/classification-table";
 import styles from "./HomePage.module.scss";
 
 function getGreeting(): string {
@@ -35,17 +27,11 @@ export function HomePage() {
   useDocumentTitle("Home | HS Copilot");
   const session = useSession();
   const navigate = useNavigate();
-  const { show } = useToast();
 
   const [quickText, setQuickText] = useState("");
-  const [deleteTarget, setDeleteTarget] = useState<Classification | null>(null);
   const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set());
-  const deleteReturnFocusRef = useRef<HTMLButtonElement | null>(null);
-  const actionTriggerRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
 
   const { data, isPending, isError, refetch } = useClassifications({ sort: "-updatedAt" });
-  const reviewDecision = useReviewDecision();
-  const deleteMutation = useDeleteClassification();
 
   const items = useMemo(
     () => (data?.items ?? []).filter((item) => !hiddenIds.has(item.id)),
@@ -71,63 +57,14 @@ export function HomePage() {
     navigate(`${routes.classifyNew}?q=${encodeURIComponent(trimmed)}`);
   }
 
-  function handleApprove(item: Classification) {
-    reviewDecision.mutate(
-      { id: item.id, action: "approve" },
-      { onSuccess: () => show("Classification approved", { tone: "success" }) },
-    );
-  }
-
-  function handleDeleteSelected(item: Classification) {
-    deleteReturnFocusRef.current = actionTriggerRefs.current.get(item.id) ?? null;
-    setDeleteTarget(item);
-  }
-
-  function handleDeleteConfirmed() {
-    if (!deleteTarget) return;
-    const target = deleteTarget;
-    setDeleteTarget(null);
-    setHiddenIds((current) => new Set(current).add(target.id));
-    show("Classification deleted", {
-      tone: "delete",
-      action: {
-        label: "Undo",
-        onClick: () => {
-          setHiddenIds((current) => {
-            const next = new Set(current);
-            next.delete(target.id);
-            return next;
-          });
-        },
-      },
-      onTimeout: () => {
-        deleteMutation.mutate(target.id);
-      },
+  function handleItemHiddenChange(id: string, hidden: boolean) {
+    setHiddenIds((current) => {
+      const next = new Set(current);
+      if (hidden) next.add(id);
+      else next.delete(id);
+      return next;
     });
   }
-
-  const columns: DataTableColumn<Classification>[] = [
-    { key: "description", header: "Product", render: (item) => item.description },
-    {
-      key: "code",
-      header: "Suggested code",
-      render: (item) => <span className={styles.code}>{item.suggestedCode}</span>,
-    },
-    {
-      key: "confidence",
-      header: "Confidence",
-      render: (item) => (
-        <Meter value={item.confidence} aria-label={`${item.confidence}% confidence`} />
-      ),
-    },
-    {
-      key: "status",
-      header: "Status",
-      render: (item) => (
-        <ClassificationStatusBadge status={item.status} overridden={item.overridden} />
-      ),
-    },
-  ];
 
   if (isError) {
     return (
@@ -224,73 +161,29 @@ export function HomePage() {
           <div className={styles.tableSkeleton}>
             <Skeleton lines={6} />
           </div>
-        ) : recent.length === 0 ? (
-          <EmptyState
-            icon={<FolderSearch2 />}
-            title="No classifications yet"
-            description="Start with one product to build your reviewed library."
-            action={
-              <Button
-                icon={<Plus aria-hidden="true" />}
-                onClick={() => navigate(routes.classifyNew)}
-              >
-                New classification
-              </Button>
-            }
-          />
         ) : (
-          <DataTable
-            columns={columns}
-            rows={recent}
-            getRowKey={(item) => item.id}
-            rowHref={(item) => routes.classificationDetail(item.id)}
-            isRowHighlighted={(item) => item.status === "needs_review"}
+          <ClassificationTable
+            items={recent}
             density="compact"
-            renderActions={(item) => (
-              <Menu
-                trigger={
-                  <IconButton
-                    ref={(element) => {
-                      if (element) actionTriggerRefs.current.set(item.id, element);
-                      else actionTriggerRefs.current.delete(item.id);
-                    }}
-                    icon={<MoreHorizontal aria-hidden="true" />}
-                    aria-label={`Actions for ${item.description}`}
-                  />
+            onItemHiddenChange={handleItemHiddenChange}
+            emptyState={
+              <EmptyState
+                icon={<FolderSearch2 />}
+                title="No classifications yet"
+                description="Start with one product to build your reviewed library."
+                action={
+                  <Button
+                    icon={<Plus aria-hidden="true" />}
+                    onClick={() => navigate(routes.classifyNew)}
+                  >
+                    New classification
+                  </Button>
                 }
-                items={[
-                  { label: "Open", href: routes.classificationDetail(item.id) },
-                  { label: "Approve", onSelect: () => handleApprove(item) },
-                  { label: "Delete", onSelect: () => handleDeleteSelected(item) },
-                ]}
               />
-            )}
+            }
           />
         )}
       </Card>
-
-      <Modal
-        open={deleteTarget !== null}
-        onOpenChange={(open) => {
-          if (!open) setDeleteTarget(null);
-        }}
-        title="Delete classification?"
-        description={
-          deleteTarget
-            ? `This removes "${deleteTarget.description}" from the workspace.`
-            : undefined
-        }
-        returnFocusRef={deleteReturnFocusRef}
-      >
-        <div className={styles.modalActions}>
-          <Button variant="secondary" onClick={() => setDeleteTarget(null)}>
-            Cancel
-          </Button>
-          <Button variant="reject" onClick={handleDeleteConfirmed}>
-            Delete
-          </Button>
-        </div>
-      </Modal>
     </div>
   );
 }

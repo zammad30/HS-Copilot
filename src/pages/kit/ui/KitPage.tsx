@@ -27,6 +27,7 @@ import { Drawer } from "@/shared/ui/Drawer";
 import { Modal } from "@/shared/ui/Modal";
 import { DataTable } from "@/shared/ui/DataTable";
 import type { DataTableColumn } from "@/shared/ui/DataTable";
+import { Pagination } from "@/shared/ui/Pagination";
 import { useToast } from "@/shared/ui/Toast";
 import { ClassificationStatusBadge } from "@/entities/classification";
 import { FolderSearch2, MoreHorizontal, Plus, Settings, X } from "lucide-react";
@@ -74,6 +75,7 @@ export function KitPage() {
   const drawerTriggerRef = useRef<HTMLButtonElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const modalTriggerRef = useRef<HTMLButtonElement>(null);
+  const [kitPage, setKitPage] = useState(1);
   const { show } = useToast();
 
   return (
@@ -362,6 +364,13 @@ export function KitPage() {
             )}
           />
         </Card>
+      </div>
+
+      <h2>Pagination</h2>
+      <div style={row}>
+        <div style={{ width: "320px" }}>
+          <Pagination page={kitPage} pageSize={10} total={14} onPageChange={setKitPage} />
+        </div>
       </div>
 
       <h2>Toast</h2>

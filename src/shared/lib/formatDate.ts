@@ -34,3 +34,14 @@ export function formatDay(iso: string, now: Date = new Date()): string {
   if (diff === 1) return "yesterday";
   return `on ${new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(date)}`;
 }
+
+const shortDateFormatter = new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" });
+
+/** `Today`, `Yesterday`, or a short date like `Nov 12`, for table "Updated" columns. */
+export function formatUpdatedDay(iso: string, now: Date = new Date()): string {
+  const date = new Date(iso);
+  const diff = daysBetween(date, now);
+  if (diff === 0) return "Today";
+  if (diff === 1) return "Yesterday";
+  return shortDateFormatter.format(date);
+}

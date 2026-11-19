@@ -11,6 +11,44 @@ describe("classifications handlers", () => {
     resetClassificationsStore();
   });
 
+  it("GET /classifications filters by search text across description and code, case-insensitively", async () => {
+    const byDescription = await http.get<{ items: Classification[]; total: number }>(
+      "/classifications?search=BLUETOOTH",
+    );
+    expect(byDescription.total).toBe(1);
+    expect(byDescription.items[0]?.id).toBe("cls_002");
+
+    const byCode = await http.get<{ items: Classification[]; total: number }>(
+      "/classifications?search=8518.30",
+    );
+    expect(byCode.total).toBe(1);
+    expect(byCode.items[0]?.id).toBe("cls_002");
+  });
+
+  it("GET /classifications combines search and status filters", async () => {
+    const result = await http.get<{ items: Classification[]; total: number }>(
+      "/classifications?search=steel&status=approved",
+    );
+    expect(result.items.every((item) => item.status === "approved")).toBe(true);
+    expect(result.items.every((item) => item.description.toLowerCase().includes("steel"))).toBe(
+      true,
+    );
+  });
+
+  it("GET /classifications paginates with page and pageSize, and total reflects the filtered count", async () => {
+    const page1 = await http.get<{ items: Classification[]; total: number; page: number }>(
+      "/classifications?page=1&pageSize=10",
+    );
+    expect(page1.items).toHaveLength(10);
+    expect(page1.total).toBe(14);
+
+    const page2 = await http.get<{ items: Classification[]; total: number }>(
+      "/classifications?page=2&pageSize=10",
+    );
+    expect(page2.items).toHaveLength(4);
+    expect(page2.total).toBe(14);
+  });
+
   it("GET /classifications/:id returns the full record", async () => {
     const item = await http.get<Classification>("/classifications/cls_002");
     expect(item.id).toBe("cls_002");

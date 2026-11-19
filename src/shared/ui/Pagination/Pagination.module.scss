@@ -1,0 +1,20 @@
+@use "@/shared/styles/abstracts" as *;
+
+.wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.range {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--muted);
+}
+
+.buttons {
+  display: flex;
+  gap: var(--space-1);
+}
