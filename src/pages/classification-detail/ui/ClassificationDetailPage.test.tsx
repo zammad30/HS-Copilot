@@ -120,18 +120,33 @@ describe("ClassificationDetailPage — override", () => {
       level: 1,
       name: "Moulded silicone smartphone protective case",
     });
-    await user.click(screen.getByRole("button", { name: "Override code" }));
+    const overrideButton = screen.getByRole("button", { name: "Override code" });
+    await user.click(overrideButton);
 
     const dialog = await screen.findByRole("dialog", { name: "Override classification code" });
-    await user.click(within(dialog).getByRole("button", { name: "Confirm override" }));
-    expect(screen.getByText("Enter a valid HS code, for example 8518.30.")).toBeInTheDocument();
+    await user.click(within(dialog).getByRole("button", { name: "Cancel" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(overrideButton).toHaveFocus();
 
-    await user.type(within(dialog).getByLabelText("Search HS code"), "4202.32");
+    await user.click(overrideButton);
+    const reopened = await screen.findByRole("dialog", { name: "Override classification code" });
+    const select = within(reopened).getByLabelText("HS code") as HTMLSelectElement;
+    expect(select.value).toBe("3926.90");
+    expect(
+      within(reopened)
+        .getAllByRole("option")
+        .map((option) => option.getAttribute("value")),
+    ).toContain("4202.32");
+
+    await user.click(within(reopened).getByRole("button", { name: "Confirm override" }));
+    expect(screen.getByText("Choose a different code than the current one.")).toBeInTheDocument();
+
+    await user.selectOptions(select, "4202.32");
     await user.type(
-      within(dialog).getByLabelText("Reason for override"),
+      within(reopened).getByLabelText("Reason for override"),
       "Better matches the product's principal use.",
     );
-    await user.click(within(dialog).getByRole("button", { name: "Confirm override" }));
+    await user.click(within(reopened).getByRole("button", { name: "Confirm override" }));
 
     const toast = await screen.findByRole("status", {}, { timeout: 5000 });
     expect(toast).toHaveTextContent("Classification overridden");

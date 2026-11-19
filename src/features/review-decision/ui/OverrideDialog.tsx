@@ -1,8 +1,8 @@
-import { useId, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { FormEvent, RefObject } from "react";
 import { Modal } from "@/shared/ui/Modal";
 import { FormField } from "@/shared/ui/FormField";
-import { TextInput } from "@/shared/ui/TextInput";
+import { Select } from "@/shared/ui/Select";
 import { Textarea } from "@/shared/ui/Textarea";
 import { Button } from "@/shared/ui/Button";
 import type { Candidate } from "@/entities/classification";
@@ -32,15 +32,14 @@ export function OverrideDialog({
   returnFocusRef,
   onOverridden,
 }: OverrideDialogProps) {
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState(currentCode);
   const [reason, setReason] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | undefined>(undefined);
-  const datalistId = useId();
   const formSchema = useMemo(() => createOverrideFormSchema(currentCode), [currentCode]);
 
   function resetForm() {
-    setCode("");
+    setCode(currentCode);
     setReason("");
     setFieldErrors({});
     setSubmitError(undefined);
@@ -85,22 +84,19 @@ export function OverrideDialog({
       returnFocusRef={returnFocusRef}
     >
       <form onSubmit={handleSubmit} noValidate className={styles.form}>
-        <FormField label="Search HS code" error={fieldErrors.code}>
-          <TextInput
-            list={datalistId}
+        <FormField label="HS code" error={fieldErrors.code}>
+          <Select
             value={code}
             onChange={(event) => setCode(event.target.value)}
-            placeholder="Type a code or product"
             disabled={decision.isPending}
-          />
+          >
+            {candidates.map((candidate) => (
+              <option key={candidate.code} value={candidate.code}>
+                {candidate.code} — {candidate.title}
+              </option>
+            ))}
+          </Select>
         </FormField>
-        <datalist id={datalistId}>
-          {candidates.map((candidate) => (
-            <option key={candidate.code} value={candidate.code}>
-              {candidate.title}
-            </option>
-          ))}
-        </datalist>
 
         <FormField label="Reason for override" error={fieldErrors.reason}>
           <Textarea

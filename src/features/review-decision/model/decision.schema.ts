@@ -20,7 +20,7 @@ export function createOverrideFormSchema(currentCode: string) {
       .trim()
       .min(1, "Enter a valid HS code, for example 8518.30.")
       .refine(isValidHsCode, "Enter a valid HS code, for example 8518.30.")
-      .refine((value) => value !== currentCode, "Choose a code other than the current one."),
+      .refine((value) => value !== currentCode, "Choose a different code than the current one."),
     reason: z.string().trim().min(1, "Enter a reason for the override."),
   });
 }

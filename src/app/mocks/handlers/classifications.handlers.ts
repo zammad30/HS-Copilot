@@ -149,7 +149,7 @@ export const classificationsHandlers = [
         }
         const previousCode = effectiveCode(item);
         if (code === previousCode) {
-          return validationError({ code: "Choose a code other than the current one." });
+          return validationError({ code: "Choose a different code than the current one." });
         }
         if (!reason) {
           return validationError({ reason: "Enter a reason for the override." });

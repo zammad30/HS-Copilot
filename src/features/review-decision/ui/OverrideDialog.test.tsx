@@ -45,30 +45,43 @@ function renderDialog(props?: Parameters<typeof Harness>[0]) {
 }
 
 describe("OverrideDialog", () => {
-  it("requires a valid, different HS code and a reason", async () => {
+  it("opens pre-selected to the current code, with every candidate code visible as an option", () => {
+    renderDialog();
+    const dialog = screen.getByRole("dialog");
+
+    const select = within(dialog).getByLabelText("HS code") as HTMLSelectElement;
+    expect(select.value).toBe("8518.30");
+    expect(
+      within(dialog).getByRole("option", { name: "8518.30 — Wireless earphones" }),
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).getByRole("option", {
+        name: "8518.22 — Wireless earphones (alternative)",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("choosing the current code shows the inline error without clearing anything", async () => {
     const onOverridden = vi.fn();
     const user = userEvent.setup();
     renderDialog({ onOverridden });
     const dialog = screen.getByRole("dialog");
 
-    await user.click(within(dialog).getByRole("button", { name: "Confirm override" }));
-    expect(screen.getByText("Enter a valid HS code, for example 8518.30.")).toBeInTheDocument();
-    expect(screen.getByText("Enter a reason for the override.")).toBeInTheDocument();
-
-    await user.type(within(dialog).getByLabelText("Search HS code"), "8518.30");
     await user.type(within(dialog).getByLabelText("Reason for override"), "Because");
     await user.click(within(dialog).getByRole("button", { name: "Confirm override" }));
-    expect(screen.getByText("Choose a code other than the current one.")).toBeInTheDocument();
+
+    expect(screen.getByText("Choose a different code than the current one.")).toBeInTheDocument();
+    expect(within(dialog).getByLabelText("Reason for override")).toHaveValue("Because");
     expect(onOverridden).not.toHaveBeenCalled();
   });
 
-  it("submits a valid code and reason and calls onOverridden on success", async () => {
+  it("choosing a different code and submitting a reason calls onOverridden on success", async () => {
     const onOverridden = vi.fn();
     const user = userEvent.setup();
     renderDialog({ onOverridden });
     const dialog = screen.getByRole("dialog");
 
-    await user.type(within(dialog).getByLabelText("Search HS code"), "8518.22");
+    await user.selectOptions(within(dialog).getByLabelText("HS code"), "8518.22");
     await user.type(
       within(dialog).getByLabelText("Reason for override"),
       "Better matches the product's principal use.",
@@ -76,6 +89,17 @@ describe("OverrideDialog", () => {
     await user.click(within(dialog).getByRole("button", { name: "Confirm override" }));
 
     await waitFor(() => expect(onOverridden).toHaveBeenCalledTimes(1), { timeout: 3000 });
+  });
+
+  it("requires a reason even once a different code is chosen", async () => {
+    const user = userEvent.setup();
+    renderDialog();
+    const dialog = screen.getByRole("dialog");
+
+    await user.selectOptions(within(dialog).getByLabelText("HS code"), "8518.22");
+    await user.click(within(dialog).getByRole("button", { name: "Confirm override" }));
+
+    expect(screen.getByText("Enter a reason for the override.")).toBeInTheDocument();
   });
 
   it("cancel closes the dialog and returns focus to the opener", async () => {
