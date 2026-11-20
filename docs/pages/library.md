@@ -21,7 +21,7 @@ Each preparatory commit passes `npm run check` on its own.
 
 ## Design reference
 
-- Figma URL / node: https://www.figma.com/make/v8wpvjs0lOovob7BIzYKzu/HS-Copilot-Classification-Workspace (fileKey `v8wpvjs0lOovob7BIzYKzu`, node `0:1`) — Make file, source only.
+- Figma URL / node: https://www.figma.com/make/v8wpvjs0lOovob7BIzYKzu/HS-Copilot-Classification-Workspace (fileKey `v8wpvjs0lOovob7BIzYKzu`, node `0:1`) - Make file, source only.
 - Screenshots: `design/screens/library.png`, `design/screens/library.mobile.png`. No tablet screenshot.
 - Make source (via `docs/make-export-index.md`): `LibraryScreen` (2421-2458), `ClassificationExplorer` (2163-2321), `FilterDropdown` (2111-2161), `ProductTable` (428-601, row menu and delete flow, same one the Home brief ported).
 - Visuals come only from `design.md` (the export's navy, pill status chips and boxed table card are stale).

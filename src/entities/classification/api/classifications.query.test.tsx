@@ -9,7 +9,7 @@ function wrapper({ children }: { children: ReactNode }) {
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
 
-// Read-only (GET) tests — no mutation here, so no store reset is needed, and
+// Read-only (GET) tests - no mutation here, so no store reset is needed, and
 // this entity-layer test correctly never imports the app-layer mock fixtures.
 describe("useClassifications", () => {
   it("fetches the paginated list, parsed against the contract schema", async () => {

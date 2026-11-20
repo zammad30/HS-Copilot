@@ -8,5 +8,6 @@ export function buildSessionFixture(email: string): Session {
     email,
     workspaceId: "workspace_mock_1",
     workspaceName: "Sample workspace",
+    role: "admin",
   };
 }

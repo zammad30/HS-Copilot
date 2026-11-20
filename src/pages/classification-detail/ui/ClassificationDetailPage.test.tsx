@@ -24,7 +24,7 @@ function renderPage(initialEntry: string) {
   );
 }
 
-describe("ClassificationDetailPage — loading and errors", () => {
+describe("ClassificationDetailPage - loading and errors", () => {
   it("shows a loading skeleton before the data arrives", () => {
     renderPage("/app/classifications/cls_002");
     expect(screen.getByRole("button", { name: "Back" })).toBeInTheDocument();
@@ -58,7 +58,7 @@ describe("ClassificationDetailPage — loading and errors", () => {
   });
 });
 
-describe("ClassificationDetailPage — approve and undo", () => {
+describe("ClassificationDetailPage - approve and undo", () => {
   it("approve shows a success toast with an Undo action, and undo restores the previous status", async () => {
     const user = userEvent.setup();
     renderPage("/app/classifications/cls_008");
@@ -79,7 +79,7 @@ describe("ClassificationDetailPage — approve and undo", () => {
   }, 15000);
 });
 
-describe("ClassificationDetailPage — reject", () => {
+describe("ClassificationDetailPage - reject", () => {
   it("requires a reason, then rejects and shows a success toast; focus returns to Reject on cancel", async () => {
     const user = userEvent.setup();
     renderPage("/app/classifications/cls_011");
@@ -111,7 +111,7 @@ describe("ClassificationDetailPage — reject", () => {
   }, 15000);
 });
 
-describe("ClassificationDetailPage — override", () => {
+describe("ClassificationDetailPage - override", () => {
   it("requires a valid, different code and a reason, then overrides and shows both status indicators", async () => {
     const user = userEvent.setup();
     renderPage("/app/classifications/cls_013");
@@ -154,7 +154,7 @@ describe("ClassificationDetailPage — override", () => {
   }, 15000);
 });
 
-describe("ClassificationDetailPage — ask for more information", () => {
+describe("ClassificationDetailPage - ask for more information", () => {
   it("requires an assignee, then sends the request and shows a success toast", async () => {
     const user = userEvent.setup();
     renderPage("/app/classifications/cls_002");
@@ -181,7 +181,7 @@ describe("ClassificationDetailPage — ask for more information", () => {
   }, 15000);
 });
 
-describe("ClassificationDetailPage — audit trail drawer", () => {
+describe("ClassificationDetailPage - audit trail drawer", () => {
   it("opens the drawer and returns focus to the Audit trail button on close", async () => {
     const user = userEvent.setup();
     renderPage("/app/classifications/cls_003");
@@ -202,7 +202,7 @@ describe("ClassificationDetailPage — audit trail drawer", () => {
   });
 });
 
-describe("ClassificationDetailPage — citation chips", () => {
+describe("ClassificationDetailPage - citation chips", () => {
   it("opens the drawer with the full evidence for a chip whose item the evidence grid below doesn't show", async () => {
     // cls_003 has two tariff_text evidence items ("HTS heading 9617" and "GRI
     // 1 and 6") plus a ruling; the Evidence grid below only renders the first

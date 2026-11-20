@@ -12,7 +12,7 @@ export interface DrawerProps {
   /**
    * Radix only restores focus to a `Dialog.Trigger` on close. This Drawer is
    * always opened by an external button (the hamburger), so without this the
-   * trigger never gets focus back — pass its ref to restore it manually.
+   * trigger never gets focus back - pass its ref to restore it manually.
    */
   returnFocusRef?: RefObject<HTMLElement | null>;
   children: ReactNode;

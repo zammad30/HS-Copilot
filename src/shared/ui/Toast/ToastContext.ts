@@ -11,7 +11,7 @@ export interface ShowToastOptions {
   tone?: ToastTone;
   action?: ToastAction;
   /** Called only when the toast dismisses by its own timer, never when the
-   * action is clicked — lets a caller "flush" work (e.g. a deferred delete)
+   * action is clicked - lets a caller "flush" work (e.g. a deferred delete)
    * that the action would otherwise cancel. */
   onTimeout?: () => void;
 }

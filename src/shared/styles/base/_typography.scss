@@ -1,4 +1,4 @@
-// Type scale — "Modern Enterprise" reset Phase A (2026-11-13). Headings use
+// Type scale - "Modern Enterprise" reset Phase A (2026-11-13). Headings use
 // Inter at 600, same family as body/UI text. design.md itself is not updated
 // yet. Utility class names are unchanged so component code keeps working;
 // see the task report for what was removed from .text-display/.text-eyebrow.
@@ -47,7 +47,7 @@ p {
 }
 
 // Utility classes for styles without a dedicated semantic element.
-// Display is for the landing hero only — do not use it for in-app headings.
+// Display is for the landing hero only - do not use it for in-app headings.
 .text-display {
   font-family: var(--font-heading);
   font-size: 40px;

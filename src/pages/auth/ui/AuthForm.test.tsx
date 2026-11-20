@@ -28,7 +28,7 @@ function renderAuthForm(mode: AuthMode, setSession = vi.fn()) {
   };
 }
 
-describe("AuthForm — sign-in", () => {
+describe("AuthForm - sign-in", () => {
   it("shows inline validation errors and does not submit", async () => {
     const user = userEvent.setup();
     renderAuthForm("sign-in");
@@ -73,7 +73,7 @@ describe("AuthForm — sign-in", () => {
   });
 });
 
-describe("AuthForm — sign-up", () => {
+describe("AuthForm - sign-up", () => {
   it("requires a full name", async () => {
     const user = userEvent.setup();
     renderAuthForm("sign-up");
@@ -96,7 +96,7 @@ describe("AuthForm — sign-up", () => {
   });
 });
 
-describe("AuthForm — reset", () => {
+describe("AuthForm - reset", () => {
   it("shows the in-place confirmation without revealing whether the account exists", async () => {
     const user = userEvent.setup();
     renderAuthForm("reset");

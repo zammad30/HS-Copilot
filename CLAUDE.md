@@ -15,7 +15,7 @@ HS Copilot helps importers and customs brokers classify products into HS tariff 
 ## 2. Fixed stack
 
 - React + TypeScript (strict) + Vite
-- React Router (data router, lazy-loaded routes) via the `react-router` package (not `react-router-dom` — v7+ merged DOM bindings into the main package; import `createBrowserRouter`/`RouterProvider`/etc. from `react-router`)
+- React Router (data router, lazy-loaded routes) via the `react-router` package (not `react-router-dom` - v7+ merged DOM bindings into the main package; import `createBrowserRouter`/`RouterProvider`/etc. from `react-router`)
 - TanStack Query for all server state
 - SCSS Modules (`sass`) for all styling; design tokens are CSS custom properties
 - zod for runtime validation at the API boundary; types are inferred from schemas
@@ -85,6 +85,7 @@ Layers, top to bottom: `app > pages > widgets > features > entities > shared`.
 - Props types: `NameProps`. Booleans: `isX` / `hasX`. Event props `onX`, handlers `handleX`.
 - Tests: `Name.test.tsx` beside the file. SCSS: `Name.module.scss`. CSS variables: `--kebab-case`.
 - Route paths come from `shared/config/routes.ts`. No hard-coded paths in components.
+- Never use the em dash anywhere (UI copy, docs, code comments, test names, commit messages); use a plain hyphen with spaces ( - ) or a comma instead.
 
 ## 9. Figma fidelity
 
@@ -92,7 +93,7 @@ Layout and copy come from the page brief and Figma; all visuals (color, font, ra
 
 1. The approved page brief `docs/pages/<page>.md`.
 2. Figma via the Figma MCP, for layout and copy only. File: https://www.figma.com/make/v8wpvjs0lOovob7BIzYKzu/HS-Copilot-Classification-Workspace (fileKey `v8wpvjs0lOovob7BIzYKzu`, node `0:1`). For Figma Make files use the fileKey from the URL and nodeId `0:1` with `get_design_context`. Treat returned code as a reference to port, not code to paste.
-3. `design/screens/<page>-<viewport>.png` and `design/make-export/` for layout and copy only — neither is a visual reference; their colors, fonts, radius and shadows are stale.
+3. `design/screens/<page>-<viewport>.png` and `design/make-export/` for layout and copy only - neither is a visual reference; their colors, fonts, radius and shadows are stale.
 4. design.md for every visual value.
 
 - Port into FSD + SCSS Modules and reuse shared/ui. Do not copy the prototype's single-file structure, plain CSS, timers or static data.
@@ -119,7 +120,7 @@ One page or feature per task. Sequence: `/figma-page <slug>` (brief, no code) ->
 - Never edit `design/` (read-only). Never read `.env`.
 - Never run git write commands (`add`, `commit`, `push`, `pull`, `checkout`, `switch`, `merge`, `rebase`, `reset`, `stash`, `tag`) or the `gh` CLI. Read-only `git status`/`diff`/`log` is allowed. I do all git and GitHub work myself.
 - When a task is done, end with a suggested commit message (Conventional Commits), nothing else git-related.
-- Never run `npm run format` project-wide — it reformats unrelated files. Format only the files you changed: `npx prettier --write <files>`.
+- Never run `npm run format` project-wide - it reformats unrelated files. Format only the files you changed: `npx prettier --write <files>`.
 - Ask before: adding dependencies, creating a new top-level folder or layer-level convention, changing tokens, changing shared component APIs, changing tooling config (vite, tsconfig, eslint, steiger).
 
 ## 13. Commands
@@ -129,7 +130,7 @@ One page or feature per task. Sequence: `/figma-page <slug>` (brief, no code) ->
 ## 14. Performance and quality
 
 - Lazy-load every route with `React.lazy`. Manual chunks only for vendor code, not app code.
-- No runtime CSS-in-JS. No icon-set barrel imports — import only the icons actually used (e.g. `import { Check } from "lucide-react"`, never `import * as Icons`).
+- No runtime CSS-in-JS. No icon-set barrel imports - import only the icons actually used (e.g. `import { Check } from "lucide-react"`, never `import * as Icons`).
 - No new dependencies without asking first.
 - Self-host Inter with `font-display: swap`, max 2 weights.
 - Responsive: mobile-first behavior at the 1000px and 720px breakpoints. No fixed widths. Touch targets >= 40px.

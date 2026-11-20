@@ -16,7 +16,7 @@ Contract note: the decision endpoint `POST /classifications/:id/decision` accept
 
 ## Design reference
 
-- Figma URL / node: https://www.figma.com/make/v8wpvjs0lOovob7BIzYKzu/HS-Copilot-Classification-Workspace (fileKey `v8wpvjs0lOovob7BIzYKzu`, node `0:1`) — Make file, source only.
+- Figma URL / node: https://www.figma.com/make/v8wpvjs0lOovob7BIzYKzu/HS-Copilot-Classification-Workspace (fileKey `v8wpvjs0lOovob7BIzYKzu`, node `0:1`) - Make file, source only.
 - Screenshots: `design/screens/classification-detail.png`, `design/screens/classification-detail.mobile.png`. No tablet screenshot. Note the mobile screenshot shows the prototype's audit panel bleeding behind the page content; that is a prototype bug, not a layout to copy.
 - Make source (via `docs/make-export-index.md`): `ResultScreen` (1572-2051). Also read for context: `ProductTable` delete flow is not used here. The reject/override/ask-info modals are inside `ResultScreen` (1926-2048).
 - Visuals come only from `design.md`. The export's navy accent, uppercase eyebrows, pill chips and red Override button are stale or wrong (see corrections).

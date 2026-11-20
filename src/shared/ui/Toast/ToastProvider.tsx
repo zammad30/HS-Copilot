@@ -21,7 +21,7 @@ interface TimerEntry {
 
 export interface ToastProviderProps {
   children: ReactNode;
-  /** Test-only override — production never passes this, so the real 3000/6000ms
+  /** Test-only override - production never passes this, so the real 3000/6000ms
    * durations are unaffected. Lets tests use real timers with a short wait
    * instead of fake timers (which hang indefinitely with userEvent here). */
   durationMs?: Partial<ToastDurations>;
@@ -92,7 +92,7 @@ export function ToastProvider({ children, durationMs }: ToastProviderProps) {
 
   // A background tab can throttle or freeze setTimeout, so hiding the tab
   // flushes every pending toast's onTimeout immediately rather than risking
-  // it never firing (or firing much later) — see design.md's Toast spec.
+  // it never firing (or firing much later) - see design.md's Toast spec.
   useEffect(() => {
     function handleVisibilityChange() {
       if (document.visibilityState !== "hidden") return;

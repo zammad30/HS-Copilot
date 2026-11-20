@@ -18,4 +18,5 @@ export const MOCK_SESSION: Session = {
   workspaceId: "workspace_mock_1",
   name: "Sam Rivera",
   workspaceName: "Sample workspace",
+  role: "admin",
 };

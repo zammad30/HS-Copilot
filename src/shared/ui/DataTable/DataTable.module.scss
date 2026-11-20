@@ -41,12 +41,11 @@
   height: 48px;
 }
 
+// No visual effect (transparent is the default): status is never shown by row
+// tint, only by the status indicator. Kept so isRowHighlighted stays wired for
+// callers (e.g. ClassificationTable).
 .highlighted {
-  background: var(--amber-tint);
-
-  &:hover {
-    background: var(--amber-tint);
-  }
+  background: transparent;
 }
 
 .rowLink {
@@ -63,4 +62,8 @@
 .actionsCell {
   width: 1%;
   text-align: right;
+}
+
+.caption {
+  @include visually-hidden;
 }

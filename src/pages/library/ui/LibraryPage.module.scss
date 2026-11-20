@@ -18,6 +18,16 @@
   }
 }
 
+.clearFilters {
+  margin-left: auto;
+  flex-shrink: 0;
+
+  @include respond-below($bp-mobile) {
+    margin-left: 0;
+    align-self: flex-start;
+  }
+}
+
 .search {
   width: 320px;
   flex-shrink: 0;

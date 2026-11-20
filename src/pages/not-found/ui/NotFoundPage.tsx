@@ -6,7 +6,7 @@ import { routes } from "@/shared/config";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
 import styles from "./NotFoundPage.module.scss";
 
-// This is a client-side route match, not a server response — the browser still
+// This is a client-side route match, not a server response - the browser still
 // receives an HTTP 200 for the document shell; there is no real 404 status to send.
 export function NotFoundPage() {
   useDocumentTitle("Page not found | HS Copilot");

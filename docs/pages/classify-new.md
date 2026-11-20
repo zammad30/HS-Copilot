@@ -9,7 +9,7 @@ Contract note: the decision endpoint (`POST /classifications/:id/decision`) take
 
 ## Design reference
 
-- Figma URL / node: https://www.figma.com/make/v8wpvjs0lOovob7BIzYKzu/HS-Copilot-Classification-Workspace (fileKey `v8wpvjs0lOovob7BIzYKzu`, node `0:1`) — Make file, source only. Not re-queried; the frozen export and screenshots below are the layout and copy reference.
+- Figma URL / node: https://www.figma.com/make/v8wpvjs0lOovob7BIzYKzu/HS-Copilot-Classification-Workspace (fileKey `v8wpvjs0lOovob7BIzYKzu`, node `0:1`) - Make file, source only. Not re-queried; the frozen export and screenshots below are the layout and copy reference.
 - Screenshots: `design/screens/classify-new.png` (desktop), `design/screens/classify-new.mobile.png`. No tablet screenshot exists.
 - Make source (via `docs/make-export-index.md`): `NewClassification` (1446-1567). Also read for context: `AppShell` is already built.
 - Visuals (color, font, radius, shadow) come only from `design.md`. The export and screenshots show a navy accent, uppercase eyebrows and boxed cards that are stale.
@@ -42,10 +42,10 @@ Describe one product in plain language, start an AI research run, watch its prog
 - Button: "Research HS codes". While submitting: same label with the Button loading state.
 - Progress card empty state: "The agent’s research steps will appear here."
 - Steps (titles from the export; details come from the run data, copy shown is what the mock supplies):
-  1. "Extract product attributes" — detail: the submitted description.
-  2. "Search tariff headings" — "Compared candidate headings based on material, construction, and use"
-  3. "Apply heading notes" — active: "Reviewing chapter and explanatory notes"; paused: "Paused for a clarifying detail"
-  4. "Rank candidates" — waiting: "Waiting"
+  1. "Extract product attributes" - detail: the submitted description.
+  2. "Search tariff headings" - "Compared candidate headings based on material, construction, and use"
+  3. "Apply heading notes" - active: "Reviewing chapter and explanatory notes"; paused: "Paused for a clarifying detail"
+  4. "Rank candidates" - waiting: "Waiting"
 - Clarifying block: label "Clarifying question" (icon `AlertCircle`), question text from data (mock: "Is the product’s principal function fully described above?"), options from data (mock: "Yes / The description covers its primary use", "No / The product has another important function", "I’m not sure / Continue with lower confidence").
 - New copy (not in the export, needed for states; flagged as questions `CN-5`, `CN-6`):
   - Description required error: "Enter a product description."
@@ -64,7 +64,7 @@ Describe one product in plain language, start an AI research run, watch its prog
 | Description, material, use | `FormField` + `Textarea` / `TextInput` | Existing |
 | Country | `FormField` + `Select` (native) | Existing |
 | Submit button | `Button` (primary, `icon`, `loading`) | Existing |
-| Progress empty state | `EmptyState` (icon `FileSearch`, one line, no action — `action` is optional in the component) | Existing |
+| Progress empty state | `EmptyState` (icon `FileSearch`, one line, no action - `action` is optional in the component) | Existing |
 | Progress load failure | `ErrorState` | **New** (planned in inventory; see below) `{ title, description?, onRetry, retryLabel? }`. Built once for all three pages; if Home already built it, reuse. |
 | Steps list | `AgentSteps` | **New, page-local** (`pages/classify-new/ui`). Presentational: `steps: { id, title, detail, state }[]`. Not a widget yet: only this page uses it. Promote to `widgets/agent-progress` if `/try` ever reuses it. |
 | Clarifying question | `ClarifyingQuestion` | **New, page-local**: `{ text, options: {label, hint}[], isPending, error?, onAnswer(index) }` |

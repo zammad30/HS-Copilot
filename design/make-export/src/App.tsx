@@ -2095,9 +2095,9 @@ function UploadScreen({ go }: { go: (screen: Screen) => void }) {
             </div>
           ))}
           <SelectField label="Jurisdiction">
-            <option>United States — HTS</option>
-            <option>European Union — CN</option>
-            <option>United Kingdom — UKGT</option>
+            <option>United States - HTS</option>
+            <option>European Union - CN</option>
+            <option>United Kingdom - UKGT</option>
           </SelectField>
           <Button onClick={() => go("batch")} disabled={!uploaded}>
             Start batch classification
@@ -2551,9 +2551,9 @@ function SettingsScreen({ showToast }: { showToast: ShowToast }) {
               </div>
               <TextInput label="Workspace name" defaultValue="Northwind Imports" />
               <SelectField label="Default jurisdiction">
-                <option>United States — HTS</option>
-                <option>European Union — CN</option>
-                <option>United Kingdom — UKGT</option>
+                <option>United States - HTS</option>
+                <option>European Union - CN</option>
+                <option>United Kingdom - UKGT</option>
               </SelectField>
               <SelectField label="Default reviewer">
                 <option>Alex Morgan</option>
@@ -2741,11 +2741,11 @@ function SettingsScreen({ showToast }: { showToast: ShowToast }) {
               <label className="field">
                 <span className="field__label">Selected chapters</span>
                 <select className="multi-select" multiple defaultValue={["30", "84", "85"]}>
-                  <option value="30">30 — Pharmaceutical products</option>
-                  <option value="61">61 — Knitted apparel</option>
-                  <option value="84">84 — Machinery</option>
-                  <option value="85">85 — Electrical equipment</option>
-                  <option value="87">87 — Vehicles</option>
+                  <option value="30">30 - Pharmaceutical products</option>
+                  <option value="61">61 - Knitted apparel</option>
+                  <option value="84">84 - Machinery</option>
+                  <option value="85">85 - Electrical equipment</option>
+                  <option value="87">87 - Vehicles</option>
                 </select>
                 <span className="caption">Hold Ctrl or Command to select multiple chapters.</span>
               </label>

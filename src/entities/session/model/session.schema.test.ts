@@ -26,6 +26,17 @@ describe("sessionSchema", () => {
     expect(result.workspaceName).toBe("Sample workspace");
   });
 
+  it("parses a session with a role", () => {
+    const result = sessionSchema.parse({
+      userId: "user_1",
+      email: "reviewer@hs-copilot.test",
+      workspaceId: "workspace_1",
+      role: "admin",
+    });
+
+    expect(result.role).toBe("admin");
+  });
+
   it("rejects a session missing a required field", () => {
     expect(() =>
       sessionSchema.parse({ email: "reviewer@hs-copilot.test", workspaceId: "workspace_1" }),

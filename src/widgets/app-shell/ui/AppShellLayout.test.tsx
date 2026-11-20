@@ -84,7 +84,7 @@ describe("AppShellLayout", () => {
 
     await user.click(screen.getByRole("button", { name: "Sign out" }));
     expect(signOut).toHaveBeenCalledTimes(1);
-    // The routed child is still "Home page" — AppShellLayout itself never calls
+    // The routed child is still "Home page" - AppShellLayout itself never calls
     // navigate() on sign-out; RequireSession (outside this tree) owns the redirect.
     expect(screen.getByText("Home page")).toBeInTheDocument();
   });

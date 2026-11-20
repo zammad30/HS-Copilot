@@ -22,7 +22,7 @@ import {
 import { routes } from "@/shared/config";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
 import { formatDay, formatTime } from "@/shared/lib/formatDate";
-import { useMembers } from "../api/members.query";
+import { useMembers } from "@/entities/member";
 import { RecommendationCard } from "./RecommendationCard";
 import { ReviewActions } from "./ReviewActions";
 import { CandidateCard } from "./CandidateCard";

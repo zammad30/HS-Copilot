@@ -52,11 +52,11 @@ describe("OverrideDialog", () => {
     const select = within(dialog).getByLabelText("HS code") as HTMLSelectElement;
     expect(select.value).toBe("8518.30");
     expect(
-      within(dialog).getByRole("option", { name: "8518.30 — Wireless earphones" }),
+      within(dialog).getByRole("option", { name: "8518.30 - Wireless earphones" }),
     ).toBeInTheDocument();
     expect(
       within(dialog).getByRole("option", {
-        name: "8518.22 — Wireless earphones (alternative)",
+        name: "8518.22 - Wireless earphones (alternative)",
       }),
     ).toBeInTheDocument();
   });

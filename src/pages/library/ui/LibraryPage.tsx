@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { FolderSearch2, Plus, SearchX } from "lucide-react";
 import { PageHeader } from "@/shared/ui/PageHeader";
@@ -36,11 +36,12 @@ export function LibraryPage() {
 
   const [searchText, setSearchText] = useState(qParam);
   const [syncedQParam, setSyncedQParam] = useState(qParam);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Keep local input in sync when the URL changes from outside (Back/Forward,
   // "Clear filters", or Home's "Review all" link landing with a different q).
   // Adjusted during render, not an effect, per React's "you might not need an
-  // effect" guidance — this is a pure derivation, not a side effect.
+  // effect" guidance - this is a pure derivation, not a side effect.
   if (qParam !== syncedQParam) {
     setSyncedQParam(qParam);
     setSearchText(qParam);
@@ -100,7 +101,12 @@ export function LibraryPage() {
 
   function handleClearFilters() {
     setSearchText("");
-    setSearchParams(new URLSearchParams());
+    const next = new URLSearchParams(searchParams);
+    next.delete("q");
+    next.delete("status");
+    next.delete("page");
+    setSearchParams(next);
+    searchInputRef.current?.focus();
   }
 
   const hasActiveFilters = qParam !== "" || statuses.length > 0;
@@ -111,6 +117,7 @@ export function LibraryPage() {
 
       <div className={styles.controls}>
         <SearchField
+          ref={searchInputRef}
           value={searchText}
           onChange={(event) => setSearchText(event.target.value)}
           aria-label="Search classifications"
@@ -130,6 +137,11 @@ export function LibraryPage() {
             ))}
           </div>
         </fieldset>
+        {hasActiveFilters && (
+          <Button variant="secondary" onClick={handleClearFilters} className={styles.clearFilters}>
+            Clear filters
+          </Button>
+        )}
       </div>
 
       {isError ? (

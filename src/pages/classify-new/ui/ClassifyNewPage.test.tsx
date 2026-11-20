@@ -29,7 +29,7 @@ function renderPage(initialEntry: string) {
   );
 }
 
-describe("ClassifyNewPage — form validation", () => {
+describe("ClassifyNewPage - form validation", () => {
   it("requires a non-empty description, focuses the field, and sends no request", async () => {
     const user = userEvent.setup();
     renderPage("/app/classify/new");
@@ -55,7 +55,7 @@ describe("ClassifyNewPage — form validation", () => {
   });
 });
 
-describe("ClassifyNewPage — prefill", () => {
+describe("ClassifyNewPage - prefill", () => {
   it("initialises the description from ?q= and keeps it editable", async () => {
     const user = userEvent.setup();
     renderPage("/app/classify/new?q=Wireless%20earbuds");
@@ -68,7 +68,7 @@ describe("ClassifyNewPage — prefill", () => {
   });
 });
 
-describe("ClassifyNewPage — run not found", () => {
+describe("ClassifyNewPage - run not found", () => {
   it("shows Run not found for an unknown run id, with a usable form and a Start again link", async () => {
     renderPage("/app/classify/new?run=does-not-exist");
 
@@ -81,7 +81,7 @@ describe("ClassifyNewPage — run not found", () => {
   });
 });
 
-describe("ClassifyNewPage — run lifecycle via MSW", () => {
+describe("ClassifyNewPage - run lifecycle via MSW", () => {
   it("polls through research, answers the clarifying question, and navigates on completion", async () => {
     const user = userEvent.setup();
     renderPage("/app/classify/new");

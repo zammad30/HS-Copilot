@@ -166,9 +166,41 @@ describe("LibraryPage", () => {
 
     expect(screen.getByText("No classifications match these filters.")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Clear filters" }));
+    const clearButtons = screen.getAllByRole("button", { name: "Clear filters" });
+    expect(clearButtons).toHaveLength(2);
+
+    await user.click(clearButtons[clearButtons.length - 1]);
     await waitFor(() => expect(screen.getByTestId("location")).toHaveTextContent("/app/library"));
     expect(screen.getByTestId("location")).not.toHaveTextContent("status=");
+  });
+
+  it("shows the filter-row Clear filters button only when a filter is active", () => {
+    const items = [makeClassification()];
+    mockedUseClassifications.mockReturnValue(
+      queryResult({ data: { items, total: 1, page: 1, pageSize: 10 } }),
+    );
+    renderLibrary();
+    expect(screen.queryByRole("button", { name: "Clear filters" })).not.toBeInTheDocument();
+
+    renderLibrary("/app/library?status=approved");
+    expect(screen.getByRole("button", { name: "Clear filters" })).toBeInTheDocument();
+  });
+
+  it("filter-row Clear filters removes q, status and page, and focuses the search field", async () => {
+    const items = [makeClassification()];
+    mockedUseClassifications.mockReturnValue(
+      queryResult({ data: { items, total: 100, page: 3, pageSize: 10 } }),
+    );
+    const user = userEvent.setup();
+    renderLibrary("/app/library?q=earbuds&status=approved&page=3");
+
+    await user.click(screen.getByRole("button", { name: "Clear filters" }));
+
+    await waitFor(() => expect(screen.getByTestId("location")).toHaveTextContent("/app/library"));
+    expect(screen.getByTestId("location")).not.toHaveTextContent("q=");
+    expect(screen.getByTestId("location")).not.toHaveTextContent("status=");
+    expect(screen.getByTestId("location")).not.toHaveTextContent("page=");
+    expect(screen.getByLabelText("Search classifications")).toHaveFocus();
   });
 
   it("shows an error state with a working Try again", async () => {

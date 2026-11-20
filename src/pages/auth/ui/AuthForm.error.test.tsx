@@ -43,7 +43,7 @@ function renderAuthForm(mode: "sign-in" | "reset") {
   );
 }
 
-describe("AuthForm — mocked mutation failures", () => {
+describe("AuthForm - mocked mutation failures", () => {
   it("shows the error banner, keeps the email and clears the password on a failed sign-in", async () => {
     const user = userEvent.setup();
     renderAuthForm("sign-in");

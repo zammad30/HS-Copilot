@@ -9,6 +9,9 @@ export interface MenuItemConfig {
   icon?: ReactNode;
   onSelect?: () => void;
   href?: string;
+  disabled?: boolean;
+  /** Native tooltip explaining why the item is disabled. */
+  title?: string;
 }
 
 export interface MenuProps {
@@ -33,8 +36,13 @@ export function Menu({ trigger, items, align = "end", header, footer }: MenuProp
           {header && <div className={styles.header}>{header}</div>}
           {items.map((item) =>
             item.href ? (
-              <DropdownMenu.Item key={item.label} asChild className={styles.item}>
-                <Link to={item.href}>
+              <DropdownMenu.Item
+                key={item.label}
+                asChild
+                className={styles.item}
+                disabled={item.disabled}
+              >
+                <Link to={item.href} title={item.title}>
                   {item.icon}
                   <span>{item.label}</span>
                 </Link>
@@ -44,6 +52,8 @@ export function Menu({ trigger, items, align = "end", header, footer }: MenuProp
                 key={item.label}
                 className={clsx(styles.item, styles.itemButton)}
                 onSelect={item.onSelect}
+                disabled={item.disabled}
+                title={item.title}
               >
                 {item.icon}
                 <span>{item.label}</span>

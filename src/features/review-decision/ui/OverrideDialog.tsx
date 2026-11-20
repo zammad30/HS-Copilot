@@ -92,7 +92,7 @@ export function OverrideDialog({
           >
             {candidates.map((candidate) => (
               <option key={candidate.code} value={candidate.code}>
-                {candidate.code} — {candidate.title}
+                {candidate.code} - {candidate.title}
               </option>
             ))}
           </Select>

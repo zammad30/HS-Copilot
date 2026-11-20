@@ -171,7 +171,7 @@ describe("HomePage", () => {
   });
 
   describe("delete with undo", () => {
-    // Real timers with a short duration override — fake timers combined with
+    // Real timers with a short duration override - fake timers combined with
     // userEvent hang indefinitely here (confirmed by running vitest directly:
     // every test using them timed out at the wall-clock 5s limit). Production
     // never passes durationMs, so the real 6s window is unaffected.
@@ -212,7 +212,7 @@ describe("HomePage", () => {
       await user.click(within(dialog).getByRole("button", { name: "Delete" }));
 
       await user.click(await screen.findByRole("button", { name: "Undo" }));
-      // Appears twice once restored — once in the review queue, once in the table.
+      // Appears twice once restored - once in the review queue, once in the table.
       expect(screen.getAllByText("Men's cotton T-shirt").length).toBeGreaterThan(0);
 
       // Give the (cancelled) timer a chance to have fired if it hadn't been

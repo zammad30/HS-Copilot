@@ -7,7 +7,7 @@ const LazyAppShellLayout = lazy(() =>
   import("@/widgets/app-shell").then((m) => ({ default: m.AppShellLayout })),
 );
 
-// No spinner, per design.md's motion rule — this only covers the instant the
+// No spinner, per design.md's motion rule - this only covers the instant the
 // shell's own lazy chunk is loading, separate from HealthGate's cold-start UI.
 function AppShellLayout() {
   return (
@@ -43,6 +43,20 @@ const BatchReviewPage = lazy(() =>
   import("@/pages/batch-review").then((m) => ({ default: m.BatchReviewPage })),
 );
 const LibraryPage = lazy(() => import("@/pages/library").then((m) => ({ default: m.LibraryPage })));
+const LazySettingsLayout = lazy(() =>
+  import("@/pages/settings").then((m) => ({ default: m.SettingsLayout })),
+);
+
+// Same no-spinner rationale as AppShellLayout above - this only covers the
+// settings layout's own lazy chunk load.
+function SettingsLayout() {
+  return (
+    <Suspense fallback={null}>
+      <LazySettingsLayout />
+    </Suspense>
+  );
+}
+
 const SettingsGeneralPage = lazy(() =>
   import("@/pages/settings").then((m) => ({ default: m.SettingsGeneralPage })),
 );
@@ -90,9 +104,14 @@ export const router = createBrowserRouter([
           { path: routes.batchUpload, Component: BatchUploadPage },
           { path: "/app/batches/:id", Component: BatchReviewPage },
           { path: routes.library, Component: LibraryPage },
-          { path: routes.settingsGeneral, Component: SettingsGeneralPage },
-          { path: routes.settingsMembers, Component: SettingsMembersPage },
-          { path: routes.settingsRules, Component: SettingsRulesPage },
+          {
+            Component: SettingsLayout,
+            children: [
+              { path: routes.settingsGeneral, Component: SettingsGeneralPage },
+              { path: routes.settingsMembers, Component: SettingsMembersPage },
+              { path: routes.settingsRules, Component: SettingsRulesPage },
+            ],
+          },
         ],
       },
     ],

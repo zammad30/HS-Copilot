@@ -60,7 +60,7 @@ function renderPage(initialEntry: string) {
   );
 }
 
-describe("ClassifyNewPage — create failure", () => {
+describe("ClassifyNewPage - create failure", () => {
   it("shows an inline error, re-enables the form, and keeps the typed values", async () => {
     const mutate = vi.fn((_body: unknown, options?: MutateOptions<unknown>) =>
       options?.onError?.(new Error("mock create failure")),
@@ -96,7 +96,7 @@ describe("ClassifyNewPage — create failure", () => {
   });
 });
 
-describe("ClassifyNewPage — poll failure", () => {
+describe("ClassifyNewPage - poll failure", () => {
   it("shows ErrorState in the progress card with a working retry", async () => {
     const refetch = vi.fn();
     mockedUseCreate.mockReturnValue({
@@ -124,7 +124,7 @@ describe("ClassifyNewPage — poll failure", () => {
   });
 });
 
-describe("ClassifyNewPage — answer failure", () => {
+describe("ClassifyNewPage - answer failure", () => {
   it("shows an inline error in the question block and re-enables the options", async () => {
     mockedUseCreate.mockReturnValue({
       mutate: vi.fn(),

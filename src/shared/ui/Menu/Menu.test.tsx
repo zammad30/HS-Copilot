@@ -20,8 +20,8 @@ function renderMenu(items: Parameters<typeof Menu>[0]["items"], extra = {}) {
 
 describe("Menu", () => {
   it("opens on Enter and focuses the first item", async () => {
-    // Radix only auto-focuses the first item on a keyboard open — a mouse
-    // open focuses the menu container instead — so open via the keyboard here.
+    // Radix only auto-focuses the first item on a keyboard open - a mouse
+    // open focuses the menu container instead - so open via the keyboard here.
     const user = userEvent.setup();
     renderMenu([{ label: "Account settings", onSelect: vi.fn() }]);
 
@@ -46,7 +46,7 @@ describe("Menu", () => {
   });
 
   it("moves focus between items with the arrow keys", async () => {
-    // Opened via the keyboard for the same reason as above — a mouse open
+    // Opened via the keyboard for the same reason as above - a mouse open
     // wouldn't put focus on "First" to begin with.
     const user = userEvent.setup();
     renderMenu([
@@ -75,6 +75,21 @@ describe("Menu", () => {
 
     expect(screen.queryByRole("menuitem", { name: "Item" })).not.toBeInTheDocument();
     expect(trigger).toHaveFocus();
+  });
+
+  it("does not call onSelect for a disabled item", async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    renderMenu([
+      { label: "Remove", onSelect, disabled: true, title: "You can't remove yourself." },
+    ]);
+
+    await user.click(screen.getByRole("button", { name: "Open menu" }));
+    const item = await screen.findByRole("menuitem", { name: "Remove" });
+    expect(item).toHaveAttribute("title", "You can't remove yourself.");
+    await user.click(item);
+
+    expect(onSelect).not.toHaveBeenCalled();
   });
 
   it("navigates for an href item", async () => {

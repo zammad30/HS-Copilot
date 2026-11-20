@@ -10,7 +10,7 @@ export interface ModalProps {
   /**
    * Radix only restores focus to a `Dialog.Trigger` on close. This Modal is
    * always opened by an external button (a menu item, a page action), so
-   * without this the trigger never gets focus back — pass its ref to
+   * without this the trigger never gets focus back - pass its ref to
    * restore it manually.
    */
   returnFocusRef?: RefObject<HTMLElement | null>;

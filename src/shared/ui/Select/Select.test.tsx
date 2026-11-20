@@ -22,7 +22,7 @@ describe("Select", () => {
     expect(handleChange).toHaveBeenCalled();
   });
 
-  it("is a real native <select> element — no library needed", () => {
+  it("is a real native <select> element - no library needed", () => {
     render(
       <Select value="us" onChange={() => {}} aria-label="Jurisdiction">
         <option value="us">United States</option>

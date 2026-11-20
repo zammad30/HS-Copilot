@@ -1,10 +1,13 @@
 import { z } from "zod";
 
+export const memberRoleSchema = z.enum(["admin", "reviewer", "analyst"]);
+export type MemberRole = z.infer<typeof memberRoleSchema>;
+
 export const memberSchema = z.object({
   id: z.string(),
   name: z.string(),
   email: z.string(),
-  role: z.enum(["admin", "reviewer", "analyst"]),
+  role: memberRoleSchema,
   status: z.enum(["active", "invited"]),
   lastActiveAt: z.string().optional(),
 });

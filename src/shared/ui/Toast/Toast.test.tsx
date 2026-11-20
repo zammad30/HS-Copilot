@@ -5,7 +5,7 @@ import { ToastProvider } from "./ToastProvider";
 import { useToast } from "./useToast";
 
 // Real timers throughout this file: fake timers combined with userEvent hang
-// indefinitely here (confirmed by running vitest directly — every test times
+// indefinitely here (confirmed by running vitest directly - every test times
 // out at the wall-clock 5s limit, even the simplest one with no explicit
 // advanceTimersByTime call), so instead the provider's normal 3000/6000ms
 // durations are overridden down to a few tens of ms for these tests only.
@@ -148,7 +148,7 @@ describe("Toast", () => {
     const toast = screen.getByRole("status");
 
     await user.hover(toast);
-    // Stay hovered well past the default duration — it must not dismiss.
+    // Stay hovered well past the default duration - it must not dismiss.
     await new Promise((resolve) => setTimeout(resolve, SHORT_DURATIONS.default + 100));
     expect(screen.getByRole("status")).toBeInTheDocument();
 

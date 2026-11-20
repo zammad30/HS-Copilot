@@ -46,7 +46,7 @@ function makeClassification(): Classification {
   };
 }
 
-describe("RecommendationCard — citation chips", () => {
+describe("RecommendationCard - citation chips", () => {
   it("renders one chip per evidence item, including a second tariff_text entry that the evidence grid below only shows one of", () => {
     render(<RecommendationCard classification={makeClassification()} onOpenEvidence={vi.fn()} />);
 

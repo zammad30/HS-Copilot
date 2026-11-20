@@ -62,4 +62,19 @@ describe("DataTable", () => {
     renderTable({ renderActions: (row) => <button>{`Actions for ${row.name}`}</button> });
     expect(screen.getByRole("button", { name: "Actions for First product" })).toBeInTheDocument();
   });
+
+  it("renders the first column as a plain cell, not a link, when rowHref is omitted", () => {
+    render(
+      <MemoryRouter>
+        <DataTable columns={COLUMNS} rows={ROWS} getRowKey={(row) => row.id} />
+      </MemoryRouter>,
+    );
+    expect(screen.getByText("First product")).toBeInTheDocument();
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+  });
+
+  it("exposes an accessible name for the table via a visually-hidden caption", () => {
+    renderTable({ caption: "Products" });
+    expect(screen.getByRole("table", { name: "Products" })).toBeInTheDocument();
+  });
 });

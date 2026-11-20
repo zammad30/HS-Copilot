@@ -14,11 +14,17 @@ export interface DataTableProps<T> {
   columns: DataTableColumn<T>[];
   rows: T[];
   getRowKey: (row: T) => string;
-  /** The first column's cell is a real `Link` to this href, not a row-level click/keydown shim. */
-  rowHref: (row: T) => string;
+  /**
+   * The first column's cell is a real `Link` to this href, not a row-level
+   * click/keydown shim. Omit when rows have no detail page (e.g. a members
+   * table) - the first column then renders as a plain cell.
+   */
+  rowHref?: (row: T) => string;
   renderActions?: (row: T) => ReactNode;
   isRowHighlighted?: (row: T) => boolean;
   density?: "default" | "compact";
+  /** Visually-hidden `<caption>` for tables with no visible heading of their own. */
+  caption?: string;
 }
 
 export function DataTable<T>({
@@ -29,10 +35,12 @@ export function DataTable<T>({
   renderActions,
   isRowHighlighted,
   density = "default",
+  caption,
 }: DataTableProps<T>) {
   return (
     <div className={styles.wrap}>
       <table className={clsx(styles.table, density === "compact" && styles.compact)}>
+        {caption && <caption className={styles.caption}>{caption}</caption>}
         <thead>
           <tr>
             {columns.map((column) => (
@@ -51,7 +59,7 @@ export function DataTable<T>({
             >
               {columns.map((column, columnIndex) => (
                 <td key={column.key} className={column.className}>
-                  {columnIndex === 0 ? (
+                  {columnIndex === 0 && rowHref ? (
                     <Link to={rowHref(row)} className={styles.rowLink}>
                       {column.render(row)}
                     </Link>

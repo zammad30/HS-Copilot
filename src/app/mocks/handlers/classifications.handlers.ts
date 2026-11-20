@@ -9,7 +9,7 @@ import {
   getPreviousState,
   setPreviousState,
 } from "../fixtures/classifications.fixtures";
-import { membersFixtures } from "../fixtures/members.fixtures";
+import { membersStore } from "../fixtures/members.fixtures";
 
 interface DecisionRequestBody {
   action?: DecisionAction;
@@ -179,7 +179,7 @@ export const classificationsHandlers = [
         if (!assigneeId) {
           return validationError({ assigneeId: "Select who should follow up." });
         }
-        const assignee = membersFixtures.find((member) => member.id === assigneeId);
+        const assignee = membersStore.find((member) => member.id === assigneeId);
         snapshotBeforeChange();
         item.status = "pending";
         item.updatedAt = now;

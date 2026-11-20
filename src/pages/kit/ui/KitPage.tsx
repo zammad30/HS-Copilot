@@ -127,8 +127,8 @@ export function KitPage() {
       <h2>Select</h2>
       <div style={row}>
         <Select value={jurisdiction} onChange={(event) => setJurisdiction(event.target.value)}>
-          <option value="us">United States — HTS</option>
-          <option value="eu">European Union — CN</option>
+          <option value="us">United States - HTS</option>
+          <option value="eu">European Union - CN</option>
         </Select>
         <Select value="" onChange={() => {}} aria-invalid="true">
           <option value="">Error</option>
@@ -293,6 +293,12 @@ export function KitPage() {
           }
           items={[
             { label: "Account settings", href: "/app/settings/general" },
+            {
+              label: "Remove",
+              onSelect: () => {},
+              disabled: true,
+              title: "You can't remove the last admin.",
+            },
             { label: "Sign out", onSelect: () => {} },
           ]}
           footer="Suggestions are not legal advice."
@@ -362,6 +368,18 @@ export function KitPage() {
                 ]}
               />
             )}
+          />
+        </Card>
+      </div>
+
+      <h2>DataTable (no rowHref - non-navigable rows, with a hidden caption)</h2>
+      <div style={row}>
+        <Card style={{ width: "100%" }}>
+          <DataTable
+            columns={KIT_COLUMNS}
+            rows={KIT_ROWS}
+            getRowKey={(item) => item.id}
+            caption="Sample products"
           />
         </Card>
       </div>

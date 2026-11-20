@@ -56,6 +56,16 @@
   &:focus-visible {
     @include focus-ring;
   }
+
+  &[data-disabled] {
+    color: var(--disabled);
+    cursor: default;
+
+    &:hover,
+    &[data-highlighted] {
+      background: transparent;
+    }
+  }
 }
 
 .itemButton {

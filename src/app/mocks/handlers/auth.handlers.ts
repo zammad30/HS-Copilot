@@ -7,7 +7,7 @@ interface AuthRequestBody {
   email?: unknown;
 }
 
-// Reads only the email — the password is never inspected or echoed back.
+// Reads only the email - the password is never inspected or echoed back.
 async function readEmail(request: Request): Promise<string> {
   const body = (await request
     .clone()
@@ -35,7 +35,7 @@ export const authHandlers = [
 
   http.post(`${env.apiBaseUrl}/auth/reset`, async ({ request }) => {
     await randomLatency();
-    // Always succeeds for any syntactically valid email — never reveals whether an account exists.
+    // Always succeeds for any syntactically valid email - never reveals whether an account exists.
     return forcedErrorResponse(request) ?? HttpResponse.json({ ok: true });
   }),
 
