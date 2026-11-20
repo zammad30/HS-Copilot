@@ -1,6 +1,7 @@
 import type { Batch, BatchStatus } from "@/entities/batch";
-import type { Classification } from "@/entities/classification";
+import { mockNow } from "../support/mockNow";
 import { classificationsStore } from "./classifications.fixtures";
+import type { StoredClassification } from "./classifications.fixtures";
 
 /**
  * Mock-only record: the public `Batch` fields plus `classificationIds`,
@@ -32,7 +33,7 @@ function createBatchesFixture(): BatchFixture[] {
       classified: 1,
       status: "processing",
       jurisdiction: "US_HTS",
-      startedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      startedAt: new Date(mockNow() - 2 * 60 * 60 * 1000).toISOString(),
       classificationIds: [...SEED_CLASSIFICATION_IDS],
     },
   ];
@@ -48,7 +49,7 @@ export function findBatch(id: string): BatchFixture | undefined {
   return batchesStore.find((batch) => batch.id === id);
 }
 
-export function batchClassifications(batch: BatchFixture): Classification[] {
+export function batchClassifications(batch: BatchFixture): StoredClassification[] {
   const ids = new Set(batch.classificationIds);
   return classificationsStore.filter((item) => ids.has(item.id));
 }
@@ -63,12 +64,12 @@ export function createBatch(input: {
   descriptions: string[];
 }): BatchFixture {
   batchSequence += 1;
-  const id = `batch_${Date.now()}_${batchSequence}`;
-  const now = new Date().toISOString();
+  const id = `batch_${mockNow()}_${batchSequence}`;
+  const now = new Date(mockNow()).toISOString();
 
   const classificationIds = input.descriptions.map((description, index) => {
     const classificationId = `cls_batch_${batchSequence}_${index + 1}`;
-    const newClassification: Classification = {
+    const newClassification: StoredClassification = {
       id: classificationId,
       workspaceId: "workspace_mock_1",
       description,

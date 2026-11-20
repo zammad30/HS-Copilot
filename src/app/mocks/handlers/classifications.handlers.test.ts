@@ -1,14 +1,26 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { http, ApiError } from "@/shared/api";
-import type { Classification } from "@/entities/classification";
+import type { Classification, ClassificationListResponse } from "@/entities/classification";
 import { resetClassificationsStore } from "../fixtures/classifications.fixtures";
 import { membersFixtures } from "../fixtures/members.fixtures";
+import { resetPlanStore } from "../fixtures/plans.fixtures";
+import { setMockNow, resetMockNow } from "../support/mockNow";
+
+interface WorkspaceUsageResponse {
+  usage: { classificationsUsed: number };
+}
+
+const SEED_BATCH_ID = "batch_seed_001";
 
 // Exercises the real MSW handlers (registered globally in tests/setup.ts)
 // through the real http client, with no mock of @/shared/api.
 describe("classifications handlers", () => {
   beforeEach(() => {
     resetClassificationsStore();
+  });
+  afterEach(() => {
+    resetPlanStore();
+    resetMockNow();
   });
 
   it("GET /classifications filters by search text across description and code, case-insensitively", async () => {
@@ -204,6 +216,112 @@ describe("classifications handlers", () => {
     await expect(http.delete("/classifications/does-not-exist")).rejects.toMatchObject({
       status: 404,
       code: "not_found",
+    });
+  });
+
+  it("every response shape that returns a Classification carries expiresAt", async () => {
+    const list = await http.get<ClassificationListResponse>("/classifications");
+    expect(typeof list.items[0]?.expiresAt).toBe("string");
+
+    const detail = await http.get<Classification>("/classifications/cls_002");
+    expect(typeof detail.expiresAt).toBe("string");
+
+    const decided = await http.post<Classification>("/classifications/cls_002/decision", {
+      action: "approve",
+    });
+    expect(typeof decided.expiresAt).toBe("string");
+
+    const batchItems = await http.get<ClassificationListResponse>(
+      `/batches/${SEED_BATCH_ID}/items`,
+    );
+    expect(typeof batchItems.items[0]?.expiresAt).toBe("string");
+  });
+
+  it("GET /classifications?expiring=true on Free (30-day retention, 10-day window) returns only the one record within 10 days of expiry", async () => {
+    await http.put("/__mock/plan", { plan: "free" });
+
+    // On Free, records older than 30 days are already expired and hidden;
+    // cls_003 (25 days old) is the only one left inside the 10-day window.
+    const all = await http.get<ClassificationListResponse>("/classifications");
+    expect(all.total).toBe(5);
+
+    const expiring = await http.get<ClassificationListResponse>("/classifications?expiring=true");
+    expect(expiring.total).toBe(1);
+    expect(expiring.items[0]?.id).toBe("cls_003");
+  });
+
+  it("GET /classifications?expiring=true on Team (730-day retention, 30-day window) catches a record once it nears expiry", async () => {
+    // cls_012 is seeded 500 days old; advancing the mock clock 210 days
+    // leaves it 20 days from its 730-day retention limit, inside the window.
+    const now = Date.now();
+    setMockNow(now + 210 * 24 * 60 * 60 * 1000);
+
+    const expiring = await http.get<ClassificationListResponse>("/classifications?expiring=true");
+    expect(expiring.items.map((item) => item.id)).toEqual(["cls_012"]);
+  });
+
+  it("an expired record is hidden from list/detail/decision/delete, and restored after switching the plan back", async () => {
+    await http.put("/__mock/plan", { plan: "free" });
+
+    await expect(http.get("/classifications/cls_012")).rejects.toMatchObject({
+      status: 404,
+      code: "not_found",
+    });
+    await expect(
+      http.post("/classifications/cls_012/decision", { action: "approve" }),
+    ).rejects.toMatchObject({ status: 404, code: "not_found" });
+    await expect(http.delete("/classifications/cls_012")).rejects.toMatchObject({
+      status: 404,
+      code: "not_found",
+    });
+    const hiddenList = await http.get<ClassificationListResponse>("/classifications");
+    expect(hiddenList.items.map((item) => item.id)).not.toContain("cls_012");
+
+    await http.put("/__mock/plan", { plan: "team" });
+
+    const restored = await http.get<Classification>("/classifications/cls_012");
+    expect(restored.id).toBe("cls_012");
+    const restoredList = await http.get<ClassificationListResponse>("/classifications");
+    expect(restoredList.items.map((item) => item.id)).toContain("cls_012");
+  });
+
+  it("POST /classifications increases usage.classificationsUsed by exactly 1", async () => {
+    const before = await http.get<WorkspaceUsageResponse>("/workspace");
+
+    await http.post("/classifications", {
+      description: "Blue widget",
+      attributes: {},
+      jurisdiction: "US_HTS",
+    });
+
+    const after = await http.get<WorkspaceUsageResponse>("/workspace");
+    expect(after.usage.classificationsUsed).toBe(before.usage.classificationsUsed + 1);
+  });
+
+  it("POST /classifications is refused with plan_limit_reached once the plan's classification limit is used", async () => {
+    await http.put("/__mock/plan", { plan: "free" });
+    // Free's limit is 5; usage is seeded at 3, so two more creates reach it.
+    await http.post("/classifications", {
+      description: "First",
+      attributes: {},
+      jurisdiction: "US_HTS",
+    });
+    await http.post("/classifications", {
+      description: "Second",
+      attributes: {},
+      jurisdiction: "US_HTS",
+    });
+
+    await expect(
+      http.post("/classifications", {
+        description: "Third",
+        attributes: {},
+        jurisdiction: "US_HTS",
+      }),
+    ).rejects.toMatchObject({
+      status: 403,
+      code: "plan_limit_reached",
+      details: { reason: "classifications", limit: 5, used: 5 },
     });
   });
 });

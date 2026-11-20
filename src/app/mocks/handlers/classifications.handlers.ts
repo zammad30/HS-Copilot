@@ -12,6 +12,7 @@ import {
 import { membersStore } from "../fixtures/members.fixtures";
 import { applyClassificationListParams } from "../support/classificationQuery";
 import { applyApproveTransition } from "../support/decisionTransitions";
+import { isExpired, isExpiringSoon, withExpiresAt } from "../support/classificationExpiry";
 
 interface DecisionRequestBody {
   action?: DecisionAction;
@@ -56,8 +57,13 @@ export const classificationsHandlers = [
     if (forcedError) return forcedError;
 
     const url = new URL(request.url);
+    const expiringOnly = url.searchParams.get("expiring") === "true";
+
+    let candidates = classificationsStore.filter((item) => !isExpired(item));
+    if (expiringOnly) candidates = candidates.filter((item) => isExpiringSoon(item));
+
     const { items, total, page, pageSize } = applyClassificationListParams(
-      classificationsStore,
+      candidates.map(withExpiresAt),
       url,
     );
 
@@ -71,8 +77,8 @@ export const classificationsHandlers = [
     if (forcedError) return forcedError;
 
     const item = classificationsStore.find((candidate) => candidate.id === params.id);
-    if (!item) return notFound();
-    return HttpResponse.json(item);
+    if (!item || isExpired(item)) return notFound();
+    return HttpResponse.json(withExpiresAt(item));
   }),
 
   http.post(`${env.apiBaseUrl}/classifications/:id/decision`, async ({ request, params }) => {
@@ -83,7 +89,7 @@ export const classificationsHandlers = [
 
     const body = (await request.json().catch(() => ({}))) as DecisionRequestBody;
     const item = classificationsStore.find((candidate) => candidate.id === params.id);
-    if (!item) return notFound();
+    if (!item || isExpired(item)) return notFound();
 
     if (!decisionActionSchema.safeParse(body.action).success) {
       return validationError({ action: "Unsupported decision action." });
@@ -183,7 +189,7 @@ export const classificationsHandlers = [
       }
     }
 
-    return HttpResponse.json(item);
+    return HttpResponse.json(withExpiresAt(item));
   }),
 
   http.delete(`${env.apiBaseUrl}/classifications/:id`, async ({ request, params }) => {
@@ -193,7 +199,7 @@ export const classificationsHandlers = [
     if (forcedError) return forcedError;
 
     const index = classificationsStore.findIndex((candidate) => candidate.id === params.id);
-    if (index === -1) return notFound();
+    if (index === -1 || isExpired(classificationsStore[index])) return notFound();
 
     classificationsStore.splice(index, 1);
     return new HttpResponse(null, { status: 204 });

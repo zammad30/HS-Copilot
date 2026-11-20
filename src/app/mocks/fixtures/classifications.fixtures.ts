@@ -5,9 +5,15 @@ import type {
   Evidence,
   Status,
 } from "@/entities/classification";
+import { mockNow } from "../support/mockNow";
+
+/** The store holds classifications without `expiresAt`: that field is
+ * derived at read time from the current plan's retention, never stored
+ * (see src/app/mocks/support/classificationExpiry.ts). */
+export type StoredClassification = Omit<Classification, "expiresAt">;
 
 function isoHoursAgo(hours: number): string {
-  return new Date(Date.now() - hours * 60 * 60 * 1000).toISOString();
+  return new Date(mockNow() - hours * 60 * 60 * 1000).toISOString();
 }
 
 interface SeedInput {
@@ -53,7 +59,7 @@ const ALTERNATIVE_REASONING: { title: string; body: string }[][] = [
 /** Mirrors the Figma export's `sampleProduct()` factory, filling the full
  * contract shape (candidates/evidence/auditTrail) from a few seed inputs so
  * every record stays internally consistent. */
-function buildClassification(input: SeedInput): Classification {
+function buildClassification(input: SeedInput): StoredClassification {
   const {
     id,
     description,
@@ -209,8 +215,8 @@ const SEEDS: SeedInput[] = [
     status: "approved",
     alternatives: ["6109.90", "6110.20"],
     subject: "Knitted cotton apparel",
-    createdHoursAgo: 30,
-    updatedHoursAgo: 2,
+    createdHoursAgo: 1800,
+    updatedHoursAgo: 1772,
     overridden: true,
     finalCode: "6109.90",
   },
@@ -222,8 +228,8 @@ const SEEDS: SeedInput[] = [
     status: "needs_review",
     alternatives: ["8518.22", "8527.13"],
     subject: "Wireless earphones",
-    createdHoursAgo: 5,
-    updatedHoursAgo: 5,
+    createdHoursAgo: 120,
+    updatedHoursAgo: 120,
   },
   {
     id: "cls_003",
@@ -233,8 +239,8 @@ const SEEDS: SeedInput[] = [
     status: "approved",
     alternatives: ["7323.93", "3924.10"],
     subject: "Vacuum vessels",
-    createdHoursAgo: 26,
-    updatedHoursAgo: 20,
+    createdHoursAgo: 600,
+    updatedHoursAgo: 594,
   },
   {
     id: "cls_004",
@@ -244,8 +250,8 @@ const SEEDS: SeedInput[] = [
     status: "rejected",
     alternatives: ["4202.12", "6307.90"],
     subject: "Travel bags",
-    createdHoursAgo: 50,
-    updatedHoursAgo: 40,
+    createdHoursAgo: 3600,
+    updatedHoursAgo: 3590,
   },
   {
     id: "cls_005",
@@ -255,8 +261,8 @@ const SEEDS: SeedInput[] = [
     status: "pending",
     alternatives: ["6911.10", "6914.90"],
     subject: "Ceramic tableware",
-    createdHoursAgo: 170,
-    updatedHoursAgo: 170,
+    createdHoursAgo: 7920,
+    updatedHoursAgo: 7920,
   },
   {
     id: "cls_006",
@@ -266,8 +272,8 @@ const SEEDS: SeedInput[] = [
     status: "approved",
     alternatives: ["9405.42", "8539.52"],
     subject: "Electric table lamps",
-    createdHoursAgo: 10,
-    updatedHoursAgo: 3,
+    createdHoursAgo: 336,
+    updatedHoursAgo: 329,
   },
   {
     id: "cls_007",
@@ -277,8 +283,8 @@ const SEEDS: SeedInput[] = [
     status: "approved",
     alternatives: ["0901.11", "2101.11"],
     subject: "Roasted coffee",
-    createdHoursAgo: 28,
-    updatedHoursAgo: 24,
+    createdHoursAgo: 1800,
+    updatedHoursAgo: 1796,
     // Edge case: research did not find a comparable past ruling.
     includeRuling: false,
   },
@@ -290,8 +296,8 @@ const SEEDS: SeedInput[] = [
     status: "needs_review",
     alternatives: ["6404.19", "6402.99"],
     subject: "Sports footwear",
-    createdHoursAgo: 168,
-    updatedHoursAgo: 168,
+    createdHoursAgo: 8400,
+    updatedHoursAgo: 8400,
   },
   {
     id: "cls_009",
@@ -301,8 +307,8 @@ const SEEDS: SeedInput[] = [
     status: "pending",
     alternatives: ["9403.20", "4419.90"],
     subject: "Wooden furniture",
-    createdHoursAgo: 172,
-    updatedHoursAgo: 172,
+    createdHoursAgo: 9120,
+    updatedHoursAgo: 9120,
   },
   {
     id: "cls_010",
@@ -312,8 +318,8 @@ const SEEDS: SeedInput[] = [
     status: "approved",
     alternatives: ["8501.72", "8541.42"],
     subject: "Photovoltaic modules",
-    createdHoursAgo: 8,
-    updatedHoursAgo: 1,
+    createdHoursAgo: 216,
+    updatedHoursAgo: 209,
   },
   {
     id: "cls_011",
@@ -323,8 +329,8 @@ const SEEDS: SeedInput[] = [
     status: "needs_review",
     alternatives: ["3923.10", "3926.90"],
     subject: "Plastic household articles",
-    createdHoursAgo: 27,
-    updatedHoursAgo: 27,
+    createdHoursAgo: 960,
+    updatedHoursAgo: 960,
   },
   {
     id: "cls_012",
@@ -334,8 +340,8 @@ const SEEDS: SeedInput[] = [
     status: "pending",
     alternatives: ["6101.10", "6201.20"],
     subject: "Woven wool outerwear",
-    createdHoursAgo: 175,
-    updatedHoursAgo: 175,
+    createdHoursAgo: 12000,
+    updatedHoursAgo: 12000,
   },
   {
     id: "cls_013",
@@ -345,8 +351,8 @@ const SEEDS: SeedInput[] = [
     status: "needs_review",
     alternatives: ["4202.32", "3923.10"],
     subject: "Plastic protective articles",
-    createdHoursAgo: 26,
-    updatedHoursAgo: 26,
+    createdHoursAgo: 960,
+    updatedHoursAgo: 960,
   },
   {
     id: "cls_014",
@@ -357,18 +363,18 @@ const SEEDS: SeedInput[] = [
     // Edge case: research found only one viable candidate.
     alternatives: [],
     subject: "Fixed-blade kitchen knives",
-    createdHoursAgo: 4,
-    updatedHoursAgo: 0.5,
+    createdHoursAgo: 48,
+    updatedHoursAgo: 44.5,
   },
 ];
 
-function createClassificationsFixtures(): Classification[] {
+function createClassificationsFixtures(): StoredClassification[] {
   return SEEDS.map(buildClassification);
 }
 
 /** Mutable, module-scoped store so approve/delete persist across refetches
  * within a session, mirroring how a real backend would behave. */
-export const classificationsStore: Classification[] = createClassificationsFixtures();
+export const classificationsStore: StoredClassification[] = createClassificationsFixtures();
 
 interface DecisionSnapshot {
   status: Status;

@@ -1,6 +1,7 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { http, ApiError } from "@/shared/api";
 import { membersFixtures, resetMembersStore } from "../fixtures/members.fixtures";
+import { resetPlanStore } from "../fixtures/plans.fixtures";
 
 interface MemberResponse {
   id: string;
@@ -13,6 +14,9 @@ interface MemberResponse {
 describe("members handlers", () => {
   beforeEach(() => {
     resetMembersStore();
+  });
+  afterEach(() => {
+    resetPlanStore();
   });
 
   it("GET /members returns the workspace member list", async () => {
@@ -80,5 +84,48 @@ describe("members handlers", () => {
     await http.delete("/members/member_mina_patel");
     const list = await http.get<{ items: MemberResponse[] }>("/members");
     expect(list.items.map((member) => member.id)).not.toContain("member_mina_patel");
+  });
+
+  it("POST /members/invite is refused with plan_limit_reached reason 'seats' once seats are full", async () => {
+    // Solo's seat limit is 1; the 4 seeded members already exceed it.
+    await http.put("/__mock/plan", { plan: "solo" });
+
+    await expect(
+      http.post("/members/invite", {
+        email: "new.reviewer@northwind.example",
+        role: "reviewer",
+      }),
+    ).rejects.toMatchObject({
+      status: 403,
+      code: "plan_limit_reached",
+      details: { reason: "seats", limit: 1 },
+    });
+  });
+
+  it("Team with 5 of 5 seats: resending an invite for an existing member returns 200", async () => {
+    // Team's seat limit is 5; the 4 seeded members plus one more invite
+    // fills it exactly.
+    const filled = await http.post<MemberResponse>("/members/invite", {
+      email: "fifth.seat@northwind.example",
+      role: "analyst",
+    });
+    expect(filled.status).toBe("invited");
+
+    const resent = await http.post<MemberResponse>("/members/invite", {
+      email: "fifth.seat@northwind.example",
+      role: "analyst",
+    });
+    expect(resent.id).toBe(filled.id);
+  });
+
+  it("resending an invite for an existing member succeeds even when seats are full", async () => {
+    await http.put("/__mock/plan", { plan: "solo" });
+
+    const resent = await http.post<MemberResponse>("/members/invite", {
+      email: membersFixtures[1].email,
+      role: membersFixtures[1].role,
+    });
+
+    expect(resent.id).toBe(membersFixtures[1].id);
   });
 });

@@ -1,4 +1,5 @@
-import type { AuditEntry, Classification } from "@/entities/classification";
+import type { AuditEntry } from "@/entities/classification";
+import type { StoredClassification } from "../fixtures/classifications.fixtures";
 
 /**
  * Applies the `approve` decision transition in place, per
@@ -7,7 +8,7 @@ import type { AuditEntry, Classification } from "@/entities/classification";
  * exact same audit entry shape for an approval.
  */
 export function applyApproveTransition(
-  item: Classification,
+  item: StoredClassification,
   code: string | undefined,
   actorName: string,
 ): AuditEntry {

@@ -44,6 +44,7 @@ const VALID_CLASSIFICATION = {
   createdAt: "2026-11-01T00:00:00.000Z",
   updatedAt: "2026-11-01T00:00:00.000Z",
   createdBy: "reviewer@hs-copilot.test",
+  expiresAt: "2027-11-01T00:00:00.000Z",
 };
 
 describe("classificationSchema", () => {
@@ -71,6 +72,12 @@ describe("classificationSchema", () => {
     const withoutCode: Record<string, unknown> = { ...VALID_CLASSIFICATION };
     delete withoutCode.suggestedCode;
     expect(() => classificationSchema.parse(withoutCode)).toThrow();
+  });
+
+  it("rejects a classification with no expiresAt", () => {
+    const withoutExpiresAt: Record<string, unknown> = { ...VALID_CLASSIFICATION };
+    delete withoutExpiresAt.expiresAt;
+    expect(() => classificationSchema.parse(withoutExpiresAt)).toThrow();
   });
 
   it("parses without a model field", () => {

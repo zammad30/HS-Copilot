@@ -4,7 +4,6 @@ export interface ReviewRulesFixture {
   requireClarifyingQuestion: boolean;
   requireOverrideReason: boolean;
   secondApproverChapters: string[];
-  auditRetention: "12m" | "24m" | "7y" | "indefinite";
 }
 
 function createReviewRulesFixture(): ReviewRulesFixture {
@@ -16,7 +15,6 @@ function createReviewRulesFixture(): ReviewRulesFixture {
     // Off by default - the five chapters below are the available options
     // (SG-8), not a preselected list.
     secondApproverChapters: [],
-    auditRetention: "24m",
   };
 }
 

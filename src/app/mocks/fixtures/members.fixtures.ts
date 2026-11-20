@@ -1,3 +1,5 @@
+import { mockNow } from "../support/mockNow";
+
 export interface MemberFixture {
   id: string;
   name: string;
@@ -8,7 +10,7 @@ export interface MemberFixture {
 }
 
 function isoHoursAgo(hours: number): string {
-  return new Date(Date.now() - hours * 60 * 60 * 1000).toISOString();
+  return new Date(mockNow() - hours * 60 * 60 * 1000).toISOString();
 }
 
 /** Mirrors the Figma export's members seed (App.tsx 2497-2519), given stable ids and roles,

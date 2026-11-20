@@ -1,6 +1,8 @@
 import type { AgentRun, AgentRunQuestion, AgentRunStep } from "@/pages/classify-new";
 import type { AuditEntry, Candidate, Classification, Evidence } from "@/entities/classification";
+import { mockNow } from "../support/mockNow";
 import { classificationsStore } from "./classifications.fixtures";
+import type { StoredClassification } from "./classifications.fixtures";
 
 const QUESTION: AgentRunQuestion = {
   text: "Is the product’s principal function fully described above?",
@@ -147,12 +149,12 @@ export interface CreateClassificationInput {
 
 /** Builds the full record up front (same shape the detail page reads), so
  * only the audit trail and timestamp change once the run completes. */
-function buildClassification(id: string, input: CreateClassificationInput): Classification {
+function buildClassification(id: string, input: CreateClassificationInput): StoredClassification {
   const { description, attributes, jurisdiction } = input;
   const heuristic = pickHeuristic(attributes.material, attributes.intendedUse);
   const chapter = heuristic.code.split(".")[0];
   const subject = heuristic.subject;
-  const now = new Date().toISOString();
+  const now = new Date(mockNow()).toISOString();
 
   const candidates: Candidate[] = [
     {
@@ -264,7 +266,7 @@ function completeClassification(classificationId: string): void {
   const item = classificationsStore.find((candidate) => candidate.id === classificationId);
   if (!item) return;
 
-  const now = new Date().toISOString();
+  const now = new Date(mockNow()).toISOString();
   item.updatedAt = now;
   item.auditTrail.push({
     id: `${item.id}_audit_${item.auditTrail.length + 1}`,

@@ -3,6 +3,8 @@ import { env } from "@/shared/config";
 import { applyForceDelay, forcedErrorResponse, randomLatency } from "../scenarios";
 import { membersStore } from "../fixtures/members.fixtures";
 import type { MemberFixture } from "../fixtures/members.fixtures";
+import { currentPlanLimits, seatsUsed } from "../fixtures/plans.fixtures";
+import { planLimitReachedResponse } from "../support/planLimitError";
 
 interface InviteRequestBody {
   email?: unknown;
@@ -83,11 +85,19 @@ export const membersHandlers = [
     }
 
     // Idempotent: re-inviting (or "Resend invite" on) an existing email
-    // returns that member unchanged instead of creating a duplicate.
+    // returns that member unchanged instead of creating a duplicate - checked
+    // before the seats limit, so resending never counts against seats even
+    // when the plan is full.
     const existing = membersStore.find(
       (member) => member.email.toLowerCase() === email.toLowerCase(),
     );
     if (existing) return HttpResponse.json(existing);
+
+    const limits = currentPlanLimits();
+    const used = seatsUsed();
+    if (used >= limits.seats) {
+      return planLimitReachedResponse("seats", limits.seats, used);
+    }
 
     const newMember: MemberFixture = {
       id: `member_${Date.now()}`,

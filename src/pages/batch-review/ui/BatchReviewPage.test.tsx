@@ -99,6 +99,7 @@ function makeClassification(overrides: Partial<Classification> = {}): Classifica
     createdAt: "2026-11-01T00:00:00.000Z",
     updatedAt: "2026-11-01T00:00:00.000Z",
     createdBy: "reviewer@hs-copilot.test",
+    expiresAt: "2027-11-01T00:00:00.000Z",
     ...overrides,
   };
 }
@@ -111,7 +112,6 @@ function reviewRulesResult(highlightAbove = 90): ReviewRulesQueryResult {
       requireClarifyingQuestion: true,
       requireOverrideReason: true,
       secondApproverChapters: [],
-      auditRetention: "24m",
     },
     isPending: false,
   } as unknown as ReviewRulesQueryResult;

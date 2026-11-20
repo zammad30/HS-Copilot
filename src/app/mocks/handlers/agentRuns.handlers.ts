@@ -8,6 +8,8 @@ import {
   createRunAndClassification,
   pollAgentRun,
 } from "../fixtures/agentRuns.fixtures";
+import { currentPlanLimits, usageStore } from "../fixtures/plans.fixtures";
+import { planLimitReachedResponse } from "../support/planLimitError";
 
 const createClassificationBodySchema = z.object({
   description: z.string().trim().min(1).max(1000),
@@ -47,7 +49,17 @@ export const agentRunsHandlers = [
       return validationError("Enter a product description.");
     }
 
+    const limits = currentPlanLimits();
+    if (usageStore.classificationsUsed >= limits.classifications.limit) {
+      return planLimitReachedResponse(
+        "classifications",
+        limits.classifications.limit,
+        usageStore.classificationsUsed,
+      );
+    }
+
     const { classificationId, agentRunId } = createRunAndClassification(result.data);
+    usageStore.classificationsUsed += 1;
     return HttpResponse.json({ classificationId, agentRunId });
   }),
 

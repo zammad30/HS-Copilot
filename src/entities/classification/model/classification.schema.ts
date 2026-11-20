@@ -70,6 +70,7 @@ export const classificationSchema = z.object({
   updatedAt: z.string(),
   createdBy: z.string(),
   model: modelInfoSchema.optional(),
+  expiresAt: z.string(),
 });
 export type Classification = z.infer<typeof classificationSchema>;
 

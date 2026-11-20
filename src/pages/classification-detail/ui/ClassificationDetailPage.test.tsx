@@ -169,7 +169,12 @@ describe("ClassificationDetailPage - ask for more information", () => {
     await user.click(within(dialog).getByRole("button", { name: "Send request" }));
     expect(screen.getByText("Select who should follow up.")).toBeInTheDocument();
 
-    const assignees = await within(dialog).findAllByRole("option");
+    // The select always has a placeholder option even before members load,
+    // so wait for the real assignee options, not just any option.
+    await waitFor(() => {
+      expect(within(dialog).getAllByRole("option").length).toBeGreaterThan(1);
+    });
+    const assignees = within(dialog).getAllByRole("option");
     await user.selectOptions(
       within(dialog).getByLabelText("Assign to"),
       assignees[1].getAttribute("value") ?? "",

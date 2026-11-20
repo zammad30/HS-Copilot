@@ -43,6 +43,7 @@ function makeClassification(): Classification {
     createdAt: "2026-11-01T00:00:00.000Z",
     updatedAt: "2026-11-01T00:00:00.000Z",
     createdBy: "reviewer@hs-copilot.test",
+    expiresAt: "2027-11-01T00:00:00.000Z",
   };
 }
 

@@ -8,6 +8,7 @@ import { meHandlers } from "./handlers/me.handlers";
 import { workspaceHandlers } from "./handlers/workspace.handlers";
 import { reviewRulesHandlers } from "./handlers/reviewRules.handlers";
 import { batchesHandlers } from "./handlers/batches.handlers";
+import { plansHandlers } from "./handlers/plans.handlers";
 
 export const server = setupServer(
   ...healthHandlers,
@@ -19,4 +20,5 @@ export const server = setupServer(
   ...workspaceHandlers,
   ...reviewRulesHandlers,
   ...batchesHandlers,
+  ...plansHandlers,
 );

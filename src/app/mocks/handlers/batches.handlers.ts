@@ -12,6 +12,9 @@ import {
 } from "../fixtures/batch.fixtures";
 import { applyClassificationListParams } from "../support/classificationQuery";
 import { applyApproveTransition } from "../support/decisionTransitions";
+import { isExpired, withExpiresAt } from "../support/classificationExpiry";
+import { currentPlanLimits, usageStore } from "../fixtures/plans.fixtures";
+import { planLimitReachedResponse } from "../support/planLimitError";
 
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 
@@ -91,11 +94,38 @@ export const batchesHandlers = [
       return validationError({ file: "This file has no usable rows." });
     }
 
+    const limits = currentPlanLimits();
+    const rows = descriptions.length;
+
+    if (limits.batch.uploadsPerMonth === 0 && limits.batch.maxRows === 0) {
+      return planLimitReachedResponse("feature", 0, usageStore.batchUploadsUsed);
+    }
+    if (usageStore.batchUploadsUsed >= limits.batch.uploadsPerMonth) {
+      return planLimitReachedResponse(
+        "batch_uploads",
+        limits.batch.uploadsPerMonth,
+        usageStore.batchUploadsUsed,
+      );
+    }
+    if (rows > limits.batch.maxRows) {
+      return planLimitReachedResponse("batch_rows", limits.batch.maxRows, rows);
+    }
+    const remainingClassifications = limits.classifications.limit - usageStore.classificationsUsed;
+    if (rows > remainingClassifications) {
+      return planLimitReachedResponse(
+        "classifications",
+        limits.classifications.limit,
+        usageStore.classificationsUsed,
+      );
+    }
+
     const batch = createBatch({
       filename: uploadedFile.name,
       jurisdiction: jurisdictionResult.data,
       descriptions,
     });
+    usageStore.batchUploadsUsed += 1;
+    usageStore.classificationsUsed += rows;
 
     return HttpResponse.json(toPublicBatch(batch), { status: 201 });
   }),
@@ -123,10 +153,10 @@ export const batchesHandlers = [
     if (!batch) return notFound();
 
     const url = new URL(request.url);
-    const { items, total, page, pageSize } = applyClassificationListParams(
-      batchClassifications(batch),
-      url,
-    );
+    const visible = batchClassifications(batch)
+      .filter((item) => !isExpired(item))
+      .map(withExpiresAt);
+    const { items, total, page, pageSize } = applyClassificationListParams(visible, url);
 
     return HttpResponse.json({ items, total, page, pageSize });
   }),

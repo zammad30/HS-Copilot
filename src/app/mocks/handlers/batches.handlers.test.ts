@@ -1,11 +1,16 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { ApiError, http } from "@/shared/api";
 import type { Batch } from "@/entities/batch";
 import type { Classification, ClassificationListResponse } from "@/entities/classification";
 import { resetBatchesStore } from "../fixtures/batch.fixtures";
 import { resetClassificationsStore } from "../fixtures/classifications.fixtures";
+import { resetPlanStore, resetUsageStore } from "../fixtures/plans.fixtures";
 
 const SEED_BATCH_ID = "batch_seed_001";
+
+interface WorkspaceUsageResponse {
+  usage: { classificationsUsed: number; batchUploadsUsed: number };
+}
 
 function buildUploadForm(csv: string, jurisdiction = "US_HTS"): FormData {
   const form = new FormData();
@@ -15,10 +20,19 @@ function buildUploadForm(csv: string, jurisdiction = "US_HTS"): FormData {
   return form;
 }
 
+function csvWithRows(rowCount: number): string {
+  const rows = Array.from({ length: rowCount }, (_, index) => `Widget ${index + 1}`);
+  return `description\n${rows.join("\n")}`;
+}
+
 describe("batches handlers", () => {
   beforeEach(() => {
     resetBatchesStore();
     resetClassificationsStore();
+  });
+  afterEach(() => {
+    resetPlanStore();
+    resetUsageStore();
   });
 
   it("GET /batches/:id returns the seeded batch", async () => {
@@ -103,5 +117,82 @@ describe("batches handlers", () => {
     const bigContent = `description\n${"x".repeat(6 * 1024 * 1024)}`;
     const form = buildUploadForm(bigContent);
     await expect(http.post("/batches", form)).rejects.toThrow(ApiError);
+  });
+
+  it("POST /batches on Free is refused with plan_limit_reached reason 'feature' (no batch access at all)", async () => {
+    await http.put("/__mock/plan", { plan: "free" });
+    const form = buildUploadForm(csvWithRows(2));
+
+    await expect(http.post("/batches", form)).rejects.toMatchObject({
+      status: 403,
+      code: "plan_limit_reached",
+      details: { reason: "feature" },
+    });
+  });
+
+  it("POST /batches on Solo with 51 rows is refused with reason 'batch_rows' (limit is 50)", async () => {
+    await http.put("/__mock/plan", { plan: "solo" });
+    const form = buildUploadForm(csvWithRows(51));
+
+    await expect(http.post("/batches", form)).rejects.toMatchObject({
+      status: 403,
+      code: "plan_limit_reached",
+      details: { reason: "batch_rows", limit: 50 },
+    });
+  });
+
+  it("POST /batches is refused with reason 'batch_uploads' once this period's uploads are used up", async () => {
+    await http.put("/__mock/plan", { plan: "solo" });
+    // Solo allows 3 uploads/month; three small uploads use it up.
+    for (let i = 0; i < 3; i += 1) {
+      await http.post("/batches", buildUploadForm(csvWithRows(2)));
+    }
+
+    await expect(http.post("/batches", buildUploadForm(csvWithRows(2)))).rejects.toMatchObject({
+      status: 403,
+      code: "plan_limit_reached",
+      details: { reason: "batch_uploads", limit: 3, used: 3 },
+    });
+  });
+
+  it("POST /batches is refused with reason 'classifications' when rows exceed the remaining classification quota", async () => {
+    await http.put("/__mock/plan", { plan: "solo" });
+    // Solo allows 50 rows/upload and 3 uploads/month, with usage seeded at 3
+    // of a 100 classification limit. Two 48-row uploads (uploadsUsed -> 2,
+    // under the 3/month cap; well under 50 rows each) raise usage to
+    // 3 + 96 = 99, leaving only 1 classification of quota.
+    for (let i = 0; i < 2; i += 1) {
+      await http.post("/batches", buildUploadForm(csvWithRows(48)));
+    }
+    const usage = await http.get<WorkspaceUsageResponse>("/workspace");
+    expect(usage.usage.classificationsUsed).toBe(99);
+
+    // A 2-row upload stays under maxRows and under the 3/month upload cap,
+    // but its rows exceed the single classification of quota left.
+    await expect(http.post("/batches", buildUploadForm(csvWithRows(2)))).rejects.toMatchObject({
+      status: 403,
+      code: "plan_limit_reached",
+      details: { reason: "classifications", limit: 100, used: 99 },
+    });
+  });
+
+  it("a successful upload increases both batchUploadsUsed (by 1) and classificationsUsed (by the row count)", async () => {
+    const before = await http.get<WorkspaceUsageResponse>("/workspace");
+
+    await http.post("/batches", buildUploadForm(csvWithRows(4)));
+
+    const after = await http.get<WorkspaceUsageResponse>("/workspace");
+    expect(after.usage.batchUploadsUsed).toBe(before.usage.batchUploadsUsed + 1);
+    expect(after.usage.classificationsUsed).toBe(before.usage.classificationsUsed + 4);
+  });
+
+  it("a refused upload changes neither batchUploadsUsed nor classificationsUsed", async () => {
+    await http.put("/__mock/plan", { plan: "free" });
+    const before = await http.get<WorkspaceUsageResponse>("/workspace");
+
+    await expect(http.post("/batches", buildUploadForm(csvWithRows(2)))).rejects.toThrow(ApiError);
+
+    const after = await http.get<WorkspaceUsageResponse>("/workspace");
+    expect(after.usage).toEqual(before.usage);
   });
 });

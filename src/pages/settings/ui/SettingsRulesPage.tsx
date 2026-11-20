@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Card } from "@/shared/ui/Card";
 import { FormField } from "@/shared/ui/FormField";
 import { TextInput } from "@/shared/ui/TextInput";
-import { Select } from "@/shared/ui/Select";
 import { Checkbox } from "@/shared/ui/Checkbox";
 import { Toggle } from "@/shared/ui/Toggle";
 import { Button } from "@/shared/ui/Button";
@@ -12,12 +11,8 @@ import { Banner } from "@/shared/ui/Banner";
 import { useToast } from "@/shared/ui/Toast";
 import { useSession } from "@/entities/session";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
-import {
-  useReviewRules,
-  AUDIT_RETENTION_OPTIONS,
-  SECOND_APPROVER_CHAPTER_OPTIONS,
-} from "@/entities/review-rule";
-import type { AuditRetention, ReviewRules } from "@/entities/review-rule";
+import { useReviewRules, SECOND_APPROVER_CHAPTER_OPTIONS } from "@/entities/review-rule";
+import type { ReviewRules } from "@/entities/review-rule";
 import { useUpdateReviewRules } from "../api/reviewRules.mutation";
 import styles from "./SettingsRulesPage.module.scss";
 
@@ -43,7 +38,6 @@ export function SettingsRulesPage() {
   const [requireOverrideReason, setRequireOverrideReason] = useState(true);
   const [secondApproverEnabled, setSecondApproverEnabled] = useState(false);
   const [secondApproverChapters, setSecondApproverChapters] = useState<string[]>([]);
-  const [auditRetention, setAuditRetention] = useState<AuditRetention>("24m");
   const [errors, setErrors] = useState<{ highlightAbove?: string; requireReviewBelow?: string }>(
     {},
   );
@@ -56,7 +50,6 @@ export function SettingsRulesPage() {
     setRequireOverrideReason(rules.requireOverrideReason);
     setSecondApproverEnabled(rules.secondApproverChapters.length > 0);
     setSecondApproverChapters(rules.secondApproverChapters);
-    setAuditRetention(rules.auditRetention);
   }
 
   // Re-baseline the form when fresh data arrives: the first load, or after a
@@ -72,7 +65,6 @@ export function SettingsRulesPage() {
       Number(requireReviewBelow) !== baseline.requireReviewBelow ||
       requireClarifyingQuestion !== baseline.requireClarifyingQuestion ||
       requireOverrideReason !== baseline.requireOverrideReason ||
-      auditRetention !== baseline.auditRetention ||
       !arraysEqual(effectiveChapters, baseline.secondApproverChapters)),
   );
 
@@ -96,7 +88,6 @@ export function SettingsRulesPage() {
         requireClarifyingQuestion,
         requireOverrideReason,
         secondApproverChapters: effectiveChapters,
-        auditRetention,
       },
       {
         onSuccess: (updated) => {
@@ -204,20 +195,6 @@ export function SettingsRulesPage() {
               </div>
               <p className={styles.hint}>Choose the chapters that need a second approver.</p>
             </fieldset>
-
-            <FormField label="Keep audit trail for">
-              <Select
-                value={auditRetention}
-                onChange={(event) => setAuditRetention(event.target.value as AuditRetention)}
-                disabled={controlsDisabled}
-              >
-                {AUDIT_RETENTION_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </Select>
-            </FormField>
 
             <div className={styles.actions}>
               <Button
