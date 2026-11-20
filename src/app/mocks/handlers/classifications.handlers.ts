@@ -10,6 +10,8 @@ import {
   setPreviousState,
 } from "../fixtures/classifications.fixtures";
 import { membersStore } from "../fixtures/members.fixtures";
+import { applyClassificationListParams } from "../support/classificationQuery";
+import { applyApproveTransition } from "../support/decisionTransitions";
 
 interface DecisionRequestBody {
   action?: DecisionAction;
@@ -54,32 +56,12 @@ export const classificationsHandlers = [
     if (forcedError) return forcedError;
 
     const url = new URL(request.url);
-    const statusParam = url.searchParams.get("status");
-    const statusFilter = statusParam ? statusParam.split(",") : null;
-    const searchParam = url.searchParams.get("search")?.trim().toLowerCase() || null;
-    const page = Number(url.searchParams.get("page") ?? "1");
-    const pageSize = Number(url.searchParams.get("pageSize") ?? "50");
-
-    let filtered = statusFilter
-      ? classificationsStore.filter((item) => statusFilter.includes(item.status))
-      : classificationsStore;
-    if (searchParam) {
-      filtered = filtered.filter(
-        (item) =>
-          item.description.toLowerCase().includes(searchParam) ||
-          item.suggestedCode.toLowerCase().includes(searchParam) ||
-          (item.finalCode?.toLowerCase().includes(searchParam) ?? false),
-      );
-    }
-    // Only sort supported so far: most-recently-updated first, the only
-    // ordering any current consumer (Home, Library) asks for.
-    const sorted = [...filtered].sort(
-      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+    const { items, total, page, pageSize } = applyClassificationListParams(
+      classificationsStore,
+      url,
     );
-    const start = (page - 1) * pageSize;
-    const items = sorted.slice(start, start + pageSize);
 
-    return HttpResponse.json({ items, total: filtered.length, page, pageSize });
+    return HttpResponse.json({ items, total, page, pageSize });
   }),
 
   http.get(`${env.apiBaseUrl}/classifications/:id`, async ({ request, params }) => {
@@ -124,13 +106,8 @@ export const classificationsHandlers = [
 
     switch (body.action) {
       case "approve": {
-        const code = body.code?.trim() || item.suggestedCode;
         snapshotBeforeChange();
-        item.status = "approved";
-        item.finalCode = code;
-        item.overridden = false;
-        item.updatedAt = now;
-        item.auditTrail.push(nextAuditEntry("approved", `${actorName} approved ${code}.`));
+        applyApproveTransition(item, body.code, actorName);
         break;
       }
 

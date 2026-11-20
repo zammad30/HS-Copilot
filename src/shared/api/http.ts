@@ -34,13 +34,22 @@ interface ErrorPayload {
 }
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  // FormData (multipart uploads) is sent as-is: the browser sets its own
+  // Content-Type with the multipart boundary, so JSON headers/stringify
+  // would break it.
+  const isFormData = options.body instanceof FormData;
   const response = await fetch(`${env.apiBaseUrl}${path}`, {
     method: options.method ?? "GET",
     headers: {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...authHeaderProvider(),
     },
-    body: options.body === undefined ? undefined : JSON.stringify(options.body),
+    body:
+      options.body === undefined
+        ? undefined
+        : isFormData
+          ? (options.body as FormData)
+          : JSON.stringify(options.body),
     signal: options.signal,
   });
 

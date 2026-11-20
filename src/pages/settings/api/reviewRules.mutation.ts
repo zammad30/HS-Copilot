@@ -1,8 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { http, parseResponse } from "@/shared/api";
-import { reviewRulesSchema } from "../model/reviewRules.schema";
-import type { ReviewRules } from "../model/reviewRules.schema";
-import { reviewRulesKeys } from "./reviewRules.keys";
+import { reviewRulesSchema, reviewRulesKeys } from "@/entities/review-rule";
+import type { ReviewRules } from "@/entities/review-rule";
 
 export function useUpdateReviewRules() {
   const queryClient = useQueryClient();

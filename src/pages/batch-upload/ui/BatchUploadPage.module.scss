@@ -1,0 +1,79 @@
+@use "@/shared/styles/abstracts" as *;
+
+.grid {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+
+  @include respond-below($bp-tablet) {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+}
+
+.uploadCard,
+.mappingCard {
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.dropzone {
+  border: 1.5px dashed var(--line-strong);
+  border-radius: var(--radius);
+  padding: var(--space-4) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-1);
+}
+
+.dropzoneIcon {
+  color: var(--subtle);
+}
+
+.hiddenInput {
+  @include visually-hidden;
+}
+
+.dropzoneLabel {
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.hiddenInput:focus-visible ~ .dropzoneLabel {
+  @include focus-ring;
+}
+
+.helper {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.fileSummary {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.fileHint {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.fileError {
+  color: var(--red);
+  font-size: 13px;
+}
+
+.templateLink {
+  align-self: flex-start;
+}
+
+.mappingCaption {
+  color: var(--muted);
+  font-size: 13px;
+}

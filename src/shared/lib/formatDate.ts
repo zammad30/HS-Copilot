@@ -45,3 +45,27 @@ export function formatUpdatedDay(iso: string, now: Date = new Date()): string {
   if (diff === 1) return "Yesterday";
   return shortDateFormatter.format(date);
 }
+
+/**
+ * `2 hours ago`, `today at 9:14 AM`, `yesterday at 9:14 AM`, or `on Nov 12`,
+ * for a "Started {relative time}" style description. Pairs with a leading
+ * "Started " (or similar) at the call site, so this returns the suffix only.
+ */
+const RELATIVE_HOURS_THRESHOLD = 6;
+
+export function formatRelativeStart(iso: string, now: Date = new Date()): string {
+  const date = new Date(iso);
+  const minutesAgo = Math.round((now.getTime() - date.getTime()) / (60 * 1000));
+
+  if (minutesAgo < 1) return "just now";
+  if (minutesAgo < 60) return `${minutesAgo} minute${minutesAgo === 1 ? "" : "s"} ago`;
+
+  const hoursAgo = Math.round(minutesAgo / 60);
+  const diff = daysBetween(date, now);
+  if (diff === 0 && hoursAgo < RELATIVE_HOURS_THRESHOLD) {
+    return `${hoursAgo} hour${hoursAgo === 1 ? "" : "s"} ago`;
+  }
+  if (diff === 0) return `today at ${timeFormatter.format(date)}`;
+  if (diff === 1) return `yesterday at ${timeFormatter.format(date)}`;
+  return `on ${shortDateFormatter.format(date)}`;
+}

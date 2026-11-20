@@ -12,13 +12,13 @@ import { Banner } from "@/shared/ui/Banner";
 import { useToast } from "@/shared/ui/Toast";
 import { useSession } from "@/entities/session";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
-import { useReviewRules } from "../api/reviewRules.query";
-import { useUpdateReviewRules } from "../api/reviewRules.mutation";
 import {
+  useReviewRules,
   AUDIT_RETENTION_OPTIONS,
   SECOND_APPROVER_CHAPTER_OPTIONS,
-} from "../model/reviewRules.schema";
-import type { AuditRetention, ReviewRules } from "../model/reviewRules.schema";
+} from "@/entities/review-rule";
+import type { AuditRetention, ReviewRules } from "@/entities/review-rule";
+import { useUpdateReviewRules } from "../api/reviewRules.mutation";
 import styles from "./SettingsRulesPage.module.scss";
 
 function arraysEqual(a: string[], b: string[]): boolean {
