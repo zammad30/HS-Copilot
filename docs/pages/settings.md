@@ -44,7 +44,6 @@ A page-local two-column layout (`pages/settings/ui/SettingsLayout.tsx`), not a w
 - Two `TextInput`s side by side (`type="number"`): "Highlight for approval above (%)" (`highlightAbove`), "Require review below (%)" (`requireReviewBelow`).
 - Three `Toggle`s: "Require a clarifying question" (`requireClarifyingQuestion`), "Require a written reason for overrides" (`requireOverrideReason`), "Require a second approver for selected chapters" (gates the chapters field below).
 - A chapters fieldset (`secondApproverChapters`): one `Checkbox` per chapter inside a native `<fieldset>`/`<legend>` (no new component - see Components), disabled when the second-approver toggle is off.
-- `Select` "Keep audit trail for" (`auditRetention`: 12m / 24m / 7y / indefinite).
 - `Button` "Save changes" (disabled while pending or clean) + `Button` "Discard" (secondary, replaces the export's "Reset to defaults" - SR-1 decided: discard reverts the form to the last-saved server values, it does not reset to hardcoded factory defaults, since "defaults" has no meaning once real values exist).
 
 ## Exact copy
@@ -57,7 +56,7 @@ A page-local two-column layout (`pages/settings/ui/SettingsLayout.tsx`), not a w
 - Row menu: "Resend invite", "Remove".
 - Invite modal: title "Invite member", "Email", placeholder "name@company.com", "Role", "Cancel", "Send invite".
 - Remove modal: title "Remove member?", body `"{name} will lose access to this workspace."`, "Cancel", "Remove".
-- Review rules: "Review rules", "Set thresholds and safeguards for classification decisions.", "Highlight for approval above (%)", "Require review below (%)", "Require a clarifying question" / "Ask when key product facts are missing.", "Require a written reason for overrides" / "Reviewers must document why they changed the suggestion.", "Require a second approver for selected chapters" / "Adds a second review step for the chapters selected below.", "Selected chapters", "Choose the chapters that need a second approver.", "Keep audit trail for", "Save changes", "Discard".
+- Review rules: "Review rules", "Set thresholds and safeguards for classification decisions.", "Highlight for approval above (%)", "Require review below (%)", "Require a clarifying question" / "Ask when key product facts are missing.", "Require a written reason for overrides" / "Reviewers must document why they changed the suggestion.", "Require a second approver for selected chapters" / "Adds a second review step for the chapters selected below.", "Selected chapters", "Choose the chapters that need a second approver.", "Save changes", "Discard".
 - Toasts: "Settings saved", "Review rules saved", "Invitation sent", "Invitation sent again", "Member removed" (with Undo), "Role updated".
 - Validation errors: "Enter a value from 0 to 100." (threshold fields), "Enter a valid email address." (invite).
 - Permission guard text (role restriction, see States): "Only admins can manage members." / "Only admins can change review rules."
@@ -120,7 +119,7 @@ A page-local two-column layout (`pages/settings/ui/SettingsLayout.tsx`), not a w
 - `src/app/mocks/handlers/members.handlers.ts`: one in-memory store (module-level array, reset per test setup) shared by `GET /members`, `POST /members/invite`, `PATCH /members/:id`, `DELETE /members/:id` - so Settings' own writes are visible on refetch without a page reload, and the store also backs the existing `GET /members` consumer in `classification-detail`. Enforce server-side: reject (422) removing/demoting the last admin or removing yourself, matching `docs/api-contract.md`'s business rule.
 - `src/app/mocks/handlers/reviewRules.handlers.ts`: `GET`/`PUT /review-rules`, single in-memory record.
 - `src/app/mocks/handlers/workspace.handlers.ts` (new, pending SG-3): `GET`/`PATCH /workspace`.
-- Fixtures: three members ported from the export's Alex/Mina/Jordan (translated to the real `Member` shape - `id`, `lastActiveAt` as real relative-computed timestamps rather than the export's literal "Now"/"2 hours ago"/"Yesterday" strings), one review-rules record matching the export's defaults (90/80/true/true/false/["30","84","85"]/"24m" → mapped to the contract's `auditRetention` enum), one workspace record (`{ name: "Northwind Imports", defaultJurisdiction: "US_HTS" }`).
+- Fixtures: three members ported from the export's Alex/Mina/Jordan (translated to the real `Member` shape - `id`, `lastActiveAt` as real relative-computed timestamps rather than the export's literal "Now"/"2 hours ago"/"Yesterday" strings), one review-rules record matching the export's defaults (90/80/true/true/false/["30","84","85"]), one workspace record (`{ name: "Northwind Imports", defaultJurisdiction: "US_HTS" }`).
 - Latency 300-700 ms; `forceError`/`forceDelay` on every new handler, per the existing scenario mechanism.
 
 ## States
