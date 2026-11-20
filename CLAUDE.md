@@ -118,7 +118,8 @@ One page or feature per task. Sequence: `/figma-page <slug>` (brief, no code) ->
 - Do only what was asked. No refactors, renames, dependency changes, config changes or design changes outside the request. If you see something worth changing, propose it and wait.
 - Before editing, list the files you will create or modify. Do not touch unrelated files.
 - Never edit `design/` (read-only). Never read `.env`.
-- Never run git write commands (`add`, `commit`, `push`, `pull`, `checkout`, `switch`, `merge`, `rebase`, `reset`, `stash`, `tag`) or the `gh` CLI. Read-only `git status`/`diff`/`log` is allowed. I do all git and GitHub work myself.
+- Never run git write commands (`add`, `commit`, `push`, `pull`, `checkout`, `switch`, `merge`, `rebase`, `reset`, `stash`, `tag`, `mv`, `rm`, `restore`, `clean`, `cherry-pick`, `revert`) or the `gh` CLI, in any form, wrapped or unwrapped. Read-only `git status`/`diff`/`log` is allowed. I do all git and GitHub work myself.
+- If this rule is ever breached (a git write command or `gh` call runs, by any means), report it to me immediately. Never respond to a breach by running more git commands.
 - When a task is done, end with a suggested commit message (Conventional Commits), nothing else git-related.
 - Never run `npm run format` project-wide - it reformats unrelated files. Format only the files you changed: `npx prettier --write <files>`.
 - Ask before: adding dependencies, creating a new top-level folder or layer-level convention, changing tokens, changing shared component APIs, changing tooling config (vite, tsconfig, eslint, steiger).

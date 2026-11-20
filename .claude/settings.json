@@ -26,7 +26,32 @@
       "Bash(git rebase *)",
       "Bash(git reset *)",
       "Bash(git stash *)",
-      "Bash(gh *)"
+      "Bash(git tag *)",
+      "Bash(git mv *)",
+      "Bash(git rm *)",
+      "Bash(git restore *)",
+      "Bash(git clean *)",
+      "Bash(git cherry-pick *)",
+      "Bash(git revert *)",
+      "Bash(gh *)",
+      "Bash(*git commit*)",
+      "Bash(*git add*)",
+      "Bash(*git push*)",
+      "Bash(*git pull*)",
+      "Bash(*git checkout*)",
+      "Bash(*git switch*)",
+      "Bash(*git merge*)",
+      "Bash(*git rebase*)",
+      "Bash(*git reset*)",
+      "Bash(*git stash*)",
+      "Bash(*git tag*)",
+      "Bash(*git mv*)",
+      "Bash(*git rm*)",
+      "Bash(*git restore*)",
+      "Bash(*git clean*)",
+      "Bash(*git cherry-pick*)",
+      "Bash(*git revert*)",
+      "Bash(*gh *)"
     ]
   }
 }
