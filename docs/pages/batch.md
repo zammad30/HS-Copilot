@@ -1,7 +1,7 @@
 # Page brief: Batch upload + Batch review
 
-Status: draft
-Route: `/app/batches/new` (upload), `/app/batches/:id` (review) | FSD slice: `pages/batch-upload` (new), `pages/batch-review` (new), plus `entities/batch` (new, shared by both), `shared/lib/parseCsv` (new), reuses `widgets/classification-table`, `entities/review-rules` (from `docs/pages/settings.md`)
+Status: approved
+Route: `/app/batches/new` (upload), `/app/batches/:id` (review) | FSD slice: `pages/batch-upload` (new), `pages/batch-review` (new), plus `entities/batch` (new, shared by both), `shared/lib/parseCsv` (new), reuses `widgets/classification-table`, `entities/review-rule` (promoted from `pages/settings` in this task - see BR-6)
 
 ## Design reference
 
@@ -22,13 +22,13 @@ Batch upload: import a CSV of products, map its columns, and start classifying a
 2. Two-column grid (DEFAULT: same 7/5-style split as Home's review-queue/quick-add grid, collapsing to one column at `$bp-tablet` - the export's `upload-grid` has no documented ratio, so this follows the established pattern rather than inventing a new one; BU-1 open question if a different split is intended):
    - **Upload card**: a real dropzone (`<label>`/`<button>` wrapping a visually-hidden `<input type="file" accept=".csv">`), drag-and-drop plus a visible "Choose file" `Button`, both reachable by keyboard (the file input itself is the focusable, operable control - Enter/Space on a focused label-button opens the OS file picker, same as a native file input always does). Below it, a secondary "Download template" link-button (icon `Download`) that downloads a static sample CSV (see Data).
    - **Mapping card**: eyebrow "Step 2", H2 "Map columns", caption `"{mapped} of {required} required"` (derived from how many required fields currently have a column selected, not a hardcoded "3 of 3"). One row per required field - "Product description", "SKU / reference" (required), "Material" (optional, no asterisk) - each a native `Select` populated with the file's actual detected headers, auto-matched when a header's name is an obvious match (case-insensitive exact or substring match against each field's known aliases, e.g. "description"/"product" for Product description). `Select` "Jurisdiction" (US_HTS/EU_CN/UK_UKGT). `Button` "Start batch classification", disabled until a file is uploaded and every required field is mapped.
-3. Parse errors (bad file type, over size/row limits, unparseable CSV) render inline under the dropzone, not as a toast (the user needs to fix the file before anything else is possible).
+3. Parse errors (bad file type, over size/row limits, unparseable CSV) render inline under the dropzone, not as a toast (the user needs to fix the file before anything else is possible). **BU-2 resolved**: once the description column is mapped, each row's description must be non-empty and at most 1000 characters; empty rows are skipped and counted ("N empty rows skipped"), and a row exceeding 1000 characters produces a clear inline error naming the row number ("Row 42 is too long (max 1000 characters)."), rather than blocking on the whole file.
 
 ### Batch review (`/app/batches/:id`)
 
 1. `PageHeader`: eyebrow "Batch review", title = the batch's `filename` (without extension, DEFAULT - BR-1 open question if the full filename with extension is preferred), description `"{total} products · {jurisdiction label} · Started {relative time}"` (e.g. "Started 2 hours ago" / "Started today at 9:14 AM" - using the existing `formatDate`-style helper, not a hardcoded string), action `Button` "Upload batch" (secondary, icon `Upload`) → `routes.batchUpload`.
-2. **Progress banner** (replaces the export's fake throttle banner - see Prototype corrections): shows while `status !== "complete"`. `Banner` (amber) with an icon, `"{classified} of {total} classified"` and the batch's real `status` label ("Processing" / "Throttled" / "Paused"), a "Pause"/"Resume" text-button (calls `POST /batches/:id/pause` or `/resume`), no dismiss (DEFAULT: BR-2 open question - the export's banner is dismissible; this brief defaults to non-dismissible while processing, since it is live status, not a one-time notice, reappearing would be confusing, and `design.md`'s Banner spec allows but does not require dismissible).
-3. **Bulk-approve action**: `Button` (approve variant, icon `Check`) `"Approve {count} above {threshold}%"`, where `threshold` comes from `entities/review-rules`'s `highlightAbove` (default 90 if the query hasn't resolved yet, per the task's decided fallback) and `count` is derived from the batch's own classifications, not the export's always-fresh-array filter. Disabled when `count === 0`.
+2. **Progress banner** (replaces the export's fake throttle banner - see Prototype corrections): shows while `status !== "complete"`. `Banner` (amber) with an icon, `"{classified} of {total} classified"` and the batch's real `status` label ("Processing" / "Throttled" / "Paused"), a "Pause"/"Resume" text-button (calls `POST /batches/:id/pause` or `/resume`). **BR-2 resolved**: the banner is not dismissible while processing (`status !== "complete"`); once `status === "complete"` it becomes dismissible, since at that point it is a one-time notice rather than live status.
+3. **Bulk-approve action**: `Button` (approve variant, icon `Check`) `"Approve {count} above {threshold}%"`, where `threshold` comes from `entities/review-rule`'s `highlightAbove` (default 90 if the query hasn't resolved yet, per the task's decided fallback) and `count` is derived from the batch's own classifications, not the export's always-fresh-array filter. Disabled when `count === 0`.
 4. The table: `widgets/classification-table` (same widget Home and Library use), fed this batch's classifications, compact density (matching the export's `compact` prop on `ClassificationExplorer`/`ProductTable`), with search + status filter controls exactly as Library's brief already specified (`SearchField` + a `<fieldset>` of status `Checkbox`es, no `FilterDropdown`, no confidence filter this task - same `LB-2`/`LB-3` reasoning Library already settled, reused here rather than re-decided). Pagination via the shared `Pagination` component.
 5. Confirm `Modal` for bulk-approve: title `"Approve {count} classifications?"`, description `"This approves {count} classifications with confidence of {threshold}% or higher. Each decision is logged."`, Cancel / `"Approve {count}"`.
 
@@ -36,7 +36,7 @@ Batch upload: import a CSV of products, map its columns, and start classifying a
 
 - Upload: "Batch upload", "Import product data", "Upload a CSV and map your columns before classification begins.", dropzone idle text "Drop a CSV here, or choose a file", dropzone helper "CSV up to 5 MB · Up to 500 rows per file" (CLAUDE.md-decided limits, not the export's "10 MB"), "Download template".
 - Mapping: "Step 2", "Map columns", `"{mapped} of {required} required"`, field labels "Product description", "SKU / reference", "Material", "Jurisdiction", "Start batch classification".
-- Parse error copy (examples, exact wording TBD at implementation - BU-2): "This file is larger than 5 MB.", "This file has more than 500 rows.", "Choose a CSV file.", "We couldn't read this file. Check it's a valid CSV and try again."
+- Parse error copy (examples, exact wording TBD at implementation - BU-2): "This file is larger than 5 MB.", "This file has more than 500 rows.", "Choose a CSV file.", "We couldn't read this file. Check it's a valid CSV and try again.", "N empty rows skipped.", "Row 42 is too long (max 1000 characters)."
 - Review: eyebrow "Batch review", description `"{total} products · {jurisdiction} · Started {time}"`, "Upload batch".
 - Progress banner: `"{classified} of {total} classified"`, "Processing" / "Throttled" / "Paused", "Pause" / "Resume".
 - Bulk action: `"Approve {count} above {threshold}%"`; modal title `"Approve {count} classifications?"`, body `"This approves {count} classifications with confidence of {threshold}% or higher. Each decision is logged."`, "Cancel", `"Approve {count}"`.
@@ -48,21 +48,21 @@ Batch upload: import a CSV of products, map its columns, and start classifying a
 
 ## Components
 
-| Element | Component | Existing / New (+ proposed props) |
-| --- | --- | --- |
-| Headers | `PageHeader` | Existing |
-| Cards | `Card` | Existing |
-| Dropzone | native `<label>` + visually-hidden `<input type="file">` + `Button` ("Choose file") | Existing components only; no new shared/ui - a dropzone is markup + the `shared/lib` parser, not a visual primitive `design.md` specifies separately |
-| Column mapping rows | `Select` (per field) | Existing |
-| Progress banner | `Banner` | Existing |
-| Bulk-approve button | `Button` (approve variant) | Existing |
-| Confirm modal | `Modal` | Existing |
-| Table | `widgets/classification-table` | Existing (built in the Library task) |
-| Search + status filters | `SearchField`, `Checkbox` in a `<fieldset>` | Existing (same pattern as Library) |
-| Pagination | `Pagination` | Existing |
-| Toasts | `Toast` | Existing |
-| Loading | `Skeleton` | Existing |
-| Empty / error | `EmptyState`, `ErrorState` | Existing |
+| Element                 | Component                                                                           | Existing / New (+ proposed props)                                                                                                                    |
+| ----------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Headers                 | `PageHeader`                                                                        | Existing                                                                                                                                             |
+| Cards                   | `Card`                                                                              | Existing                                                                                                                                             |
+| Dropzone                | native `<label>` + visually-hidden `<input type="file">` + `Button` ("Choose file") | Existing components only; no new shared/ui - a dropzone is markup + the `shared/lib` parser, not a visual primitive `design.md` specifies separately |
+| Column mapping rows     | `Select` (per field)                                                                | Existing                                                                                                                                             |
+| Progress banner         | `Banner`                                                                            | Existing                                                                                                                                             |
+| Bulk-approve button     | `Button` (approve variant)                                                          | Existing                                                                                                                                             |
+| Confirm modal           | `Modal`                                                                             | Existing                                                                                                                                             |
+| Table                   | `widgets/classification-table`                                                      | Existing (built in the Library task)                                                                                                                 |
+| Search + status filters | `SearchField`, `Checkbox` in a `<fieldset>`                                         | Existing (same pattern as Library)                                                                                                                   |
+| Pagination              | `Pagination`                                                                        | Existing                                                                                                                                             |
+| Toasts                  | `Toast`                                                                             | Existing                                                                                                                                             |
+| Loading                 | `Skeleton`                                                                          | Existing                                                                                                                                             |
+| Empty / error           | `EmptyState`, `ErrorState`                                                          | Existing                                                                                                                                             |
 
 ### Which of Tabs, FilterDropdown, a new Dropzone component does Batch need?
 
@@ -76,6 +76,7 @@ Batch upload: import a CSV of products, map its columns, and start classifying a
 ### `entities/batch` (new, shared by both pages)
 
 - `model/batch.schema.ts`: zod schema matching `docs/api-contract.md`'s `Batch` interface exactly (`id`, `filename`, `total`, `classified`, `status: "processing"|"throttled"|"paused"|"complete"`, `jurisdiction`, `startedAt`). `BatchItem`/classification-list-for-a-batch reuses `entities/classification`'s existing `classificationSchema` - a batch's rows are `Classification` records, not a separate shape.
+- The mock batch store shares the same in-memory record array the classification mock handlers already read and write - a batch's rows are real entries in that one store, tagged internally with the batch they belong to, not a parallel/duplicate store. Each poll of `GET /batches/:id`, the mock (not a client timer) advances `classified` toward `total` by one increment, flipping `status` through `processing` -> (optionally `throttled`) -> `complete`.
 - `api/batch.keys.ts`: `batchKeys.detail(id)`, `batchKeys.items(id, params)`.
 - `api/batch.query.ts`: `useBatch(id)` → `GET /batches/:id`; `useBatchItems(id, params)` → `GET /batches/:id/items` (same `search`/`status[]`/`page`/`pageSize` params as `useClassifications`, per the contract note that batch items use "same filters as classifications").
 - `api/batch.query.test.tsx`.
@@ -87,7 +88,7 @@ Batch upload: import a CSV of products, map its columns, and start classifying a
 
 ### Polling (batch review)
 
-- `useBatch(id)` polls via `refetchInterval` while `status !== "complete"` (DEFAULT interval: 2000ms, matching the cadence already used for agent-run polling in the classify-new/detail flow - BR-4 open question if a different interval is intended) and stops (`refetchInterval: false`) once `status === "complete"`, mirroring the agent-run polling pattern CLAUDE.md §6/the contract already describes ("The mock advances the batch one step per poll... real polling that stops when it is done").
+- **BR-4 resolved**: `useBatch(id)` polls via `refetchInterval` set to 2000ms while `status !== "complete"`, matching the cadence already used for agent-run polling in the classify-new/detail flow, and stops (`refetchInterval: false`) once `status === "complete"`, mirroring the agent-run polling pattern CLAUDE.md §6/the contract already describes ("The mock advances the batch one step per poll... real polling that stops when it is done"). `useBatch` takes an optional `pollIntervalMs` override (default 2000) so tests can use a fast interval instead of waiting out real 2-second polls.
 - Each poll the **mock** (not a client timer) advances `classified` toward `total` by one batch-sized increment and flips `status` through `processing` → (optionally `throttled`) → `complete`, deterministically seeded per batch id so repeated polls in tests are reproducible.
 
 ### MSW
@@ -99,7 +100,7 @@ Batch upload: import a CSV of products, map its columns, and start classifying a
 
 ### `shared/lib/parseCsv` (new)
 
-- A small, dependency-free CSV parser (CLAUDE.md: "no new dependency"): handles quoted fields, commas inside quotes, and CRLF line endings. Signature (DEFAULT, BU-4 open question on exact shape): `parseCsv(text: string): { headers: string[]; rows: string[][] }`, throwing a typed error (or returning a `{ ok: false, reason }` result - implementation detail) for malformed input the upload page surfaces as the parse-error copy above.
+- A small, dependency-free CSV parser (CLAUDE.md: "no new dependency"): handles quoted fields, commas inside quotes, and CRLF line endings. **BU-4 resolved**: `parseCsv(text: string): { ok: true; headers: string[]; rows: string[][] } | { ok: false; reason: "too_many_rows" | "malformed" }` - a result object (not a thrown error) with typed reason codes, so the page renders inline errors without a try/catch and maps each code to the exact user-facing copy. The 500-row cap is enforced inside `parseCsv` (it has no concept of the original file's byte size, so the 5 MB check stays in the caller); the non-empty/at-most-1000-character rule per row (BU-2) is enforced by the upload page once the description column is mapped, not inside `parseCsv` itself, since `parseCsv` has no notion of which column is "the description".
 - `shared/lib/parseCsv.ts` + `parseCsv.test.ts` covering: plain rows, quoted fields containing commas, quoted fields containing escaped quotes (`""`), CRLF vs LF line endings, a trailing blank line, and the 500-row / 5 MB limits (tested as pure functions over a string, not real File objects).
 - Column auto-match (field aliases → header names) is a second pure helper in the same file or a sibling (`matchColumns(headers, fieldAliases)`), also unit-tested.
 
@@ -146,17 +147,17 @@ Batch upload: import a CSV of products, map its columns, and start classifying a
 
 ## Open questions for me
 
-- **BU-1**: Upload page's two-column split ratio - DEFAULT: the same grid pattern Home already uses for its review-queue/quick-add cards (no documented ratio in the export to match exactly).
-- **BU-2**: Exact wording for each parse-error message - DEFAULT: the four messages drafted under Exact copy.
-- **BU-3**: Whether the dropzone becomes a reusable `shared/ui` component now or stays page-local - DEFAULT: page-local (single consumer, no `design.md` spec to build a primitive against).
-- **BU-4**: Exact `parseCsv` return/error shape (thrown error vs. a result object) - DEFAULT: a result-style return so the page can render inline errors without a try/catch at the call site; either is fine architecturally.
-- **BU-5**: Mapping card's disabled/placeholder state before a file is parsed, and whether a parse error hides or disables the mapping card - DEFAULT: disabled selects with a hint line until parsed; parse errors hide the mapping card entirely until a valid file is provided.
-- **BR-1**: Batch review's H1 - full filename with extension, or without - DEFAULT: without the extension (`"June apparel import"` rather than `"june_apparel_import.csv"`), matching how the export's static title reads as a human title rather than a filename.
-- **BR-2**: Whether the progress banner is dismissible while a batch is still processing - DEFAULT: not dismissible (it's live status, and the export's dismiss button doesn't stop processing underneath it, which would be confusing to leave in).
-- **BR-3**: Unknown/invalid batch id - DEFAULT: a dedicated not-found-style message with a link to `routes.batchUpload`, distinct from the generic `ErrorState` retry (a 404 can't be fixed by retrying).
-- **BR-4**: Poll interval for `useBatch` while processing - DEFAULT: 2000ms, matching the existing agent-run polling cadence.
-- **BR-5**: Whether Batch review's table includes an "Updated" column - DEFAULT: omit it (matches the export's compact table and Home's precedent, as opposed to Library's non-compact one which does show it).
-- **BR-6**: `entities/review-rules`' `highlightAbove` is also Settings' field; if Settings hasn't shipped yet when Batch review is built, the entity (schema/keys/query) and its MSW handler need to exist regardless - DEFAULT: build `entities/review-rules` as part of whichever of Settings/Batch lands first, and have the other brief's task simply reuse it, rather than each duplicating a smaller version.
+- **BU-1 RESOLVED**: the same grid pattern Home already uses for its review-queue/quick-add cards (no documented ratio in the export to match exactly).
+- **BU-2 RESOLVED**: the four messages drafted under Exact copy, plus the empty-row-count and too-long-row-number messages added there.
+- **BU-3 RESOLVED**: page-local (single consumer, no `design.md` spec to build a primitive against).
+- **BU-4 RESOLVED**: a result-style return (not a thrown error) so the page can render inline errors without a try/catch at the call site - see the `shared/lib/parseCsv` section above.
+- **BU-5 RESOLVED**: disabled selects with a hint line until parsed; parse errors hide the mapping card entirely until a valid file is provided.
+- **BR-1 RESOLVED**: without the extension (`"June apparel import"` rather than `"june_apparel_import.csv"`), matching how the export's static title reads as a human title rather than a filename.
+- **BR-2 RESOLVED**: not dismissible while `status !== "complete"`; dismissible once `status === "complete"` - see the Progress banner section above.
+- **BR-3 RESOLVED**: a dedicated not-found-style message with a link to `routes.batchUpload`, distinct from the generic `ErrorState` retry (a 404 can't be fixed by retrying).
+- **BR-4 RESOLVED**: 2000ms, matching the existing agent-run polling cadence, with a `pollIntervalMs` override for tests.
+- **BR-5 RESOLVED**: omit the "Updated" column (matches the export's compact table and Home's precedent, as opposed to Library's non-compact one which does show it).
+- **BR-6 RESOLVED**: `entities/review-rule` is promoted from `pages/settings` in this task, because Batch review is the second consumer (its bulk-approve threshold reads `highlightAbove`). Settings' own tests continue to pass unchanged against the new import path, matching how `entities/member` was promoted in the Settings task.
 
 ## Acceptance criteria (testable)
 
@@ -166,7 +167,7 @@ Batch upload: import a CSV of products, map its columns, and start classifying a
 - [ ] `entities/batch` exists (schema matching the contract exactly, keys, `useBatch`, `useBatchItems`) and is imported by both pages - no duplicate batch types.
 - [ ] Batch review polls `GET /batches/:id` while not complete and stops polling once `status === "complete"`; progress is `classified`/`total` from real data, never `items.length` compared to itself.
 - [ ] Progress banner shows real status and start time (`startedAt`, not a hardcoded clock string); Pause/Resume call real mutations.
-- [ ] Bulk-approve's confirm modal shows the live derived count and the threshold from `entities/review-rules` (falling back to 90 if the rules haven't loaded); confirming calls the real bulk-approve endpoint and logs one audit entry per approved item.
+- [ ] Bulk-approve's confirm modal shows the live derived count and the threshold from `entities/review-rule` (falling back to 90 if the rules haven't loaded); confirming calls the real bulk-approve endpoint and logs one audit entry per approved item.
 - [ ] Table is `widgets/classification-table` (no duplicate table implementation); search/status-filter/pagination/row-menu/row-navigation/delete+Undo all behave as already specified for Library.
 - [ ] No `FilterDropdown`, no client-only `.forEach` bulk approve, no fake "X of X" progress, no hardcoded filename/size/timestamp strings anywhere on either page.
 - [ ] Loading, empty (filtered), error, and not-found (bad batch id) states are implemented on Batch review; parse-error and incomplete-mapping states are implemented on Batch upload.

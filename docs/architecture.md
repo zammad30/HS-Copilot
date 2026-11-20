@@ -34,7 +34,7 @@
 
 ## Slice map (create on demand)
 
-- entities: `classification`, `batch`, `agent-run`, `member` (built - promoted from `pages/classification-detail/api`), `workspace`, `session`, `review-rules`, `evaluation`
+- entities: `classification`, `batch`, `agent-run`, `member` (built - promoted from `pages/classification-detail/api`), `workspace`, `session`, `review-rule`, `evaluation`
 - features: `review-decision` (approve, reject, override, request-info, undo), `delete-classification` (delete with Undo grace window), `classify-product`, `answer-clarification`, `bulk-review`, `upload-batch`, `auth`, `manage-members`, `edit-review-rules`, `edit-workspace`, `filter-classifications`, `export-data`
 - widgets: `app-shell` (sidebar, topbar, menus), `public-shell` (header, footer, mobile menu), `classification-table`, `audit-trail`, `agent-progress`, `evidence-drawer`
 - pages: `landing`, `methodology`, `auth`, `legal`, `public-try`, `home`, `classify-new`, `classification-detail`, `batch-upload`, `batch-review`, `library`, `settings`, `not-found`, `kit` (dev only)
@@ -60,3 +60,4 @@ Local UI state stays in components. Server state stays in TanStack Query. Sessio
 ## Decisions log
 
 - 2026-11: FSD + SCSS Modules + CSS variable tokens. MSW chosen over hand-written mock services so the real API can replace mocks without code changes.
+- 2026-11 (batch task): `entities/batch` reuses `entities/classification`'s `Jurisdiction` and `ClassificationListResponse`/`ClassificationsListParams` types (a batch's rows are `Classification` records, per rule 5), via an FSD `@x` cross-import public API at `entities/classification/@x/batch.ts`, scoped to the `batch` slice only - not a general import of `entities/classification` from `entities/batch`.

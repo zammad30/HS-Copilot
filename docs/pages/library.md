@@ -4,6 +4,7 @@ Status: approved
 Route: `/app/library` | FSD slice: `pages/library`, plus `widgets/classification-table` (new), `features/delete-classification` (new), `features/review-decision` (from the classification-detail brief), reuses `entities/classification`
 
 Decisions recorded on approval:
+
 - LB-1: extract the table widget **first** and move Home onto it, in a separate commit; `features/delete-classification` is extracted the same way (see Preparatory steps).
 - LB-2, LB-3, LB-5, LB-6: defaults as written. Where a line below still says "DEFAULT", that default is the approved behavior.
 - LB-4: **CSV export is cut.** No Export button, no `GET /export/classifications` handler, no `shared/api/http.ts` change, no export toast.
@@ -34,7 +35,7 @@ Find any past classification: search by product or HS code, narrow by status, pa
 
 1. `PageHeader`: no eyebrow, H1 "Classification library", description "Search every reviewed decision." (the export's "and export the current view" is dropped because export is cut). No action.
 2. **Controls row**: `SearchField` (placeholder "Search products or HS codes") and the status filter (DEFAULT: a native checkbox group, see Filters).
-3. **Table in a `Card`** via `DataTable` (default density, rows 56px): columns Product, Suggested code, Confidence, Status, Updated, row-actions. Needs-review rows keep the `--amber-tint` row background (design.md DataTable). No checkbox column this task (`LB-2`).
+3. **Table in a `Card`** via `DataTable` (default density, rows 56px): columns Product, Suggested code, Confidence, Status, Updated, row-actions. No checkbox column this task (`LB-2`).
 4. **Pagination row**: left "Showing 1–10 of 14" (12/16, `--muted`), right Previous and Next buttons.
 
 Rows come from `widgets/classification-table`, a new widget composing `DataTable`, the row `Menu`, the delete-confirm `Modal` and the approve / delete mutations, so Home, Library and later Batch review share one table (`LB-1`).
@@ -57,21 +58,21 @@ Rows come from `widgets/classification-table`, a new widget composing `DataTable
 
 ## Components
 
-| Element | Component | Existing / New (+ proposed props) |
-| --- | --- | --- |
-| Header | `PageHeader`, `Button` | Existing |
-| Search | `SearchField` | Existing. Controlled; debounced write to the URL. |
-| Status filter | `Checkbox` inside a native `<fieldset>` / `<legend>` | Existing components only. **No `FilterDropdown`** (see below). |
-| Table | `DataTable` | New in the Home brief; reused here. Needs no new props beyond what Home defines; the optional Updated column is a column definition, not a DataTable API change. |
-| Row cells | `CodeText`, `Meter`, `ClassificationStatusBadge` | Existing / entity-local (Home brief) |
-| Row menu | `Menu` | Existing (built). Opens from an `IconButton` trigger. |
-| Delete confirm | `Modal` | New in the Home brief |
-| Toasts | `Toast` | New in the Home brief |
-| Pagination | `Pagination` | **New** shared/ui (planned in inventory). Props: `page` (1-based), `pageSize`, `total`, `onPageChange(page)`, optional `label` for the nav `aria-label`. Renders the range text plus secondary `Button`s "Previous" / "Next", disabled at the ends. Pure presentational, no URL knowledge. |
-| Loading | `Skeleton` (table-shaped rows) | Existing |
-| Empty | `EmptyState` | Existing |
-| Load error | `ErrorState` | **New** (planned in inventory), shared with the other two briefs |
-| Table widget | `ClassificationTable` | **New widget**, `widgets/classification-table`. See below. |
+| Element        | Component                                            | Existing / New (+ proposed props)                                                                                                                                                                                                                                                          |
+| -------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Header         | `PageHeader`, `Button`                               | Existing                                                                                                                                                                                                                                                                                   |
+| Search         | `SearchField`                                        | Existing. Controlled; debounced write to the URL.                                                                                                                                                                                                                                          |
+| Status filter  | `Checkbox` inside a native `<fieldset>` / `<legend>` | Existing components only. **No `FilterDropdown`** (see below).                                                                                                                                                                                                                             |
+| Table          | `DataTable`                                          | New in the Home brief; reused here. Needs no new props beyond what Home defines; the optional Updated column is a column definition, not a DataTable API change.                                                                                                                           |
+| Row cells      | `CodeText`, `Meter`, `ClassificationStatusBadge`     | Existing / entity-local (Home brief)                                                                                                                                                                                                                                                       |
+| Row menu       | `Menu`                                               | Existing (built). Opens from an `IconButton` trigger.                                                                                                                                                                                                                                      |
+| Delete confirm | `Modal`                                              | New in the Home brief                                                                                                                                                                                                                                                                      |
+| Toasts         | `Toast`                                              | New in the Home brief                                                                                                                                                                                                                                                                      |
+| Pagination     | `Pagination`                                         | **New** shared/ui (planned in inventory). Props: `page` (1-based), `pageSize`, `total`, `onPageChange(page)`, optional `label` for the nav `aria-label`. Renders the range text plus secondary `Button`s "Previous" / "Next", disabled at the ends. Pure presentational, no URL knowledge. |
+| Loading        | `Skeleton` (table-shaped rows)                       | Existing                                                                                                                                                                                                                                                                                   |
+| Empty          | `EmptyState`                                         | Existing                                                                                                                                                                                                                                                                                   |
+| Load error     | `ErrorState`                                         | **New** (planned in inventory), shared with the other two briefs                                                                                                                                                                                                                           |
+| Table widget   | `ClassificationTable`                                | **New widget**, `widgets/classification-table`. See below.                                                                                                                                                                                                                                 |
 
 ### Which of Tabs, Pagination, FilterDropdown does Library need?
 
@@ -122,7 +123,7 @@ Approve comes from `features/review-decision` (shared with detail). Delete-with-
 - **Error**: ErrorState with "Try again" (`refetch()`); the controls stay usable.
 - **Partial**: results exist but the user is on an out-of-range page: clamp to the last page.
 - **Permission**: none this task.
-- **Overridden / needs-review rows**: needs-review rows get the amber-tint background; overridden rows show Approved plus Overridden indicators.
+- **Overridden / needs-review rows**: overridden rows show Approved plus Overridden indicators; rows are never tinted by status (status shows only through the dot-plus-label indicator in its own column).
 
 ## Interactions
 
@@ -164,7 +165,7 @@ None. LB-1 to LB-6 are resolved above.
 - [ ] Changing search or status resets to page 1; Previous/Next update `page` in the URL; Previous is disabled on page 1, Next on the last page; out-of-range pages are clamped.
 - [ ] "Showing a–b of N" derives from `total`, `page`, `pageSize`; it shows no stale number while filtered results load.
 - [ ] Browser Back/Forward restores previous search, status and page; reload keeps them.
-- [ ] Rows: product name is a real link to the detail page; needs-review rows have the amber tint; overridden rows show both Approved and Overridden indicators; Updated shows Today / Yesterday / short date computed from `updatedAt`.
+- [ ] Rows: product name is a real link to the detail page; overridden rows show both Approved and Overridden indicators; Updated shows Today / Yesterday / short date computed from `updatedAt`.
 - [ ] Row menu has exactly Open, Approve (hidden for approved rows), Copy code, Delete; trigger exposes `aria-haspopup` and `aria-expanded`; arrow keys work; Esc closes and returns focus.
 - [ ] Approve updates the row and shows a toast; Copy code copies the suggested code; Delete shows the confirm modal, removes the row optimistically, and the real request fires only after the toast window and never if Undo is clicked.
 - [ ] There is no Export button, no export handler or toast, and `shared/api/http.ts` is unchanged.
