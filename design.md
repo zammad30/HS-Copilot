@@ -60,6 +60,7 @@ Direction: "Modern Enterprise, cool blue and slate." Clean, structured, trustwor
   --border: 1px solid var(--line);
   --shadow: none;
   --shadow-menu: 0 4px 16px rgba(23, 43, 58, 0.14);
+  --shadow-card: 0 2px 8px rgba(23, 43, 58, 0.08);
 
   /* layout */
   --content: 1280px;
@@ -148,6 +149,7 @@ Headings use weight 600 with at most -0.01em tracking (Display and H1 only; H2/H
 - **Skeleton**: `--line` blocks with a 1.2s opacity fade; never spinners. **EmptyState**: `--surface` card, icon, one line, one action. **Banner**: `--amber-tint` background with `--amber-line` border (dismissible) - a warning state, not branding.
 - **SampleLabel**: 10/14, `--muted` text, no background or border - marks any placeholder claim.
 - **Sidebar item**: 40px, 14px, active = accent text + `--accent-tint` background + 3px accent indicator; hover `--hover`.
+- **Plan card** (Pricing page only): Card with plan name, tagline, price, one button, a ruled divider and a check list. The current plan uses Card selected. Plan cards use `--shadow-card` (the only card shadow in the product). This is the only card-grid exception.
 
 ## 6. Patterns
 
