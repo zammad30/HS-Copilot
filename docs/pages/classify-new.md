@@ -166,3 +166,11 @@ None. CN-1 to CN-6 are resolved above.
 - [ ] No raw colors or off-scale spacing; no `Sparkles` icon; no `Save draft` button.
 - [ ] Tests: form validation (including the 1000-character limit), Run not found state, prefill from `q`, run lifecycle against MSW (poll, question, answer, complete, navigate), each error path, `AgentSteps` and `ClarifyingQuestion` unit tests.
 - [ ] `docs/component-inventory.md` updated (`ErrorState` built); `npm run check` passes.
+
+## Usage and limits (plans, limits and expiry, step 3a)
+
+- **Quota line** under the submit area, from `useWorkspace`: "{used} of {limit} classifications used this month." with " Resets on {date}." for monthly plans (" Resets today." on the last day), or "{used} of {limit} classifications used in total." for lifetime plans. Skeleton line while loading, nothing if the workspace fails. It never blocks the form.
+- **Limit reached** (`used >= limit`): a non-dismissible `Banner` above the form with `planLimitMessage` for reason `classifications` ("You have used all {limit} classifications in your plan." plus " Your limit resets on {date}." for monthly plans) and a "See plans" link to `routes.pricing`. The submit button is disabled and points to the banner with `aria-describedby`. The fields stay editable.
+- **Stale usage**: if `POST /classifications` still answers 403 `plan_limit_reached`, the same banner is shown from the error details instead of the generic create error, and the workspace is refetched. The server-driven banner lasts only until the refetched workspace arrives. If that workspace shows `used < limit`, the banner clears and submit is enabled again. If it still shows the limit, the banner stays and is driven by the workspace data.
+- **After a successful create**, the workspace query is invalidated (in `useCreateClassification`), so the quota line updates.
+- Dates: `formatDay` already contains "on", so the copy never reads "resets on on".

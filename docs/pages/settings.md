@@ -196,3 +196,12 @@ A page-local two-column layout (`pages/settings/ui/SettingsLayout.tsx`), not a w
 - [ ] No raw colors/off-scale spacing; no new shared/ui component added (none needed); no `Tabs` component used for the settings nav.
 - [ ] Responsive at 375/768/1280: grid collapses to one column at `<=1000px`; members table scrolls inside its card at `<=720px`.
 - [ ] `npm run check` passes.
+
+## Plan and usage (plans, limits and expiry, step 3a)
+
+Read-only block on the General tab, between "Workspace defaults" and "Account". Data comes from `useWorkspace` (plan, limits, usage) and `usePlans` (plan name). Formatters live in `entities/workspace/lib`.
+
+- **Card "Plan and usage"**, a definition list: Plan, Classifications ("3 of 1,300 per month" or "3 of 5 in total", plus a second line "Resets on Nov 30" for monthly plans, "Resets today" on the last day), People ("2 of 5"), Batch uploads ("1 of 10 this month, up to 500 rows each" or "Not included"), Second approver ("Included" or "Not included"), Audit trail kept for ("30 days", "1 year", "24 months"). Link "See plans" to `routes.pricing`.
+- **States**: Skeleton under the heading while the workspace or plan names load. If the workspace fails, the block is not rendered at all (the "Workspace defaults" card keeps its own error state). If only the plan names fail, the Plan row is hidden and the rest shows.
+- **Dates**: `formatDay` already contains the word "on" for dates, so copy is built as "Resets " + `formatDay(...)`. It never reads "resets on on".
+- **Card "Demo plan"** (mock mode only, `env.useMocks`): `Select` "Demo plan" with the plan names, helper "Mock mode only. Switches the sample plan so you can try limits and expiry." Changing it calls `PUT /__mock/plan { plan }` (page-local mutation `pages/settings/api/demoPlan.mutation.ts`), invalidates all queries, then shows the toast "Demo plan changed to {name}." On failure the toast reads "We couldn't change the demo plan. Try again." in the info tone, because Toast has no error tone (debt). Hidden until both the workspace and plans have loaded.
