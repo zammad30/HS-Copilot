@@ -8,7 +8,7 @@ Base path `/api/v1`. The NestJS/FastAPI backend will implement this. When it cha
 | --------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | GET                         | /health                                   | cold-start check (200 `{status:"ok"}`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | GET                         | /plans                                    | public, no auth; returns `{items: Plan[]}` - a fixed list, no paging, unlike other list endpoints                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| GET / PATCH                 | /workspace                                | workspace defaults and plan state: `{id, name, defaultJurisdiction, plan, limits, usage}`; PATCH accepts a partial of `{name, defaultJurisdiction}` only - the plan cannot be changed through the real API                                                                                                                                                                                                                                                                                                                                                               |
+| GET / PATCH                 | /workspace                                | workspace defaults and plan state: `{id, name, defaultJurisdiction, plan, limits, usage}`; PATCH accepts a partial of `{name, defaultJurisdiction}` only (`defaultJurisdiction` is the default destination; each classification or batch can choose another) - the plan cannot be changed through the real API                                                                                                                                                                                                                                                           |
 | POST                        | /auth/sign-in, /auth/sign-up, /auth/reset | session                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | POST                        | /auth/sign-out                            | ends the session; 204 no body                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | GET / PATCH                 | /me                                       | current user + workspaces; PATCH accepts `{name}`, returns `{name}`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
@@ -32,7 +32,7 @@ Base path `/api/v1`. The NestJS/FastAPI backend will implement this. When it cha
 
 ```ts
 type Status = "approved" | "rejected" | "needs_review" | "pending";
-type Jurisdiction = "US_HTS" | "EU_CN" | "UK_UKGT";
+type Jurisdiction = "US_HTS" | "EU_CN" | "UK_UKGT" | "CA_CCT" | "AU_WT" | "TR_GTIP";
 interface Classification {
   id: string;
   workspaceId: string;
@@ -169,6 +169,25 @@ interface EvaluationSummary {
 ```
 
 Business rules the UI relies on: cannot remove or demote yourself or the last admin; override requires a reason when `requireOverrideReason`; `overridden` items keep `status: 'approved'` with `finalCode`. `POST /members/invite` is idempotent: inviting an email that already belongs to a member returns that existing member unchanged (200) instead of creating a duplicate - the same call backs the Members tab's "Resend invite" action. `Session.role` only gates the UI (Members and Review rules read-only for non-admins); the real backend must enforce this server-side too, since a client can't be trusted to self-restrict.
+
+## Destinations
+
+`Jurisdiction` is the destination customs territory: the import market whose tariff schedule applies. The field name stays `jurisdiction` everywhere in the API; the UI calls it "Destination". Each classification and each batch chooses its own destination. `workspace.defaultJurisdiction` (same six values) is only the default destination, the starting value for new classifications and batches; each one can choose another, and choosing another never changes the workspace default.
+
+| Id        | UI label       | Import code length (digits)         |
+| --------- | -------------- | ----------------------------------- |
+| `US_HTS`  | United States  | 10                                  |
+| `EU_CN`   | European Union | 10 (8, the CN level, also accepted) |
+| `UK_UKGT` | United Kingdom | 10                                  |
+| `CA_CCT`  | Canada         | 10                                  |
+| `AU_WT`   | Australia      | 10                                  |
+| `TR_GTIP` | Turkey         | 12                                  |
+
+Digits only; separators (dots, spaces, hyphens) are ignored when counting. The first 6 digits are the international HS code, shared by all destinations; the remaining digits are national and differ by destination. A code supplied to `override` (and an `approve` code) is validated against the length rule of the classification's own destination.
+
+Backend phase: only destinations with a verified data source will return real codes; the others stay sample only. Nothing in the frontend depends on this yet.
+
+Mock rule: a sample code has the real first 6 digits of the mock result and placeholder national digits (for example `8518.30.0000`). The placeholder digits are sample data (`isSample` on the model and evidence as today) and must never be presented as real tariff codes.
 
 ## Decision rules
 

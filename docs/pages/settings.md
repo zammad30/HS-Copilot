@@ -26,7 +26,7 @@ A page-local two-column layout (`pages/settings/ui/SettingsLayout.tsx`), not a w
 
 ### General tab
 
-- `Card` "Workspace defaults": `TextInput` "Workspace name", `Select` "Default jurisdiction" (US_HTS / EU_CN / UK_UKGT, matching the entity's `Jurisdiction` union - the export's extra "Default reviewer" and "Time zone" fields are **cut**, see Prototype corrections), `Button` "Save changes" (disabled while the mutation is pending or the form is unchanged from the server values).
+- `Card` "Workspace defaults": `TextInput` "Workspace name", `Select` "Default destination" (the six `DESTINATIONS` of the entity's `Jurisdiction` union, with the helper text "Used as the starting value for new classifications. You can change it for each one." - the export's extra "Default reviewer" and "Time zone" fields are **cut**, see Prototype corrections), `Button` "Save changes" (disabled while the mutation is pending or the form is unchanged from the server values).
 - `Card` "Account" (new section, not in the export - SG-1 decided it belongs here): `TextInput` "Display name" (editable), `TextInput` "Email" (read-only, `disabled`), `Button` "Sign out" (secondary).
 
 ### Members tab
@@ -50,7 +50,7 @@ A page-local two-column layout (`pages/settings/ui/SettingsLayout.tsx`), not a w
 
 - Title "Settings & team", description "Manage workspace defaults, members, and review roles."
 - Nav: "General", "Members", "Review rules".
-- General: "Workspace defaults", "Applied automatically to new classifications and batches.", "Workspace name", "Default jurisdiction", "Save changes".
+- General: "Workspace defaults", "Applied automatically to new classifications and batches.", "Workspace name", "Default destination", helper "Used as the starting value for new classifications. You can change it for each one.", "Save changes".
 - Account: "Account", "Display name", "Email", "Sign out".
 - Members: "Members", `"People with access to {workspaceName}."`, "Invite member", column headers "Name", "Email", "Role", "Last active", "Status", visually hidden "Actions"; "Role permissions", "Admin" / "Manage settings, members, and all decisions.", "Reviewer" / "Approve, reject, and override classifications.", "Analyst" / "Create and research classifications."
 - Row menu: "Resend invite", "Remove".

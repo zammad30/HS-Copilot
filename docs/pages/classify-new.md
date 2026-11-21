@@ -25,7 +25,8 @@ Describe one product in plain language, start an AI research run, watch its prog
    - **Left: form `Card`**
      - `FormField` + `Textarea` "Product description" (min height 120 per design.md).
      - Two-column row: `TextInput` "Primary material (optional)" and `TextInput` "Intended use (optional)".
-     - `FormField` + `Select` "Country of origin (optional)".
+     - `FormField` + `Select` "Destination" (required, six options in the order United States, European Union, United Kingdom, Canada, Australia, Turkey, no empty or placeholder option). Starts on the workspace default destination (`useWorkspace`), or "United States" (`US_HTS`) while the workspace loads or if it fails. Changing it affects this classification only and never the workspace default.
+     - `FormField` + `Select` "Country of origin (optional)" (below Destination).
      - Action row, right-aligned, top border `--line`: primary `Button` "Research HS codes" (icon `Search`, see Prototype corrections for why not `Sparkles`).
    - **Right: "Research progress" `Card`**
      - Heading block: eyebrow "Live agent", H2 "Research progress". While a run is working and no question is open, plain text "Working" on the right (no dot, no animation).
@@ -36,7 +37,7 @@ Describe one product in plain language, start an AI research run, watch its prog
 ## Exact copy
 
 - Header: "New classification" / "Describe the product" / "Include the details a reviewer would need to distinguish between headings."
-- Labels: "Product description", "Primary material (optional)", "Intended use (optional)", "Country of origin (optional)".
+- Labels: "Product description", "Primary material (optional)", "Intended use (optional)", "Destination", "Country of origin (optional)".
 - Placeholders: material "e.g. ABS plastic", use "e.g. Personal audio". The export's description has no placeholder; DEFAULT: "e.g. Wireless Bluetooth earbuds with charging case" (reuses the export's sample text as a hint instead of a prefilled value).
 - Country options: "China", "Vietnam", "Unknown" (as in the export). DEFAULT value on load: "Unknown".
 - Button: "Research HS codes". While submitting: same label with the Button loading state.
@@ -57,18 +58,18 @@ Describe one product in plain language, start an AI research run, watch its prog
 
 ## Components
 
-| Element | Component | Existing / New (+ proposed props) |
-| --- | --- | --- |
-| Page header | `PageHeader` | Existing |
-| Form card, progress card | `Card` | Existing |
-| Description, material, use | `FormField` + `Textarea` / `TextInput` | Existing |
-| Country | `FormField` + `Select` (native) | Existing |
-| Submit button | `Button` (primary, `icon`, `loading`) | Existing |
-| Progress empty state | `EmptyState` (icon `FileSearch`, one line, no action - `action` is optional in the component) | Existing |
-| Progress load failure | `ErrorState` | **New** (planned in inventory; see below) `{ title, description?, onRetry, retryLabel? }`. Built once for all three pages; if Home already built it, reuse. |
-| Steps list | `AgentSteps` | **New, page-local** (`pages/classify-new/ui`). Presentational: `steps: { id, title, detail, state }[]`. Not a widget yet: only this page uses it. Promote to `widgets/agent-progress` if `/try` ever reuses it. |
-| Clarifying question | `ClarifyingQuestion` | **New, page-local**: `{ text, options: {label, hint}[], isPending, error?, onAnswer(index) }` |
-| Status text "Working" | plain text, `--muted` | n/a |
+| Element                    | Component                                                                                     | Existing / New (+ proposed props)                                                                                                                                                                               |
+| -------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Page header                | `PageHeader`                                                                                  | Existing                                                                                                                                                                                                        |
+| Form card, progress card   | `Card`                                                                                        | Existing                                                                                                                                                                                                        |
+| Description, material, use | `FormField` + `Textarea` / `TextInput`                                                        | Existing                                                                                                                                                                                                        |
+| Country                    | `FormField` + `Select` (native)                                                               | Existing                                                                                                                                                                                                        |
+| Submit button              | `Button` (primary, `icon`, `loading`)                                                         | Existing                                                                                                                                                                                                        |
+| Progress empty state       | `EmptyState` (icon `FileSearch`, one line, no action - `action` is optional in the component) | Existing                                                                                                                                                                                                        |
+| Progress load failure      | `ErrorState`                                                                                  | **New** (planned in inventory; see below) `{ title, description?, onRetry, retryLabel? }`. Built once for all three pages; if Home already built it, reuse.                                                     |
+| Steps list                 | `AgentSteps`                                                                                  | **New, page-local** (`pages/classify-new/ui`). Presentational: `steps: { id, title, detail, state }[]`. Not a widget yet: only this page uses it. Promote to `widgets/agent-progress` if `/try` ever reuses it. |
+| Clarifying question        | `ClarifyingQuestion`                                                                          | **New, page-local**: `{ text, options: {label, hint}[], isPending, error?, onAnswer(index) }`                                                                                                                   |
+| Status text "Working"      | plain text, `--muted`                                                                         | n/a                                                                                                                                                                                                             |
 
 No new shared/ui other than `ErrorState`. `Tabs`, `Pagination`, `FilterDropdown`, `Modal`, `Toast`, `DataTable` are not used on this page.
 
@@ -87,7 +88,7 @@ Forms: **no `react-hook-form`** (decided). The form uses `useState` for values a
 - `pages/classify-new/api` (page-local mutations, architecture rule 7: only this page creates runs or answers questions): `useCreateClassification` (`POST /classifications`), `useAnswerClarification` (`POST /agent-runs/:id/answer`, writes the response into the `agentRunKeys.detail(id)` cache). On completion the page invalidates `classificationKeys.lists()`.
 - `pages/classify-new/model/classifyNew.schema.ts`: zod form schema (`description` trimmed, required, max 1000 characters; others optional). The `origin` value "Unknown" is sent as omitted. The same schema shape is checked by the mock handler (400/422 `validation_error` for empty or over-long descriptions).
 - `GET /agent-runs/:id` for an id the mock store does not know (including every run after a page reload of the dev server, because mock run state is in memory and resets) returns 404 `not_found`; the page maps that to the Run not found state.
-- Jurisdiction: the export form has no jurisdiction field but the contract requires one. DEFAULT: send `"US_HTS"` (the export's detail header reads "US HTS"), as a named constant in the page's `model`, until a workspace default exists. Question `CN-3`.
+- Destination (resolves `CN-3`): the field is still named `jurisdiction` in the request body; the UI calls it "Destination". The select starts on `workspace.defaultJurisdiction` (via `useWorkspace`), falling back to `"US_HTS"` (a named constant in the page's `model`) while the workspace loads or if it fails, so it never blocks the form. The chosen value is sent as `jurisdiction`; the workspace default is not modified. Options come from `DESTINATIONS` in `entities/classification`.
 
 ### MSW (`src/app/mocks/handlers/agentRuns.handlers.ts`, plus `POST /classifications` in the existing classifications handlers)
 
