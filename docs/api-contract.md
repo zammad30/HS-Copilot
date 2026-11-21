@@ -193,8 +193,8 @@ Sample catalog (`isSample: true` on every plan):
 | Plan   | Price / month | Classifications | Seats | Batch                          | Second approver | Audit retention |
 | ------ | ------------- | --------------- | ----- | ------------------------------ | --------------- | --------------- |
 | `free` | $0            | 5 lifetime      | 1     | none                           | no              | 30 days         |
-| `solo` | $14.99        | 100 / month     | 1     | 3 uploads/month, 50 rows max   | no              | 365 days        |
-| `team` | $29.99        | 1000 / month    | 5     | 10 uploads/month, 500 rows max | yes             | 730 days        |
+| `solo` | $14.99        | 500 / month     | 1     | 3 uploads/month, 50 rows max   | no              | 365 days        |
+| `team` | $29.99        | 1300 / month    | 5     | 10 uploads/month, 500 rows max | yes             | 730 days        |
 
 `GET /workspace` reflects the workspace's current plan as `plan: PlanId`, `limits: PlanLimits` (that plan's limits, denormalized onto the workspace response so the UI never has to cross-reference `/plans`), and `usage: PlanUsage`. The plan cannot be changed through the real API - see Mock-only below for how the mock switches it.
 

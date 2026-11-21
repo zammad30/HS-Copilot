@@ -4,7 +4,7 @@ import type { Batch } from "@/entities/batch";
 import type { Classification, ClassificationListResponse } from "@/entities/classification";
 import { resetBatchesStore } from "../fixtures/batch.fixtures";
 import { resetClassificationsStore } from "../fixtures/classifications.fixtures";
-import { resetPlanStore, resetUsageStore } from "../fixtures/plans.fixtures";
+import { resetPlanStore, resetUsageStore, usageStore } from "../fixtures/plans.fixtures";
 
 const SEED_BATCH_ID = "batch_seed_001";
 
@@ -157,22 +157,23 @@ describe("batches handlers", () => {
 
   it("POST /batches is refused with reason 'classifications' when rows exceed the remaining classification quota", async () => {
     await http.put("/__mock/plan", { plan: "solo" });
-    // Solo allows 50 rows/upload and 3 uploads/month, with usage seeded at 3
-    // of a 100 classification limit. Two 48-row uploads (uploadsUsed -> 2,
-    // under the 3/month cap; well under 50 rows each) raise usage to
-    // 3 + 96 = 99, leaving only 1 classification of quota.
+    // Solo allows 50 rows/upload and 3 uploads/month, so batches alone can
+    // never use up a 500 classification limit. Seed usage at 403 directly, then
+    // two 48-row uploads (uploadsUsed -> 2, under the 3/month cap; under 50
+    // rows each) raise it to 403 + 96 = 499, leaving 1 classification of quota.
+    usageStore.classificationsUsed = 403;
     for (let i = 0; i < 2; i += 1) {
       await http.post("/batches", buildUploadForm(csvWithRows(48)));
     }
     const usage = await http.get<WorkspaceUsageResponse>("/workspace");
-    expect(usage.usage.classificationsUsed).toBe(99);
+    expect(usage.usage.classificationsUsed).toBe(499);
 
     // A 2-row upload stays under maxRows and under the 3/month upload cap,
     // but its rows exceed the single classification of quota left.
     await expect(http.post("/batches", buildUploadForm(csvWithRows(2)))).rejects.toMatchObject({
       status: 403,
       code: "plan_limit_reached",
-      details: { reason: "classifications", limit: 100, used: 99 },
+      details: { reason: "classifications", limit: 500, used: 499 },
     });
   });
 

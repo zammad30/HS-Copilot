@@ -39,7 +39,7 @@ export const PLAN_CATALOG: PlanFixture[] = [
     name: "Solo",
     priceMonthlyCents: 1499,
     limits: {
-      classifications: { limit: 100, period: "month" },
+      classifications: { limit: 500, period: "month" },
       seats: 1,
       batch: { uploadsPerMonth: 3, maxRows: 50 },
       secondApprover: false,
@@ -52,7 +52,7 @@ export const PLAN_CATALOG: PlanFixture[] = [
     name: "Team",
     priceMonthlyCents: 2999,
     limits: {
-      classifications: { limit: 1000, period: "month" },
+      classifications: { limit: 1300, period: "month" },
       seats: 5,
       batch: { uploadsPerMonth: 10, maxRows: 500 },
       secondApprover: true,
