@@ -8,19 +8,6 @@
   }
 }
 
-.bannerLink {
-  color: var(--accent);
-  text-decoration: underline;
-
-  &:hover {
-    color: var(--accent-hover);
-  }
-
-  &:focus-visible {
-    @include focus-ring;
-  }
-}
-
 .quota {
   margin: 0;
   color: var(--muted);

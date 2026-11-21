@@ -31,3 +31,5 @@ export {
   formatUsageCount,
 } from "./lib/formatUsage";
 export { parsePlanLimitError, planLimitMessage } from "./lib/planLimit";
+export { PlanLimitNotice } from "./ui/PlanLimitNotice";
+export type { PlanLimitNoticeProps } from "./ui/PlanLimitNotice";

@@ -1,6 +1,7 @@
-import { useMemo, useRef, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent } from "react";
 import { useNavigate } from "react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { Download, UploadCloud } from "lucide-react";
 import { PageHeader } from "@/shared/ui/PageHeader";
 import { Card } from "@/shared/ui/Card";
@@ -8,11 +9,22 @@ import { Eyebrow } from "@/shared/ui/Eyebrow";
 import { Button } from "@/shared/ui/Button";
 import { FormField } from "@/shared/ui/FormField";
 import { Select } from "@/shared/ui/Select";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { parseCsv, matchColumns } from "@/shared/lib/parseCsv";
 import type { ParseCsvFailureReason } from "@/shared/lib/parseCsv";
 import { DESTINATIONS } from "@/entities/classification";
 import type { Jurisdiction } from "@/entities/classification";
-import { useWorkspace } from "@/entities/workspace";
+import {
+  PlanLimitNotice,
+  formatClassificationsQuotaLine,
+  formatCount,
+  hasBatchAccess,
+  parsePlanLimitError,
+  planLimitMessage,
+  useWorkspace,
+  workspaceKeys,
+} from "@/entities/workspace";
+import type { PlanLimitDetails } from "@/entities/workspace";
 import { routes } from "@/shared/config";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
 import {
@@ -37,6 +49,19 @@ function fileErrorMessage(reason: ParseCsvFailureReason): string {
     : "We couldn't read this file. Check it's a valid CSV and try again.";
 }
 
+function limitMessage(
+  details: PlanLimitDetails,
+  period: "lifetime" | "month" | undefined,
+  periodEnd: string | undefined,
+  remaining: number | undefined,
+): string {
+  const base = planLimitMessage(details, { period, periodEnd });
+  if (details.reason === "classifications" && remaining !== undefined) {
+    return `${base} You have ${formatCount(remaining)} left, so choose a smaller file.`;
+  }
+  return base;
+}
+
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   return `${Math.round(bytes / 1024)} KB`;
@@ -54,7 +79,19 @@ export function BatchUploadPage() {
   // Only the user's own pick is stored; until then the workspace default (or the
   // fallback) is shown, so a late-loading workspace never overwrites a choice.
   const [chosenDestination, setChosenDestination] = useState<Jurisdiction | undefined>(undefined);
-  const { data: workspace } = useWorkspace();
+  const {
+    data: workspace,
+    isPending: isWorkspacePending,
+    dataUpdatedAt: workspaceUpdatedAt,
+  } = useWorkspace();
+  const queryClient = useQueryClient();
+  const noticeId = useId();
+  // A 403 from submit means the workspace data on screen was stale. The server's details
+  // drive the notice only until a workspace fetch newer than the refusal arrives; from
+  // then on the (fresh) workspace data decides.
+  const [serverLimit, setServerLimit] = useState<
+    { details: PlanLimitDetails; staleAsOf: number } | undefined
+  >(undefined);
   const jurisdiction = chosenDestination ?? workspace?.defaultJurisdiction ?? FALLBACK_JURISDICTION;
   const [submitError, setSubmitError] = useState<string | undefined>(undefined);
 
@@ -76,12 +113,58 @@ export function BatchUploadPage() {
   const mappedCount = mappedRequiredCount(mapping);
   const requiredCount = requiredFieldCount();
   const hasBlockingRowError = Boolean(rowValidation?.tooLongRowNumber);
+  const periodEnd = workspace?.usage.periodEnd;
+  const classificationPeriod = workspace?.limits.classifications.period;
+  const batchLimits = workspace?.limits.batch;
+  const usage = workspace?.usage;
+  const rowCount = rowValidation?.descriptions.length ?? 0;
+
+  // Blocks the file chooser as well as the submit.
+  let uploadLimit: PlanLimitDetails | null = null;
+  if (batchLimits && usage) {
+    if (!hasBatchAccess(batchLimits)) {
+      uploadLimit = { reason: "feature", limit: 0, used: usage.batchUploadsUsed };
+    } else if (usage.batchUploadsUsed >= batchLimits.uploadsPerMonth) {
+      uploadLimit = {
+        reason: "batch_uploads",
+        limit: batchLimits.uploadsPerMonth,
+        used: usage.batchUploadsUsed,
+      };
+    }
+  }
+
+  // Blocks the submit only: the user can still pick a smaller file.
+  let rowLimit: PlanLimitDetails | null = null;
+  let remainingClassifications: number | undefined;
+  if (batchLimits && usage && workspace && uploadLimit === null && rowCount > 0) {
+    remainingClassifications = Math.max(
+      0,
+      workspace.limits.classifications.limit - usage.classificationsUsed,
+    );
+    if (rowCount > batchLimits.maxRows) {
+      rowLimit = { reason: "batch_rows", limit: batchLimits.maxRows, used: rowCount };
+    } else if (rowCount > remainingClassifications) {
+      rowLimit = {
+        reason: "classifications",
+        limit: workspace.limits.classifications.limit,
+        used: usage.classificationsUsed,
+      };
+    }
+  }
+
+  const staleServerLimit =
+    serverLimit && workspaceUpdatedAt <= serverLimit.staleAsOf ? serverLimit.details : null;
+  // One notice at a time: the workspace's own state wins over the server's refusal.
+  const limitDetails = uploadLimit ?? rowLimit ?? staleServerLimit;
+  const isUploadBlocked = uploadLimit !== null;
+
   const canSubmit =
+    limitDetails === null &&
     file !== null &&
     parsed !== null &&
     mappedCount === requiredCount &&
     !hasBlockingRowError &&
-    (rowValidation?.descriptions.length ?? 0) > 0;
+    rowCount > 0;
 
   async function handleFile(nextFile: File) {
     setSubmitError(undefined);
@@ -161,7 +244,17 @@ export function BatchUploadPage() {
       },
       {
         onSuccess: (batch) => navigate(routes.batchReview(batch.id)),
-        onError: () => setSubmitError("We couldn't start the batch. Try again."),
+        onError: (error) => {
+          const details = parsePlanLimitError(error);
+          if (details) {
+            setServerLimit({
+              details,
+              staleAsOf: queryClient.getQueryState(workspaceKeys.detail())?.dataUpdatedAt ?? 0,
+            });
+            return;
+          }
+          setSubmitError("We couldn't start the batch. Try again.");
+        },
       },
     );
   }
@@ -173,6 +266,43 @@ export function BatchUploadPage() {
         title="Import product data"
         description="Upload a CSV and map your columns before classification begins."
       />
+
+      {isWorkspacePending ? (
+        <div className={styles.usage}>
+          <Skeleton lines={2} />
+        </div>
+      ) : (
+        workspace && (
+          <div className={styles.usage}>
+            <p className={styles.usageLine}>
+              {hasBatchAccess(workspace.limits.batch)
+                ? `Batch uploads: ${formatCount(workspace.usage.batchUploadsUsed)} of ${formatCount(workspace.limits.batch.uploadsPerMonth)} used this month. Up to ${formatCount(workspace.limits.batch.maxRows)} rows per upload.`
+                : "Batch uploads: not included in your plan."}
+            </p>
+            <p className={styles.usageLine}>
+              {formatClassificationsQuotaLine(
+                workspace.usage.classificationsUsed,
+                workspace.limits.classifications,
+                { periodEnd },
+              )}
+            </p>
+          </div>
+        )
+      )}
+
+      {limitDetails && (
+        <div className={styles.notice}>
+          <PlanLimitNotice
+            id={noticeId}
+            message={limitMessage(
+              limitDetails,
+              classificationPeriod,
+              periodEnd,
+              remainingClassifications,
+            )}
+          />
+        </div>
+      )}
 
       <div className={styles.grid}>
         <Card className={styles.uploadCard}>
@@ -188,12 +318,18 @@ export function BatchUploadPage() {
               id="batch-file-input"
               className={styles.hiddenInput}
               onChange={handleInputChange}
+              disabled={isUploadBlocked}
             />
             <UploadCloud aria-hidden="true" size={28} className={styles.dropzoneIcon} />
             <label htmlFor="batch-file-input" className={styles.dropzoneLabel}>
               {file ? file.name : "Drop a CSV here, or choose a file"}
             </label>
-            <Button type="button" variant="secondary" onClick={() => inputRef.current?.click()}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => inputRef.current?.click()}
+              disabled={isUploadBlocked}
+            >
               Choose file
             </Button>
             <p className={styles.helper}>CSV up to 5 MB &middot; Up to 500 rows per file</p>
@@ -283,6 +419,7 @@ export function BatchUploadPage() {
               onClick={handleSubmit}
               disabled={!canSubmit || createBatch.isPending}
               isLoading={createBatch.isPending}
+              aria-describedby={limitDetails ? noticeId : undefined}
             >
               Start batch classification
             </Button>

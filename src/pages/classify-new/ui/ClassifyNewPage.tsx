@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { FileSearch, Search } from "lucide-react";
 import { PageHeader } from "@/shared/ui/PageHeader";
@@ -13,13 +13,13 @@ import { Select } from "@/shared/ui/Select";
 import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { ErrorState } from "@/shared/ui/ErrorState";
-import { Banner } from "@/shared/ui/Banner";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { ApiError } from "@/shared/api";
 import { DESTINATIONS, classificationKeys } from "@/entities/classification";
 import type { Jurisdiction } from "@/entities/classification";
 import {
   formatClassificationsQuotaLine,
+  PlanLimitNotice,
   parsePlanLimitError,
   planLimitMessage,
   useWorkspace,
@@ -182,12 +182,12 @@ export function ClassifyNewPage() {
       />
 
       {limitDetails && (
-        <Banner id={bannerId} className={styles.limitBanner}>
-          {planLimitMessage(limitDetails, { period: classificationPeriod, periodEnd })}{" "}
-          <Link to={routes.pricing} className={styles.bannerLink}>
-            See plans
-          </Link>
-        </Banner>
+        <div className={styles.limitBanner}>
+          <PlanLimitNotice
+            id={bannerId}
+            message={planLimitMessage(limitDetails, { period: classificationPeriod, periodEnd })}
+          />
+        </div>
       )}
 
       <div className={styles.grid}>

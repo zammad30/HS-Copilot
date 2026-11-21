@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { MoreHorizontal, Plus } from "lucide-react";
 import clsx from "clsx";
@@ -19,6 +19,14 @@ import { Banner } from "@/shared/ui/Banner";
 import { useToast } from "@/shared/ui/Toast";
 import { useSession } from "@/entities/session";
 import { useMembers } from "@/entities/member";
+import {
+  PlanLimitNotice,
+  formatUsageCount,
+  parsePlanLimitError,
+  planLimitMessage,
+  useWorkspace,
+} from "@/entities/workspace";
+import type { PlanLimitDetails } from "@/entities/workspace";
 import type { Member, MemberRole } from "@/entities/member";
 import { formatTime } from "@/shared/lib/formatDate";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
@@ -51,6 +59,16 @@ export function SettingsMembersPage() {
   const removeMutation = useRemoveMember();
 
   const [bannerVisible, setBannerVisible] = useState(true);
+
+  const { data: workspace } = useWorkspace();
+  const seatsNoticeId = useId();
+  // Set by a 403 from invite. Shown inside the modal instead of the page notice, so only
+  // one notice is on screen at a time; cleared when the modal closes.
+  const [inviteLimit, setInviteLimit] = useState<PlanLimitDetails | null>(null);
+  const seats = workspace?.limits.seats;
+  const seatsUsed = workspace?.usage.seatsUsed;
+  const isSeatsFull = seats !== undefined && seatsUsed !== undefined && seatsUsed >= seats;
+  const showSeatsNotice = isSeatsFull && inviteLimit === null;
 
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
@@ -91,6 +109,7 @@ export function SettingsMembersPage() {
       setInviteEmail("");
       setInviteRole("analyst");
       setInviteError(undefined);
+      setInviteLimit(null);
     }
   }
 
@@ -101,6 +120,8 @@ export function SettingsMembersPage() {
       setInviteError("Enter a valid email address.");
       return;
     }
+    setInviteError(undefined);
+    setInviteLimit(null);
     inviteMutation.mutate(
       { email, role: inviteRole },
       {
@@ -108,7 +129,14 @@ export function SettingsMembersPage() {
           handleInviteOpenChange(false);
           show("Invitation sent", { tone: "success" });
         },
-        onError: () => setInviteError("We couldn't send the invitation. Try again."),
+        onError: (error) => {
+          const details = parsePlanLimitError(error);
+          if (details?.reason === "seats") {
+            setInviteLimit(details);
+            return;
+          }
+          setInviteError("We couldn't send the invitation. Try again.");
+        },
       },
     );
   }
@@ -204,15 +232,28 @@ export function SettingsMembersPage() {
               {`People with access to ${session?.workspaceName ?? "this workspace"}.`}
             </p>
           </div>
-          <Button
-            ref={inviteTriggerRef}
-            icon={<Plus aria-hidden="true" />}
-            onClick={() => setInviteOpen(true)}
-            disabled={!isAdmin}
-          >
-            Invite member
-          </Button>
+          <div className={styles.invite}>
+            <Button
+              ref={inviteTriggerRef}
+              icon={<Plus aria-hidden="true" />}
+              onClick={() => setInviteOpen(true)}
+              disabled={!isAdmin || isSeatsFull}
+              aria-describedby={showSeatsNotice ? seatsNoticeId : undefined}
+            >
+              Invite member
+            </Button>
+            {seats !== undefined && seatsUsed !== undefined && (
+              <p className={styles.seats}>{`${formatUsageCount(seatsUsed, seats)} people`}</p>
+            )}
+          </div>
         </div>
+
+        {showSeatsNotice && seats !== undefined && seatsUsed !== undefined && (
+          <PlanLimitNotice
+            id={seatsNoticeId}
+            message={planLimitMessage({ reason: "seats", limit: seats, used: seatsUsed })}
+          />
+        )}
 
         {isError ? (
           <ErrorState title="We couldn't load settings" onRetry={() => refetch()} />
@@ -276,6 +317,7 @@ export function SettingsMembersPage() {
         returnFocusRef={inviteTriggerRef}
       >
         <form onSubmit={handleInviteSubmit} noValidate className={styles.form}>
+          {inviteLimit && <PlanLimitNotice message={planLimitMessage(inviteLimit)} />}
           <FormField label="Email" error={inviteError}>
             <TextInput
               type="email"

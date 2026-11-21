@@ -1,0 +1,14 @@
+@use "@/shared/styles/abstracts" as *;
+
+.link {
+  color: var(--accent);
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--accent-hover);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}

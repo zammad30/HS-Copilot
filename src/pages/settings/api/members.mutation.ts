@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { http, parseResponse } from "@/shared/api";
 import { memberSchema, memberKeys } from "@/entities/member";
 import type { Member, MemberRole, MembersListResponse } from "@/entities/member";
+import { parsePlanLimitError, workspaceKeys } from "@/entities/workspace";
 
 // Page-local per docs/architecture.md rule 7: Settings is the only consumer
 // of these writes today. Each updates entities/member's cached list directly
@@ -29,6 +30,13 @@ export function useInviteMember() {
       queryClient.setQueryData<MembersListResponse>(memberKeys.list(), (current) =>
         upsertMember(current, member),
       );
+      void queryClient.invalidateQueries({ queryKey: workspaceKeys.detail() });
+    },
+    // A seats refusal means the usage on screen was stale.
+    onError: (error) => {
+      if (parsePlanLimitError(error)) {
+        void queryClient.invalidateQueries({ queryKey: workspaceKeys.detail() });
+      }
     },
   });
 }
@@ -60,6 +68,7 @@ export function useRemoveMember() {
         const items = current.items.filter((item) => item.id !== id);
         return { ...current, items, total: items.length };
       });
+      void queryClient.invalidateQueries({ queryKey: workspaceKeys.detail() });
     },
   });
 }
