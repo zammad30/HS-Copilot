@@ -1,5 +1,33 @@
 @use "@/shared/styles/abstracts" as *;
 
+.limitBanner {
+  margin-top: var(--space-4);
+
+  + .grid {
+    margin-top: var(--space-3);
+  }
+}
+
+.bannerLink {
+  color: var(--accent);
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--accent-hover);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.quota {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 20px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: 5fr 7fr;

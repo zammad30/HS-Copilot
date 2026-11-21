@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { FileSearch, Search } from "lucide-react";
 import { PageHeader } from "@/shared/ui/PageHeader";
@@ -13,10 +13,19 @@ import { Select } from "@/shared/ui/Select";
 import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { ErrorState } from "@/shared/ui/ErrorState";
+import { Banner } from "@/shared/ui/Banner";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { ApiError } from "@/shared/api";
 import { DESTINATIONS, classificationKeys } from "@/entities/classification";
 import type { Jurisdiction } from "@/entities/classification";
-import { useWorkspace } from "@/entities/workspace";
+import {
+  formatClassificationsQuotaLine,
+  parsePlanLimitError,
+  planLimitMessage,
+  useWorkspace,
+  workspaceKeys,
+} from "@/entities/workspace";
+import type { PlanLimitDetails } from "@/entities/workspace";
 import { routes } from "@/shared/config";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
 import {
@@ -58,8 +67,33 @@ export function ClassifyNewPage() {
   // Only the user's own pick is stored; until then the workspace default (or the
   // fallback) is shown, so a late-loading workspace never overwrites a choice.
   const [chosenDestination, setChosenDestination] = useState<Jurisdiction | undefined>(undefined);
-  const { data: workspace } = useWorkspace();
+  const {
+    data: workspace,
+    isPending: isWorkspacePending,
+    dataUpdatedAt: workspaceUpdatedAt,
+  } = useWorkspace();
   const destination = chosenDestination ?? workspace?.defaultJurisdiction ?? FALLBACK_JURISDICTION;
+
+  // A 403 from submit means the workspace data on screen was stale. The server's details
+  // drive the banner only until a workspace fetch newer than the refusal arrives; from
+  // then on the (fresh) workspace data decides whether the limit is still reached.
+  const [serverLimit, setServerLimit] = useState<
+    { details: PlanLimitDetails; staleAsOf: number } | undefined
+  >(undefined);
+  const bannerId = useId();
+  const { limit: classificationLimit, period: classificationPeriod } =
+    workspace?.limits.classifications ?? {};
+  const usedClassifications = workspace?.usage.classificationsUsed;
+  const periodEnd = workspace?.usage.periodEnd;
+  const workspaceLimit: PlanLimitDetails | null =
+    classificationLimit !== undefined &&
+    usedClassifications !== undefined &&
+    usedClassifications >= classificationLimit
+      ? { reason: "classifications", limit: classificationLimit, used: usedClassifications }
+      : null;
+  const limitDetails =
+    workspaceLimit ??
+    (serverLimit && workspaceUpdatedAt <= serverLimit.staleAsOf ? serverLimit.details : null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [createError, setCreateError] = useState<string | undefined>(undefined);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
@@ -118,7 +152,15 @@ export function ClassifyNewPage() {
         onSuccess: ({ agentRunId }) => {
           setSearchParams({ run: agentRunId });
         },
-        onError: () => {
+        onError: (error) => {
+          const details = parsePlanLimitError(error);
+          if (details?.reason === "classifications") {
+            setServerLimit({
+              details,
+              staleAsOf: queryClient.getQueryState(workspaceKeys.detail())?.dataUpdatedAt ?? 0,
+            });
+            return;
+          }
           setCreateError("We couldn't start the research. Try again.");
         },
       },
@@ -138,6 +180,15 @@ export function ClassifyNewPage() {
         title="Describe the product"
         description="Include the details a reviewer would need to distinguish between headings."
       />
+
+      {limitDetails && (
+        <Banner id={bannerId} className={styles.limitBanner}>
+          {planLimitMessage(limitDetails, { period: classificationPeriod, periodEnd })}{" "}
+          <Link to={routes.pricing} className={styles.bannerLink}>
+            See plans
+          </Link>
+        </Banner>
+      )}
 
       <div className={styles.grid}>
         <Card className={styles.formCard}>
@@ -209,11 +260,26 @@ export function ClassifyNewPage() {
                 type="submit"
                 icon={<Search aria-hidden="true" />}
                 isLoading={createMutation.isPending}
-                disabled={formDisabled}
+                disabled={formDisabled || limitDetails !== null}
+                aria-describedby={limitDetails ? bannerId : undefined}
               >
                 Research HS codes
               </Button>
             </div>
+
+            {isWorkspacePending ? (
+              <Skeleton lines={1} />
+            ) : (
+              workspace && (
+                <p className={styles.quota}>
+                  {formatClassificationsQuotaLine(
+                    workspace.usage.classificationsUsed,
+                    workspace.limits.classifications,
+                    { periodEnd },
+                  )}
+                </p>
+              )
+            )}
           </form>
         </Card>
 

@@ -1,4 +1,4 @@
-import type { PlanLimits } from "@/entities/workspace";
+import type { PlanLimits } from "../model/plans.schema";
 
 const numberFormat = new Intl.NumberFormat("en-US");
 

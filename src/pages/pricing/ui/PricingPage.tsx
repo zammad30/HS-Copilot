@@ -4,7 +4,16 @@ import { useNavigate } from "react-router";
 import { Check, Minus } from "lucide-react";
 import clsx from "clsx";
 import { PublicHeader, PublicFooter, MobileMenu } from "@/widgets/public-shell";
-import { usePlans, useWorkspace } from "@/entities/workspace";
+import {
+  formatBatchFeature,
+  formatClassificationsFeature,
+  formatPeopleFeature,
+  formatPrice,
+  formatRetentionFeature,
+  hasBatchAccess,
+  usePlans,
+  useWorkspace,
+} from "@/entities/workspace";
 import type { Plan, PlanId } from "@/entities/workspace";
 import { useSession } from "@/entities/session";
 import { Eyebrow } from "@/shared/ui/Eyebrow";
@@ -16,14 +25,6 @@ import { ErrorState } from "@/shared/ui/ErrorState";
 import { useToast } from "@/shared/ui/Toast";
 import { routes } from "@/shared/config";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
-import {
-  formatBatchFeature,
-  formatClassificationsFeature,
-  formatPeopleFeature,
-  formatPrice,
-  formatRetentionFeature,
-  hasBatchAccess,
-} from "../lib/formatPlan";
 import styles from "./PricingPage.module.scss";
 
 interface Feature {

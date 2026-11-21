@@ -15,6 +15,9 @@ import { useWorkspace } from "@/entities/workspace";
 import type { Workspace } from "@/entities/workspace";
 import { useUpdateWorkspaceSettings } from "../api/workspaceSettings.mutation";
 import { useUpdateAccount } from "../api/account.mutation";
+import { env } from "@/shared/config";
+import { PlanUsageCard } from "./PlanUsageCard";
+import { DemoPlanCard } from "./DemoPlanCard";
 import styles from "./SettingsGeneralPage.module.scss";
 
 export function SettingsGeneralPage() {
@@ -128,6 +131,10 @@ export function SettingsGeneralPage() {
           </>
         )}
       </Card>
+
+      <PlanUsageCard />
+
+      {env.useMocks && <DemoPlanCard />}
 
       <Card className={styles.card}>
         <h2>Account</h2>

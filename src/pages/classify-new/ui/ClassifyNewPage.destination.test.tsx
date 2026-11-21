@@ -9,7 +9,11 @@ import { useCreateClassification } from "../api/useCreateClassification";
 import { useAgentRun } from "../api/agentRuns.query";
 import { useAnswerClarification } from "../api/useAnswerClarification";
 
-vi.mock("@/entities/workspace", () => ({ useWorkspace: vi.fn() }));
+// Only the query hook is replaced; the page also uses the entity's pure helpers.
+vi.mock("@/entities/workspace", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/entities/workspace")>()),
+  useWorkspace: vi.fn(),
+}));
 vi.mock("../api/useCreateClassification", () => ({ useCreateClassification: vi.fn() }));
 vi.mock("../api/agentRuns.query", () => ({ useAgentRun: vi.fn() }));
 vi.mock("../api/useAnswerClarification", () => ({ useAnswerClarification: vi.fn() }));
@@ -20,8 +24,13 @@ const mutate = vi.fn();
 function mockWorkspace(state: { defaultJurisdiction?: string; isError?: boolean }) {
   mockedUseWorkspace.mockReturnValue({
     data: state.defaultJurisdiction
-      ? { defaultJurisdiction: state.defaultJurisdiction }
+      ? {
+          defaultJurisdiction: state.defaultJurisdiction,
+          limits: { classifications: { limit: 1300, period: "month" } },
+          usage: { classificationsUsed: 3 },
+        }
       : undefined,
+    dataUpdatedAt: 0,
     isError: state.isError ?? false,
     isPending: !state.defaultJurisdiction && !state.isError,
   } as unknown as ReturnType<typeof useWorkspace>);
