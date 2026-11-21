@@ -1,9 +1,9 @@
 import { z } from "zod";
 import type { Jurisdiction } from "@/entities/classification";
 
-// No workspace-level default exists yet (brief question CN-3); this page
-// sends US HTS until one does.
-export const DEFAULT_JURISDICTION: Jurisdiction = "US_HTS";
+// Starting destination while the workspace default is loading or failed to
+// load, so the required select never blocks the form.
+export const FALLBACK_JURISDICTION: Jurisdiction = "US_HTS";
 
 export const classifyNewFormSchema = z.object({
   description: z

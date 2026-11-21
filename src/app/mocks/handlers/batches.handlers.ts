@@ -59,7 +59,7 @@ export const batchesHandlers = [
 
     const jurisdictionResult = jurisdictionSchema.safeParse(jurisdictionRaw);
     if (!jurisdictionResult.success) {
-      return validationError({ jurisdiction: "Choose a jurisdiction." });
+      return validationError({ jurisdiction: "Choose a destination." });
     }
 
     let mapping: { description?: string };

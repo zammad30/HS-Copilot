@@ -47,6 +47,32 @@ function renderPage() {
 }
 
 describe("SettingsGeneralPage", () => {
+  it("labels the field Default destination, lists the six destinations, and shows the helper text", async () => {
+    renderPage();
+
+    const select = await screen.findByLabelText("Default destination");
+    expect(screen.queryByLabelText("Default jurisdiction")).not.toBeInTheDocument();
+    expect(screen.getByText("Turkey")).toBeInTheDocument();
+    expect(
+      Array.from(select.querySelectorAll("option")).map((option) => option.textContent),
+    ).toEqual([
+      "United States",
+      "European Union",
+      "United Kingdom",
+      "Canada",
+      "Australia",
+      "Turkey",
+    ]);
+    expect(
+      screen.getByText(
+        "Used as the starting value for new classifications. You can change it for each one.",
+      ),
+    ).toBeInTheDocument();
+    expect(select).toHaveAccessibleDescription(
+      "Used as the starting value for new classifications. You can change it for each one.",
+    );
+  });
+
   it("loads workspace defaults with Save disabled until edited, then saves and updates the session", async () => {
     const user = userEvent.setup();
     renderPage();

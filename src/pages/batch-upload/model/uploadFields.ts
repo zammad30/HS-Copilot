@@ -33,11 +33,9 @@ export const MAPPING_FIELDS: MappingFieldConfig[] = [
   },
 ];
 
-export const JURISDICTION_OPTIONS: { value: Jurisdiction; label: string }[] = [
-  { value: "US_HTS", label: "United States (HTS)" },
-  { value: "EU_CN", label: "European Union (CN)" },
-  { value: "UK_UKGT", label: "United Kingdom (UKGT)" },
-];
+// Starting destination while the workspace default is loading or failed to
+// load, so the required select never blocks the form.
+export const FALLBACK_JURISDICTION: Jurisdiction = "US_HTS";
 
 export function requiredFieldCount(): number {
   return MAPPING_FIELDS.filter((config) => config.required).length;

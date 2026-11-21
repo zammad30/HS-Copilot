@@ -6,6 +6,7 @@ import type {
   Status,
 } from "@/entities/classification";
 import { mockNow } from "../support/mockNow";
+import { sampleCodeFor } from "../support/destinationCodes";
 
 /** The store holds classifications without `expiresAt`: that field is
  * derived at read time from the current plan's retention, never stored
@@ -63,18 +64,24 @@ function buildClassification(input: SeedInput): StoredClassification {
   const {
     id,
     description,
-    code,
+    code: baseCode,
     confidence,
     status,
-    alternatives,
+    alternatives: baseAlternatives,
     subject,
     createdHoursAgo,
     updatedHoursAgo,
     overridden = false,
-    finalCode,
+    finalCode: baseFinalCode,
     includeRuling = true,
   } = input;
-  const chapter = code.split(".")[0];
+  // Every seed record is a US_HTS one. Seeds carry the real 6 digit HS code;
+  // the national digits are placeholders (sample data, see the api contract).
+  const jurisdiction = "US_HTS";
+  const code = sampleCodeFor(baseCode, jurisdiction);
+  const alternatives = baseAlternatives.map((alt) => sampleCodeFor(alt, jurisdiction));
+  const finalCode = baseFinalCode ? sampleCodeFor(baseFinalCode, jurisdiction) : undefined;
+  const chapter = baseCode.split(".")[0];
 
   const candidates: Candidate[] = [
     {
@@ -127,7 +134,7 @@ function buildClassification(input: SeedInput): StoredClassification {
           {
             kind: "ruling" as const,
             title: `${subject} ruling`,
-            reference: `HQ ${code.replace(".", "")}-26`,
+            reference: `HQ ${baseCode.replace(".", "")}-26`,
             excerpt: `A materially similar ${subject.toLowerCase()} was classified under ${code} after review of its essential character and principal use.`,
             isSample: true,
           },
@@ -190,7 +197,7 @@ function buildClassification(input: SeedInput): StoredClassification {
     workspaceId: "workspace_mock_1",
     description,
     attributes: { intendedUse: subject },
-    jurisdiction: "US_HTS",
+    jurisdiction,
     suggestedCode: code,
     finalCode: overridden ? finalCode : undefined,
     overridden,

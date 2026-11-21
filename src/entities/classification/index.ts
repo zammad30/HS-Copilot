@@ -28,6 +28,8 @@ export { ClassificationStatusBadge } from "./ui/ClassificationStatusBadge";
 export type { ClassificationStatusBadgeProps } from "./ui/ClassificationStatusBadge";
 export { CodeText } from "./ui/CodeText";
 export type { CodeTextProps } from "./ui/CodeText";
+export { DESTINATIONS, getDestination, importCodeLength } from "./model/destinations";
+export type { Destination } from "./model/destinations";
 export { isValidHsCode } from "./lib/hsCode";
 export { jurisdictionLabel } from "./lib/jurisdictionLabel";
 export { auditActionLabel } from "./lib/auditActionLabel";

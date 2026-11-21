@@ -1,7 +1,9 @@
+import type { Jurisdiction } from "@/entities/classification";
+
 export interface WorkspaceFixture {
   id: string;
   name: string;
-  defaultJurisdiction: "US_HTS" | "EU_CN" | "UK_UKGT";
+  defaultJurisdiction: Jurisdiction;
 }
 
 function createWorkspaceFixture(): WorkspaceFixture {

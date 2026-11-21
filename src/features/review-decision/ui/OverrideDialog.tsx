@@ -5,7 +5,7 @@ import { FormField } from "@/shared/ui/FormField";
 import { Select } from "@/shared/ui/Select";
 import { Textarea } from "@/shared/ui/Textarea";
 import { Button } from "@/shared/ui/Button";
-import type { Candidate } from "@/entities/classification";
+import type { Candidate, Jurisdiction } from "@/entities/classification";
 import type { useReviewDecision } from "../api/useReviewDecision";
 import { createOverrideFormSchema, fieldErrorsFrom } from "../model/decision.schema";
 import styles from "./DecisionDialog.module.scss";
@@ -14,6 +14,8 @@ export interface OverrideDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   classificationId: string;
+  /** The record's own destination; the new code is validated against it. */
+  jurisdiction: Jurisdiction;
   currentCode: string;
   candidates: Candidate[];
   /** Shared mutation instance so every decision button/dialog reflects one pending state. */
@@ -26,6 +28,7 @@ export function OverrideDialog({
   open,
   onOpenChange,
   classificationId,
+  jurisdiction,
   currentCode,
   candidates,
   decision,
@@ -36,7 +39,10 @@ export function OverrideDialog({
   const [reason, setReason] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | undefined>(undefined);
-  const formSchema = useMemo(() => createOverrideFormSchema(currentCode), [currentCode]);
+  const formSchema = useMemo(
+    () => createOverrideFormSchema(currentCode, jurisdiction),
+    [currentCode, jurisdiction],
+  );
 
   function resetForm() {
     setCode(currentCode);

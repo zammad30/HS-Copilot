@@ -112,6 +112,9 @@ export const classificationsHandlers = [
 
     switch (body.action) {
       case "approve": {
+        if (body.code !== undefined && !isValidHsCode(body.code, item.jurisdiction)) {
+          return validationError({ code: "Enter a valid code for this destination." });
+        }
         snapshotBeforeChange();
         applyApproveTransition(item, body.code, actorName);
         break;
@@ -136,8 +139,8 @@ export const classificationsHandlers = [
       case "override": {
         const code = body.code?.trim();
         const reason = body.reason?.trim();
-        if (!code || !isValidHsCode(code)) {
-          return validationError({ code: "Enter a valid HS code, for example 8518.30." });
+        if (!code || !isValidHsCode(code, item.jurisdiction)) {
+          return validationError({ code: "Enter a valid code for this destination." });
         }
         const previousCode = effectiveCode(item);
         if (code === previousCode) {

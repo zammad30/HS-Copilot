@@ -67,7 +67,7 @@ describe("useReviewDecision", () => {
     result.current.mutate({
       id: "cls_006",
       action: "override",
-      code: "9405.42",
+      code: "9405.42.0000",
       reason: "Better match.",
     });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -75,7 +75,7 @@ describe("useReviewDecision", () => {
     expect(result.current.data).toMatchObject({
       status: "approved",
       overridden: true,
-      finalCode: "9405.42",
+      finalCode: "9405.42.0000",
     });
   });
 

@@ -287,6 +287,7 @@ export function ClassificationDetailPage() {
         open={overrideOpen}
         onOpenChange={setOverrideOpen}
         classificationId={classification.id}
+        jurisdiction={classification.jurisdiction}
         currentCode={effectiveClassificationCode}
         candidates={sortedCandidates}
         decision={reviewDecision}

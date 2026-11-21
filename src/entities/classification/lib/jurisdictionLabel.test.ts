@@ -13,4 +13,16 @@ describe("jurisdictionLabel", () => {
   it("maps UK_UKGT to United Kingdom", () => {
     expect(jurisdictionLabel("UK_UKGT")).toBe("United Kingdom");
   });
+
+  it("maps CA_CCT to Canada", () => {
+    expect(jurisdictionLabel("CA_CCT")).toBe("Canada");
+  });
+
+  it("maps AU_WT to Australia", () => {
+    expect(jurisdictionLabel("AU_WT")).toBe("Australia");
+  });
+
+  it("maps TR_GTIP to Turkey", () => {
+    expect(jurisdictionLabel("TR_GTIP")).toBe("Turkey");
+  });
 });

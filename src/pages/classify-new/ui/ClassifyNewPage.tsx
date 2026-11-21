@@ -14,11 +14,13 @@ import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { ErrorState } from "@/shared/ui/ErrorState";
 import { ApiError } from "@/shared/api";
-import { classificationKeys } from "@/entities/classification";
+import { DESTINATIONS, classificationKeys } from "@/entities/classification";
+import type { Jurisdiction } from "@/entities/classification";
+import { useWorkspace } from "@/entities/workspace";
 import { routes } from "@/shared/config";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
 import {
-  DEFAULT_JURISDICTION,
+  FALLBACK_JURISDICTION,
   classifyNewFormSchema,
   fieldErrorsFrom,
 } from "../model/classifyNew.schema";
@@ -53,6 +55,11 @@ export function ClassifyNewPage() {
   const [material, setMaterial] = useState("");
   const [intendedUse, setIntendedUse] = useState("");
   const [origin, setOrigin] = useState("Unknown");
+  // Only the user's own pick is stored; until then the workspace default (or the
+  // fallback) is shown, so a late-loading workspace never overwrites a choice.
+  const [chosenDestination, setChosenDestination] = useState<Jurisdiction | undefined>(undefined);
+  const { data: workspace } = useWorkspace();
+  const destination = chosenDestination ?? workspace?.defaultJurisdiction ?? FALLBACK_JURISDICTION;
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [createError, setCreateError] = useState<string | undefined>(undefined);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
@@ -105,7 +112,7 @@ export function ClassifyNewPage() {
           intendedUse: result.data.intendedUse || undefined,
           origin: origin === "Unknown" ? undefined : origin,
         },
-        jurisdiction: DEFAULT_JURISDICTION,
+        jurisdiction: destination,
       },
       {
         onSuccess: ({ agentRunId }) => {
@@ -164,7 +171,21 @@ export function ClassifyNewPage() {
               </FormField>
             </div>
 
-            <FormField label="Country of origin">
+            <FormField label="Destination">
+              <Select
+                value={destination}
+                onChange={(event) => setChosenDestination(event.target.value as Jurisdiction)}
+                disabled={formDisabled}
+              >
+                {DESTINATIONS.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.label}
+                  </option>
+                ))}
+              </Select>
+            </FormField>
+
+            <FormField label="Country of origin (optional)">
               <Select
                 value={origin}
                 onChange={(event) => setOrigin(event.target.value)}

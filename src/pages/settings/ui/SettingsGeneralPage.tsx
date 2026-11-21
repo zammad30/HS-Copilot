@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Card } from "@/shared/ui/Card";
 import { FormField } from "@/shared/ui/FormField";
 import { TextInput } from "@/shared/ui/TextInput";
@@ -8,7 +8,7 @@ import { Skeleton } from "@/shared/ui/Skeleton";
 import { ErrorState } from "@/shared/ui/ErrorState";
 import { useToast } from "@/shared/ui/Toast";
 import { useSession, useSetSession, useSignOut } from "@/entities/session";
-import { jurisdictionLabel, jurisdictionSchema } from "@/entities/classification";
+import { DESTINATIONS } from "@/entities/classification";
 import type { Jurisdiction } from "@/entities/classification";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
 import { useWorkspace } from "@/entities/workspace";
@@ -17,14 +17,13 @@ import { useUpdateWorkspaceSettings } from "../api/workspaceSettings.mutation";
 import { useUpdateAccount } from "../api/account.mutation";
 import styles from "./SettingsGeneralPage.module.scss";
 
-const JURISDICTIONS = jurisdictionSchema.options;
-
 export function SettingsGeneralPage() {
   useDocumentTitle("Settings · General");
   const session = useSession();
   const setSession = useSetSession();
   const signOut = useSignOut();
   const { show } = useToast();
+  const destinationHelpId = useId();
 
   const { data, isPending, isError, refetch } = useWorkspace();
   const updateWorkspace = useUpdateWorkspaceSettings();
@@ -100,19 +99,23 @@ export function SettingsGeneralPage() {
                 disabled={updateWorkspace.isPending}
               />
             </FormField>
-            <FormField label="Default jurisdiction">
+            <FormField label="Default destination">
               <Select
                 value={jurisdiction}
                 onChange={(event) => setJurisdiction(event.target.value as Jurisdiction)}
                 disabled={updateWorkspace.isPending}
+                aria-describedby={destinationHelpId}
               >
-                {JURISDICTIONS.map((value) => (
-                  <option key={value} value={value}>
-                    {jurisdictionLabel(value)}
+                {DESTINATIONS.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.label}
                   </option>
                 ))}
               </Select>
             </FormField>
+            <p id={destinationHelpId} className={styles.helper}>
+              Used as the starting value for new classifications. You can change it for each one.
+            </p>
             <div className={styles.actions}>
               <Button
                 onClick={handleSaveWorkspace}

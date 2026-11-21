@@ -3,7 +3,14 @@ import { z } from "zod";
 export const statusSchema = z.enum(["approved", "rejected", "needs_review", "pending"]);
 export type Status = z.infer<typeof statusSchema>;
 
-export const jurisdictionSchema = z.enum(["US_HTS", "EU_CN", "UK_UKGT"]);
+export const jurisdictionSchema = z.enum([
+  "US_HTS",
+  "EU_CN",
+  "UK_UKGT",
+  "CA_CCT",
+  "AU_WT",
+  "TR_GTIP",
+]);
 export type Jurisdiction = z.infer<typeof jurisdictionSchema>;
 
 export const decisionActionSchema = z.enum([

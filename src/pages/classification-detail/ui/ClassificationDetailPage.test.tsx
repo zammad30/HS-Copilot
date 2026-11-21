@@ -131,17 +131,17 @@ describe("ClassificationDetailPage - override", () => {
     await user.click(overrideButton);
     const reopened = await screen.findByRole("dialog", { name: "Override classification code" });
     const select = within(reopened).getByLabelText("HS code") as HTMLSelectElement;
-    expect(select.value).toBe("3926.90");
+    expect(select.value).toBe("3926.90.0000");
     expect(
       within(reopened)
         .getAllByRole("option")
         .map((option) => option.getAttribute("value")),
-    ).toContain("4202.32");
+    ).toContain("4202.32.0000");
 
     await user.click(within(reopened).getByRole("button", { name: "Confirm override" }));
     expect(screen.getByText("Choose a different code than the current one.")).toBeInTheDocument();
 
-    await user.selectOptions(select, "4202.32");
+    await user.selectOptions(select, "4202.32.0000");
     await user.type(
       within(reopened).getByLabelText("Reason for override"),
       "Better matches the product's principal use.",

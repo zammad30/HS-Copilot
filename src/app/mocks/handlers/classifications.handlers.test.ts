@@ -106,6 +106,32 @@ describe("classifications handlers", () => {
     expect(updated.auditTrail[updated.auditTrail.length - 1].action).toBe("rejected");
   });
 
+  it("approve with a code of the wrong length for the record's destination is rejected", async () => {
+    // cls_002 is a US_HTS record, which needs 10 digits.
+    await expect(
+      http.post("/classifications/cls_002/decision", { action: "approve", code: "8518.30" }),
+    ).rejects.toMatchObject({ status: 422, code: "validation_error" });
+    const unchanged = await http.get<Classification>("/classifications/cls_002");
+    expect(unchanged.status).toBe("needs_review");
+  });
+
+  it("approve with a code of the correct length sets it as the final code", async () => {
+    const updated = await http.post<Classification>("/classifications/cls_002/decision", {
+      action: "approve",
+      code: "8518.22.0000",
+    });
+    expect(updated.status).toBe("approved");
+    expect(updated.finalCode).toBe("8518.22.0000");
+  });
+
+  it("approve without a code still approves the suggested code", async () => {
+    const updated = await http.post<Classification>("/classifications/cls_002/decision", {
+      action: "approve",
+    });
+    expect(updated.status).toBe("approved");
+    expect(updated.finalCode).toBe(updated.suggestedCode);
+  });
+
   it("override without a valid code is rejected with a 422 validation error", async () => {
     await expect(
       http.post("/classifications/cls_002/decision", {
@@ -116,11 +142,29 @@ describe("classifications handlers", () => {
     ).rejects.toMatchObject({ status: 422, code: "validation_error" });
   });
 
+  it("override with a code of the wrong length for the record's destination is rejected", async () => {
+    // cls_002 is a US_HTS record, which needs 10 digits.
+    await expect(
+      http.post("/classifications/cls_002/decision", {
+        action: "override",
+        code: "8518.22",
+        reason: "Because",
+      }),
+    ).rejects.toMatchObject({ status: 422, code: "validation_error" });
+    await expect(
+      http.post("/classifications/cls_002/decision", {
+        action: "override",
+        code: "8518.22.000000",
+        reason: "Because",
+      }),
+    ).rejects.toMatchObject({ status: 422, code: "validation_error" });
+  });
+
   it("override with the current code is rejected", async () => {
     await expect(
       http.post("/classifications/cls_002/decision", {
         action: "override",
-        code: "8518.30",
+        code: "8518.30.0000",
         reason: "Because",
       }),
     ).rejects.toMatchObject({ status: 422, code: "validation_error" });
@@ -128,20 +172,20 @@ describe("classifications handlers", () => {
 
   it("override without a reason is rejected with a 422 validation error", async () => {
     await expect(
-      http.post("/classifications/cls_002/decision", { action: "override", code: "8518.22" }),
+      http.post("/classifications/cls_002/decision", { action: "override", code: "8518.22.0000" }),
     ).rejects.toMatchObject({ status: 422, code: "validation_error" });
   });
 
   it("override sets status to approved, overridden true, and the chosen final code", async () => {
     const updated = await http.post<Classification>("/classifications/cls_002/decision", {
       action: "override",
-      code: "8518.22",
+      code: "8518.22.0000",
       reason: "Better matches the product's principal use.",
     });
 
     expect(updated.status).toBe("approved");
     expect(updated.overridden).toBe(true);
-    expect(updated.finalCode).toBe("8518.22");
+    expect(updated.finalCode).toBe("8518.22.0000");
     expect(updated.auditTrail[updated.auditTrail.length - 1].action).toBe("overridden");
   });
 

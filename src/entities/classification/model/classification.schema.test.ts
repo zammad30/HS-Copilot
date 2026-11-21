@@ -3,6 +3,7 @@ import {
   classificationListResponseSchema,
   classificationSchema,
   decisionActionSchema,
+  jurisdictionSchema,
   statusSchema,
 } from "./classification.schema";
 
@@ -119,5 +120,15 @@ describe("classificationListResponseSchema", () => {
       pageSize: 50,
     });
     expect(result.items).toHaveLength(1);
+  });
+});
+
+describe("jurisdictionSchema", () => {
+  it.each(["US_HTS", "EU_CN", "UK_UKGT", "CA_CCT", "AU_WT", "TR_GTIP"])("accepts %s", (value) => {
+    expect(jurisdictionSchema.safeParse(value).success).toBe(true);
+  });
+
+  it.each(["US", "JP_HS", "", "us_hts"])("rejects %j", (value) => {
+    expect(jurisdictionSchema.safeParse(value).success).toBe(false);
   });
 });

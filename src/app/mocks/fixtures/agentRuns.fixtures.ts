@@ -1,6 +1,7 @@
 import type { AgentRun, AgentRunQuestion, AgentRunStep } from "@/pages/classify-new";
 import type { AuditEntry, Candidate, Classification, Evidence } from "@/entities/classification";
 import { mockNow } from "../support/mockNow";
+import { sampleCodeFor } from "../support/destinationCodes";
 import { classificationsStore } from "./classifications.fixtures";
 import type { StoredClassification } from "./classifications.fixtures";
 
@@ -153,12 +154,15 @@ function buildClassification(id: string, input: CreateClassificationInput): Stor
   const { description, attributes, jurisdiction } = input;
   const heuristic = pickHeuristic(attributes.material, attributes.intendedUse);
   const chapter = heuristic.code.split(".")[0];
+  // Real first 6 digits, placeholder national digits in the chosen destination's length.
+  const suggestedCode = sampleCodeFor(heuristic.code, jurisdiction);
+  const alternativeCodes = heuristic.alternatives.map((alt) => sampleCodeFor(alt, jurisdiction));
   const subject = heuristic.subject;
   const now = new Date(mockNow()).toISOString();
 
   const candidates: Candidate[] = [
     {
-      code: heuristic.code,
+      code: suggestedCode,
       title: subject,
       confidence: 88,
       reasoning: [
@@ -173,13 +177,13 @@ function buildClassification(id: string, input: CreateClassificationInput): Stor
       ],
     },
     {
-      code: heuristic.alternatives[0],
+      code: alternativeCodes[0],
       title: `${subject} (alternative)`,
       confidence: 70,
       reasoning: [],
     },
     {
-      code: heuristic.alternatives[1],
+      code: alternativeCodes[1],
       title: `${subject} (alternative)`,
       confidence: 61,
       reasoning: [],
@@ -191,7 +195,8 @@ function buildClassification(id: string, input: CreateClassificationInput): Stor
       kind: "tariff_text",
       title: `HTS heading ${chapter}`,
       reference: `HTS heading ${chapter}`,
-      excerpt: `${subject} described by its material, construction, and principal function under subheading ${heuristic.code}.`,
+      excerpt: `${subject} described by its material, construction, and principal function under subheading ${suggestedCode}.`,
+      isSample: true,
     },
     {
       kind: "tariff_text",
@@ -204,7 +209,8 @@ function buildClassification(id: string, input: CreateClassificationInput): Stor
       kind: "ruling",
       title: `${subject} ruling`,
       reference: `HQ ${heuristic.code.replace(".", "")}-26`,
-      excerpt: `A materially similar ${subject.toLowerCase()} was classified under ${heuristic.code} after review of its essential character and principal use.`,
+      excerpt: `A materially similar ${subject.toLowerCase()} was classified under ${suggestedCode} after review of its essential character and principal use.`,
+      isSample: true,
     },
   ];
 
@@ -224,7 +230,7 @@ function buildClassification(id: string, input: CreateClassificationInput): Stor
     description,
     attributes,
     jurisdiction,
-    suggestedCode: heuristic.code,
+    suggestedCode,
     overridden: false,
     confidence: candidates[0].confidence,
     status: "needs_review",
@@ -234,6 +240,7 @@ function buildClassification(id: string, input: CreateClassificationInput): Stor
     createdAt: now,
     updatedAt: now,
     createdBy: "reviewer@hs-copilot.test",
+    model: { version: "hs-copilot-classifier-v1", isSample: true },
   };
 }
 

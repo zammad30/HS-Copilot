@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { isValidHsCode } from "@/entities/classification";
+import { importCodeLength, isValidHsCode } from "@/entities/classification";
+import type { Jurisdiction } from "@/entities/classification";
 
 export type DecisionInput =
   | { id: string; action: "approve"; code?: string }
@@ -13,13 +14,14 @@ export const rejectFormSchema = z.object({
 });
 export type RejectFormValues = z.infer<typeof rejectFormSchema>;
 
-export function createOverrideFormSchema(currentCode: string) {
+export function createOverrideFormSchema(currentCode: string, jurisdiction: Jurisdiction) {
+  const lengthMessage = `Enter a valid ${importCodeLength(jurisdiction)} digit code for this destination.`;
   return z.object({
     code: z
       .string()
       .trim()
-      .min(1, "Enter a valid HS code, for example 8518.30.")
-      .refine(isValidHsCode, "Enter a valid HS code, for example 8518.30.")
+      .min(1, lengthMessage)
+      .refine((value) => isValidHsCode(value, jurisdiction), lengthMessage)
       .refine((value) => value !== currentCode, "Choose a different code than the current one."),
     reason: z.string().trim().min(1, "Enter a reason for the override."),
   });

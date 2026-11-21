@@ -1,11 +1,7 @@
 import type { Jurisdiction } from "../model/classification.schema";
+import { getDestination } from "../model/destinations";
 
-const LABELS: Record<Jurisdiction, string> = {
-  US_HTS: "United States",
-  EU_CN: "European Union",
-  UK_UKGT: "United Kingdom",
-};
-
+/** The destination name shown in the UI for a jurisdiction id. */
 export function jurisdictionLabel(jurisdiction: Jurisdiction): string {
-  return LABELS[jurisdiction];
+  return getDestination(jurisdiction).label;
 }

@@ -1,5 +1,6 @@
 import { http, HttpResponse } from "msw";
 import { env } from "@/shared/config";
+import { jurisdictionSchema } from "@/entities/classification";
 import { applyForceDelay, forcedErrorResponse, randomLatency } from "../scenarios";
 import { workspaceStore } from "../fixtures/workspace.fixtures";
 import {
@@ -8,8 +9,6 @@ import {
   seatsUsed,
   usageStore,
 } from "../fixtures/plans.fixtures";
-
-const VALID_JURISDICTIONS = new Set(["US_HTS", "EU_CN", "UK_UKGT"]);
 
 interface WorkspacePatchBody {
   name?: unknown;
@@ -55,12 +54,9 @@ export const workspaceHandlers = [
     if (typeof body.name === "string" && body.name.trim()) {
       workspaceStore.name = body.name.trim();
     }
-    if (
-      typeof body.defaultJurisdiction === "string" &&
-      VALID_JURISDICTIONS.has(body.defaultJurisdiction)
-    ) {
-      workspaceStore.defaultJurisdiction =
-        body.defaultJurisdiction as typeof workspaceStore.defaultJurisdiction;
+    const jurisdiction = jurisdictionSchema.safeParse(body.defaultJurisdiction);
+    if (jurisdiction.success) {
+      workspaceStore.defaultJurisdiction = jurisdiction.data;
     }
 
     return HttpResponse.json(workspaceResponse());

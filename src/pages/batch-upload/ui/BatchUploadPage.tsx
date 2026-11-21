@@ -10,11 +10,13 @@ import { FormField } from "@/shared/ui/FormField";
 import { Select } from "@/shared/ui/Select";
 import { parseCsv, matchColumns } from "@/shared/lib/parseCsv";
 import type { ParseCsvFailureReason } from "@/shared/lib/parseCsv";
+import { DESTINATIONS } from "@/entities/classification";
 import type { Jurisdiction } from "@/entities/classification";
+import { useWorkspace } from "@/entities/workspace";
 import { routes } from "@/shared/config";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
 import {
-  JURISDICTION_OPTIONS,
+  FALLBACK_JURISDICTION,
   MAPPING_FIELDS,
   MAX_DESCRIPTION_LENGTH,
   MAX_UPLOAD_BYTES,
@@ -49,7 +51,11 @@ export function BatchUploadPage() {
   const [fileError, setFileError] = useState<string | undefined>(undefined);
   const [parsed, setParsed] = useState<{ headers: string[]; rows: string[][] } | null>(null);
   const [mapping, setMapping] = useState<Partial<Record<MappingField, string>>>({});
-  const [jurisdiction, setJurisdiction] = useState<Jurisdiction>("US_HTS");
+  // Only the user's own pick is stored; until then the workspace default (or the
+  // fallback) is shown, so a late-loading workspace never overwrites a choice.
+  const [chosenDestination, setChosenDestination] = useState<Jurisdiction | undefined>(undefined);
+  const { data: workspace } = useWorkspace();
+  const jurisdiction = chosenDestination ?? workspace?.defaultJurisdiction ?? FALLBACK_JURISDICTION;
   const [submitError, setSubmitError] = useState<string | undefined>(undefined);
 
   const createBatch = useCreateBatch();
@@ -252,14 +258,14 @@ export function BatchUploadPage() {
               </FormField>
             ))}
 
-            <FormField label="Jurisdiction">
+            <FormField label="Destination">
               <Select
                 value={jurisdiction}
-                onChange={(event) => setJurisdiction(event.target.value as Jurisdiction)}
+                onChange={(event) => setChosenDestination(event.target.value as Jurisdiction)}
                 disabled={!parsed}
               >
-                {JURISDICTION_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
+                {DESTINATIONS.map((option) => (
+                  <option key={option.id} value={option.id}>
                     {option.label}
                   </option>
                 ))}

@@ -3,16 +3,31 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { Candidate } from "@/entities/classification";
+import type { Candidate, Jurisdiction } from "@/entities/classification";
 import { useReviewDecision } from "../api/useReviewDecision";
 import { OverrideDialog } from "./OverrideDialog";
 
 const CANDIDATES: Candidate[] = [
-  { code: "8518.30", title: "Wireless earphones", confidence: 88, reasoning: [] },
-  { code: "8518.22", title: "Wireless earphones (alternative)", confidence: 70, reasoning: [] },
+  { code: "8518.30.0000", title: "Wireless earphones", confidence: 88, reasoning: [] },
+  {
+    code: "8518.22.0000",
+    title: "Wireless earphones (alternative)",
+    confidence: 70,
+    reasoning: [],
+  },
 ];
 
-function Harness({ onOverridden = vi.fn() }: { onOverridden?: () => void }) {
+interface HarnessProps {
+  onOverridden?: () => void;
+  jurisdiction?: Jurisdiction;
+  candidates?: Candidate[];
+}
+
+function Harness({
+  onOverridden = vi.fn(),
+  jurisdiction = "US_HTS",
+  candidates = CANDIDATES,
+}: HarnessProps) {
   const [open, setOpen] = useState(true);
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const decision = useReviewDecision();
@@ -25,8 +40,9 @@ function Harness({ onOverridden = vi.fn() }: { onOverridden?: () => void }) {
         open={open}
         onOpenChange={setOpen}
         classificationId="cls_002"
-        currentCode="8518.30"
-        candidates={CANDIDATES}
+        jurisdiction={jurisdiction}
+        currentCode={candidates[0].code}
+        candidates={candidates}
         decision={decision}
         returnFocusRef={openButtonRef}
         onOverridden={onOverridden}
@@ -35,7 +51,7 @@ function Harness({ onOverridden = vi.fn() }: { onOverridden?: () => void }) {
   );
 }
 
-function renderDialog(props?: Parameters<typeof Harness>[0]) {
+function renderDialog(props?: HarnessProps) {
   const queryClient = new QueryClient();
   return render(
     <QueryClientProvider client={queryClient}>
@@ -50,13 +66,13 @@ describe("OverrideDialog", () => {
     const dialog = screen.getByRole("dialog");
 
     const select = within(dialog).getByLabelText("HS code") as HTMLSelectElement;
-    expect(select.value).toBe("8518.30");
+    expect(select.value).toBe("8518.30.0000");
     expect(
-      within(dialog).getByRole("option", { name: "8518.30 - Wireless earphones" }),
+      within(dialog).getByRole("option", { name: "8518.30.0000 - Wireless earphones" }),
     ).toBeInTheDocument();
     expect(
       within(dialog).getByRole("option", {
-        name: "8518.22 - Wireless earphones (alternative)",
+        name: "8518.22.0000 - Wireless earphones (alternative)",
       }),
     ).toBeInTheDocument();
   });
@@ -81,7 +97,7 @@ describe("OverrideDialog", () => {
     renderDialog({ onOverridden });
     const dialog = screen.getByRole("dialog");
 
-    await user.selectOptions(within(dialog).getByLabelText("HS code"), "8518.22");
+    await user.selectOptions(within(dialog).getByLabelText("HS code"), "8518.22.0000");
     await user.type(
       within(dialog).getByLabelText("Reason for override"),
       "Better matches the product's principal use.",
@@ -96,7 +112,7 @@ describe("OverrideDialog", () => {
     renderDialog();
     const dialog = screen.getByRole("dialog");
 
-    await user.selectOptions(within(dialog).getByLabelText("HS code"), "8518.22");
+    await user.selectOptions(within(dialog).getByLabelText("HS code"), "8518.22.0000");
     await user.click(within(dialog).getByRole("button", { name: "Confirm override" }));
 
     expect(screen.getByText("Enter a reason for the override.")).toBeInTheDocument();
@@ -111,5 +127,37 @@ describe("OverrideDialog", () => {
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Open override dialog" })).toHaveFocus();
+  });
+
+  it("validates the new code against the record's own destination", async () => {
+    const onOverridden = vi.fn();
+    const user = userEvent.setup();
+    // Turkey needs 12 digits: a 10 digit candidate is the wrong length there.
+    renderDialog({
+      jurisdiction: "TR_GTIP",
+      onOverridden,
+      candidates: [
+        { code: "8518.30.000000", title: "Wireless earphones", confidence: 88, reasoning: [] },
+        { code: "8518.22.0000", title: "Wrong length", confidence: 70, reasoning: [] },
+        { code: "8518.22.000000", title: "Right length", confidence: 60, reasoning: [] },
+      ],
+    });
+    const dialog = screen.getByRole("dialog");
+
+    await user.type(within(dialog).getByLabelText("Reason for override"), "Because");
+    await user.selectOptions(within(dialog).getByLabelText("HS code"), "8518.22.0000");
+    await user.click(within(dialog).getByRole("button", { name: "Confirm override" }));
+
+    expect(
+      screen.getByText("Enter a valid 12 digit code for this destination."),
+    ).toBeInTheDocument();
+    expect(onOverridden).not.toHaveBeenCalled();
+
+    await user.selectOptions(within(dialog).getByLabelText("HS code"), "8518.22.000000");
+    await user.click(within(dialog).getByRole("button", { name: "Confirm override" }));
+    // The same dialog accepts the 12 digit code: no length error remains.
+    expect(
+      screen.queryByText("Enter a valid 12 digit code for this destination."),
+    ).not.toBeInTheDocument();
   });
 });
