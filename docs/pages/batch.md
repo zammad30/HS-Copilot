@@ -159,6 +159,18 @@ Batch upload: import a CSV of products, map its columns, and start classifying a
 - **BR-5 RESOLVED**: omit the "Updated" column (matches the export's compact table and Home's precedent, as opposed to Library's non-compact one which does show it).
 - **BR-6 RESOLVED**: `entities/review-rule` is promoted from `pages/settings` in this task, because Batch review is the second consumer (its bulk-approve threshold reads `highlightAbove`). Settings' own tests continue to pass unchanged against the new import path, matching how `entities/member` was promoted in the Settings task.
 
+## Plan usage and limits (plans, limits and expiry, step 3b)
+
+Read from `useWorkspace` (limits, usage). The server enforces the same rules; its refusals are handled too. Notices use `PlanLimitNotice` (`entities/workspace`) with `planLimitMessage`.
+
+- **Usage lines** above the cards: "Batch uploads: {used} of {limit} used this month. Up to {maxRows} rows per upload." (or "Batch uploads: not included in your plan.") and the classification quota line shared with Classify new. Skeleton while the workspace loads; if it fails, no lines and no blocking.
+- **No batch in the plan** (`maxRows` 0): notice reason "feature"; file chooser, "Choose file" and submit disabled.
+- **Uploads used up** (`batchUploadsUsed >= uploadsPerMonth`): notice reason "batch_uploads"; file chooser and submit disabled.
+- **After a file is parsed**, rows are the non-empty descriptions (the same count the server uses). Rows over `maxRows`: notice reason "batch_rows". Rows over the remaining classifications (limit minus used, never below 0): notice reason "classifications" plus "You have {n} left, so choose a smaller file." Submit is disabled in both cases; the chooser stays enabled so a smaller file can be picked.
+- Submit carries `aria-describedby` pointing at the notice. Only one notice shows at a time.
+- **Server 403 `plan_limit_reached` on submit**: the matching notice replaces the generic error and the workspace is refetched. The server-derived notice shows only until a workspace fetch newer than the refusal arrives; after that the workspace data decides.
+- After a successful upload the workspace query is invalidated.
+
 ## Acceptance criteria (testable)
 
 - [ ] `shared/lib/parseCsv` correctly parses plain, quoted-with-commas, quoted-with-escaped-quotes, CRLF, and trailing-blank-line CSVs; rejects files over 5 MB or 500 rows; all covered by unit tests.

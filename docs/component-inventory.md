@@ -30,7 +30,7 @@ Check here before creating any component. Update this file whenever a shared or 
 
 ## entities/*/ui
 
-`classification`: ClassificationStatusBadge, CodeText (`size="default"|"hero"`, mono font, tabular numerals; `ConfidenceMeter` not built - the raw shared `Meter` is used directly, as Home already does). `batch`: BatchProgress. `member`: RoleSelect, MemberAvatar.
+`classification`: ClassificationStatusBadge, CodeText (`size="default"|"hero"`, mono font, tabular numerals; `ConfidenceMeter` not built - the raw shared `Meter` is used directly, as Home already does). `batch`: BatchProgress. `member`: RoleSelect, MemberAvatar. `workspace`: PlanLimitNotice (`message`, optional `id` for aria-describedby; composes the shared Banner, not dismissible, plus a "See plans" link to `routes.pricing`; used by Classify new, Batch upload, Settings Members and Review rules).
 
 ## widgets
 

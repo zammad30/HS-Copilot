@@ -197,6 +197,11 @@ A page-local two-column layout (`pages/settings/ui/SettingsLayout.tsx`), not a w
 - [ ] Responsive at 375/768/1280: grid collapses to one column at `<=1000px`; members table scrolls inside its card at `<=720px`.
 - [ ] `npm run check` passes.
 
+## Seats and second approver limits (plans, limits and expiry, step 3b)
+
+- **Members tab**: "{seatsUsed} of {seats} people" beside "Invite member" (`seatsUsed` counts members and pending invites). When full, "Invite member" is disabled and a `PlanLimitNotice` (reason "seats") is connected to it by `aria-describedby`. "Resend invite" for an existing member keeps working. A server 403 reason "seats" on invite shows the notice inside the invite modal instead of the generic error, and while it shows the page notice is hidden (one notice at a time); it clears when the modal closes. Any 403 `plan_limit_reached` refetches the workspace. A successful invite or removal invalidates the workspace query. Role gating is unchanged.
+- **Review rules tab**: when `limits.secondApprover` is false, the "Require a second approver" toggle and the chapters are disabled and show nothing selected, a `PlanLimitNotice` (reason "feature") explains it, the chapters group points at it with `aria-describedby`, and the helper line reads "Second approver is not included in your plan, so no chapters apply." Chapters already saved before a downgrade never make the form dirty, so Save stays disabled until something else changes; a save on that plan always sends `secondApproverChapters: []`. With the feature, behavior is unchanged. A server 403 reason "feature" on save shows the notice instead of the generic toast, until a newer workspace fetch arrives, and refetches the workspace. Never two notices at once. (`Toggle` takes no `aria-describedby`, so the link is on the chapters group.)
+
 ## Plan and usage (plans, limits and expiry, step 3a)
 
 Read-only block on the General tab, between "Workspace defaults" and "Account". Data comes from `useWorkspace` (plan, limits, usage) and `usePlans` (plan name). Formatters live in `entities/workspace/lib`.
