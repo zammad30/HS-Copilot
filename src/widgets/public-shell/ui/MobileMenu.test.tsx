@@ -19,6 +19,7 @@ describe("MobileMenu", () => {
   it("renders all nav links and the Open demo workspace button", () => {
     renderMenu();
     expect(screen.getByRole("link", { name: "Methodology" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Pricing" })).toHaveAttribute("href", "/pricing");
     expect(screen.getByRole("link", { name: "Sign in" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Privacy" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Terms" })).toBeInTheDocument();

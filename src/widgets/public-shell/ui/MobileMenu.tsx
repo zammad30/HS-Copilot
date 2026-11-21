@@ -15,6 +15,7 @@ export interface MobileMenuProps {
 
 const LINKS = [
   { label: "Methodology", to: routes.methodology },
+  { label: "Pricing", to: routes.pricing },
   { label: "Sign in", to: routes.signIn },
   { label: "Privacy", to: routes.privacy },
   { label: "Terms", to: routes.terms },

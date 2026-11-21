@@ -2,6 +2,7 @@
 export const routes = {
   landing: "/",
   methodology: "/methodology",
+  pricing: "/pricing",
   signIn: "/signin",
   signUp: "/signup",
   resetPassword: "/reset",

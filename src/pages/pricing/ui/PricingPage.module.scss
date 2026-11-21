@@ -1,0 +1,221 @@
+@use "@/shared/styles/abstracts" as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+// design.md §4: shell-width = min(100% - 64px, 1280px), centered.
+// Mobile margins are 24px per side (space-6 = 48px total), same as StaticPage.
+@mixin shell-width {
+  width: min(calc(100% - var(--space-8)), var(--content));
+  margin-inline: auto;
+
+  @include respond-below($bp-mobile) {
+    width: min(calc(100% - var(--space-6)), var(--content));
+  }
+}
+
+.main {
+  @include shell-width;
+  display: grid;
+  gap: var(--space-4);
+  padding-top: var(--space-10);
+  padding-bottom: 112px;
+
+  @include respond-below($bp-mobile) {
+    padding-top: var(--space-8);
+  }
+}
+
+.header {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-1);
+  text-align: center;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.description {
+  max-width: 680px;
+  margin: var(--space-1) 0 0;
+  color: var(--text);
+}
+
+.workspaceError {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 1040px;
+  margin-inline: auto;
+
+  @include respond-below($bp-mobile) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.errorWrap {
+  width: 100%;
+  max-width: 1040px;
+  margin-inline: auto;
+}
+
+// The section is the grid item; the Card fills it so all three are equal height.
+// The shadow sits here, not on Card, so the shared Card is not restyled.
+.cell {
+  display: grid;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+// Same block height in every card so prices and button areas line up.
+.heading {
+  display: grid;
+  align-content: start;
+  gap: var(--space-05);
+}
+
+.planName {
+  margin: 0;
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+}
+
+.tagline {
+  min-height: 20px;
+  margin: 0 0 var(--space-1);
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.price {
+  color: var(--ink);
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.period {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+// Pinned to the bottom of the card. Grid so a Button child stretches to full
+// width without restyling it.
+.action {
+  display: grid;
+  align-content: center;
+  min-height: var(--control-height);
+  margin-top: auto;
+  padding-top: var(--space-3);
+  box-sizing: content-box;
+}
+
+.currentPlan {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--control-height);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+.divider {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+.features {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// min-height keeps rows level across cards when one label wraps.
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+  min-height: var(--control-height);
+  padding-top: var(--space-1);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 20px;
+
+  svg {
+    flex-shrink: 0;
+    margin-top: calc(var(--space-05) / 2);
+  }
+}
+
+.notIncluded {
+  color: var(--muted);
+}
+
+.visuallyHidden {
+  @include visually-hidden;
+}
+
+// Same width and left edge as the card row.
+.footnotes {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-1);
+  width: 100%;
+  max-width: 1040px;
+  margin-inline: auto;
+  text-align: left;
+}
+
+.demoLine,
+.notes p {
+  max-width: 72ch;
+  margin: 0;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 26px;
+}
+
+.notes {
+  display: grid;
+  gap: var(--space-1);
+}

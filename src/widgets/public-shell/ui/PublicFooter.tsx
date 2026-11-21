@@ -15,6 +15,7 @@ export function PublicFooter({ onLogoClick }: PublicFooterProps) {
         <p className={styles.tagline}>AI-assisted research. Human-reviewed decisions.</p>
         <div className={styles.links}>
           <Link to={routes.methodology}>Methodology</Link>
+          <Link to={routes.pricing}>Pricing</Link>
           <Link to={routes.privacy}>Privacy</Link>
           <Link to={routes.terms}>Terms</Link>
           <span>© 2026</span>

@@ -16,6 +16,7 @@ export interface PublicHeaderProps {
 
 const NAV_LINKS = [
   { label: "Methodology", to: routes.methodology },
+  { label: "Pricing", to: routes.pricing },
   { label: "Sign in", to: routes.signIn },
 ] as const;
 

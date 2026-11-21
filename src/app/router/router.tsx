@@ -21,6 +21,7 @@ const LandingPage = lazy(() => import("@/pages/landing").then((m) => ({ default:
 const MethodologyPage = lazy(() =>
   import("@/pages/methodology").then((m) => ({ default: m.MethodologyPage })),
 );
+const PricingPage = lazy(() => import("@/pages/pricing").then((m) => ({ default: m.PricingPage })));
 const SignInPage = lazy(() => import("@/pages/auth").then((m) => ({ default: m.SignInPage })));
 const SignUpPage = lazy(() => import("@/pages/auth").then((m) => ({ default: m.SignUpPage })));
 const ResetPasswordPage = lazy(() =>
@@ -86,6 +87,7 @@ const devOnlyRoutes = import.meta.env.DEV
 export const router = createBrowserRouter([
   { path: routes.landing, Component: LandingPage },
   { path: routes.methodology, Component: MethodologyPage },
+  { path: routes.pricing, Component: PricingPage },
   { path: routes.signIn, Component: SignInPage },
   { path: routes.signUp, Component: SignUpPage },
   { path: routes.resetPassword, Component: ResetPasswordPage },

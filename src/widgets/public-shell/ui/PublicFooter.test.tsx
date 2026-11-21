@@ -14,6 +14,7 @@ describe("PublicFooter", () => {
 
     expect(screen.getByText("AI-assisted research. Human-reviewed decisions.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Methodology" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Pricing" })).toHaveAttribute("href", "/pricing");
     expect(screen.getByRole("link", { name: "Privacy" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Terms" })).toBeInTheDocument();
     expect(screen.getByText("© 2026")).toBeInTheDocument();

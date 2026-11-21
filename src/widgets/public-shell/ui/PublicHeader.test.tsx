@@ -19,6 +19,7 @@ describe("PublicHeader", () => {
     );
 
     expect(screen.getByRole("link", { name: "Methodology" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Pricing" })).toHaveAttribute("href", "/pricing");
     expect(screen.getByRole("link", { name: "Sign in" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Open demo" })).toBeInTheDocument();
   });
