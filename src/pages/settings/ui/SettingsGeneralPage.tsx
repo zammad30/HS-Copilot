@@ -11,10 +11,10 @@ import { useSession, useSetSession, useSignOut } from "@/entities/session";
 import { jurisdictionLabel, jurisdictionSchema } from "@/entities/classification";
 import type { Jurisdiction } from "@/entities/classification";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
-import { useWorkspaceSettings } from "../api/workspaceSettings.query";
+import { useWorkspace } from "@/entities/workspace";
+import type { Workspace } from "@/entities/workspace";
 import { useUpdateWorkspaceSettings } from "../api/workspaceSettings.mutation";
 import { useUpdateAccount } from "../api/account.mutation";
-import type { WorkspaceSettings } from "../model/workspaceSettings.schema";
 import styles from "./SettingsGeneralPage.module.scss";
 
 const JURISDICTIONS = jurisdictionSchema.options;
@@ -26,11 +26,11 @@ export function SettingsGeneralPage() {
   const signOut = useSignOut();
   const { show } = useToast();
 
-  const { data, isPending, isError, refetch } = useWorkspaceSettings();
+  const { data, isPending, isError, refetch } = useWorkspace();
   const updateWorkspace = useUpdateWorkspaceSettings();
   const updateAccount = useUpdateAccount();
 
-  const [baseline, setBaseline] = useState<WorkspaceSettings | null>(null);
+  const [baseline, setBaseline] = useState<Workspace | null>(null);
   const [workspaceName, setWorkspaceName] = useState("");
   const [jurisdiction, setJurisdiction] = useState<Jurisdiction>("US_HTS");
 

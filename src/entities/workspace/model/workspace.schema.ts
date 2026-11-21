@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { jurisdictionSchema } from "@/entities/classification";
+import { jurisdictionSchema } from "@/entities/classification/@x/workspace";
 import { planIdSchema, planLimitsSchema, planUsageSchema } from "./plans.schema";
 
-export const workspaceSettingsSchema = z.object({
+export const workspaceSchema = z.object({
   id: z.string(),
   name: z.string(),
   defaultJurisdiction: jurisdictionSchema,
@@ -10,4 +10,4 @@ export const workspaceSettingsSchema = z.object({
   limits: planLimitsSchema,
   usage: planUsageSchema,
 });
-export type WorkspaceSettings = z.infer<typeof workspaceSettingsSchema>;
+export type Workspace = z.infer<typeof workspaceSchema>;

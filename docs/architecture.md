@@ -34,14 +34,14 @@
 
 ## Slice map (create on demand)
 
-- entities: `classification`, `batch`, `agent-run`, `member` (built - promoted from `pages/classification-detail/api`), `workspace`, `session`, `review-rule`, `evaluation`
+- entities: `classification`, `batch`, `agent-run`, `member` (built - promoted from `pages/classification-detail/api`), `workspace` (built - promoted from `pages/settings`: workspace and plan schemas, `useWorkspace`, `usePlans`), `session`, `review-rule`, `evaluation`
 - features: `review-decision` (approve, reject, override, request-info, undo), `delete-classification` (delete with Undo grace window), `classify-product`, `answer-clarification`, `bulk-review`, `upload-batch`, `auth`, `manage-members`, `edit-review-rules`, `edit-workspace`, `filter-classifications`, `export-data`
 - widgets: `app-shell` (sidebar, topbar, menus), `public-shell` (header, footer, mobile menu), `classification-table`, `audit-trail`, `agent-progress`, `evidence-drawer`
 - pages: `landing`, `methodology`, `auth`, `legal`, `public-try`, `home`, `classify-new`, `classification-detail`, `batch-upload`, `batch-review`, `library`, `settings`, `not-found`, `kit` (dev only)
 
 ## Routes (`app/router`, paths in `shared/config/routes.ts`)
 
-`/` landing | `/methodology` | `/signin` | `/privacy` | `/terms` | `/try` | `/app` home | `/app/classify/new` | `/app/classifications/:id` | `/app/batches/new` | `/app/batches/:id` | `/app/library` | `/app/settings/{general|members|rules}` | `/_kit` (dev only) | `*` not found. Pages are lazy-loaded. `/app/*` is behind the session guard (mock session in mock mode).
+`/` landing | `/methodology` | `/pricing` | `/signin` | `/privacy` | `/terms` | `/try` | `/app` home | `/app/classify/new` | `/app/classifications/:id` | `/app/batches/new` | `/app/batches/:id` | `/app/library` | `/app/settings/{general|members|rules}` | `/_kit` (dev only) | `*` not found. Pages are lazy-loaded. `/app/*` is behind the session guard (mock session in mock mode).
 
 ## Data flow
 
@@ -61,3 +61,5 @@ Local UI state stays in components. Server state stays in TanStack Query. Sessio
 
 - 2026-11: FSD + SCSS Modules + CSS variable tokens. MSW chosen over hand-written mock services so the real API can replace mocks without code changes.
 - 2026-11 (batch task): `entities/batch` reuses `entities/classification`'s `Jurisdiction` and `ClassificationListResponse`/`ClassificationsListParams` types (a batch's rows are `Classification` records, per rule 5), via an FSD `@x` cross-import public API at `entities/classification/@x/batch.ts`, scoped to the `batch` slice only - not a general import of `entities/classification` from `entities/batch`.
+- 2026-11 (pricing task): `entities/workspace` promoted from `pages/settings` (model: workspace and plan schemas; api: `workspaceKeys`, `useWorkspace`, new `usePlans`). Second consumer: the public Pricing page. The PATCH /workspace mutation stays in `pages/settings/api` (rule 7) and imports the entity's schema and keys. Renamed on the way: `WorkspaceSettings` -> `Workspace`, `useWorkspaceSettings` -> `useWorkspace`, `workspaceSettingsKeys` -> `workspaceKeys`.
+- 2026-11 (pricing task): `entities/workspace`'s `Workspace` schema reuses `entities/classification`'s `jurisdictionSchema`/`Jurisdiction` (a workspace's default jurisdiction), via an FSD `@x` cross-import public API at `entities/classification/@x/workspace.ts`, scoped to the `workspace` slice only. No change to classification behavior.
