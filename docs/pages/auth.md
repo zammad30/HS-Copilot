@@ -133,3 +133,18 @@ This is the first page requiring an actual mutation, not just static content. Pe
 - [ ] No raw hex/off-scale spacing in new SCSS; `docs/component-inventory.md` updated if anything changes (no new shared components expected).
 - [ ] `npm run check` passes.
 - [ ] Responsive: single collapse point at 720px, verified at 375/768/1280 against `sign-in.png`/`sign-in.mobile.png` for sign-in; sign-up/reset verified against the JSX only.
+
+## Return path (plans, limits and expiry, step 6)
+
+- Sign-in and sign-up read an optional `?next=<path>` and, after success, `navigate(path, { replace: true })`, so Back does not return to the form. A signed-in visitor who opens either page with `?next=` is redirected there too.
+- The path is validated by `safeReturnPath` (`shared/lib`) and nothing else. It accepts only a known app route: the static routes in `shared/config/routes.ts` plus `/app/classifications/<id>` and `/app/batches/<id>` (one safe segment). Everything else falls back to `/app`: other schemes or hosts, `//`, a leading `/\`, any backslash, whitespace or control character (including a leading space, a tab, a newline), encoded tricks such as `/%2Fevil.com` or `/app%0d%0a`, values over 200 characters, non-strings, and a repeated `next` param.
+- Query strings and hashes are dropped (`/app?x=1` becomes `/app`): the destination is a page, never carried state.
+- Auth screens (`/signin`, `/signup`, `/reset`) and `/_kit` are known routes but are not accepted as a destination (they would loop or are dev only), so they fall back to `/app`.
+- The "Create account" and "Sign in" switch links carry the validated `next` along.
+- The typed text is never in the URL. A page that wants it kept saves it with `pendingDescriptionDraft` before linking to sign-up or sign-in.
+
+### Known gaps
+
+- `/try` is still a placeholder page (no brief yet), so nothing links to sign-up with a `next` path or saves a draft today.
+- Landing still passes the typed text in `?q=` to `/try` (to fix in step 6b).
+- Home still hands text to Classify new through `?q=`. It is a signed-in handoff, accepted as debt.

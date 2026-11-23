@@ -128,3 +128,9 @@ Static marketing content, no network request - no loading/empty/error state need
 - [ ] No raw hex/spacing in new SCSS; `Eyebrow` and `widgets/public-shell` each have tests; `Eyebrow` has a `/_kit` entry; `docs/component-inventory.md` updated for both.
 - [ ] `npm run check` passes.
 - [ ] Responsive: single collapse point at 720px, verified at 375/768/1280 per `docs/workflow.md`'s Definition of Done (768 should look identical to 1280 here, since the Make CSS has no 1000px rule for this page - confirms nothing is missed, doesn't require new behavior).
+
+### Known gaps
+
+- `/try` is a placeholder page (no brief yet).
+- Landing still passes the typed text in `?q=` to `/try`, which puts it in the URL. To fix in step 6b: save it with `pendingDescriptionDraft` (`entities/session`) instead and drop the query param.
+- Home still hands text to Classify new through `?q=` (a signed-in handoff; debt).

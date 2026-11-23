@@ -30,7 +30,7 @@ Check here before creating any component. Update this file whenever a shared or 
 
 ## shared/lib
 
-`useCopyToClipboard()` returns `copy(text, message)`: writes to the clipboard and shows a toast with `message`. Used by the classification table row menu and the detail page. `formatFullDate(iso)` in `formatDate.ts` gives a dated string with the year for printed records.
+`useCopyToClipboard()` returns `copy(text, message)`: writes to the clipboard and shows a toast with `message`. Used by the classification table row menu and the detail page. `formatFullDate(iso)` in `formatDate.ts` gives a dated string with the year for printed records. `safeReturnPath(value)` returns an in-app path for a post-sign-in redirect or `/app` for anything not a known app route (see docs/pages/auth.md). `createExpiringSessionText(key, ttlMs)` returns `{ save, read, clear }` for a short text kept in sessionStorage, every call guarded, with a lifetime and a length cap; `entities/session` binds it as `pendingDescriptionDraft` (30 minutes, cleared on sign-out, read by Classify new).
 
 ## entities/*/ui
 
