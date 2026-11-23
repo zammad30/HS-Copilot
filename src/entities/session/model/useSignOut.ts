@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { http } from "@/shared/api";
+import { pendingDescriptionDraft } from "./pendingDescriptionDraft";
 import { useSetSession } from "./useSetSession";
 
 export function useSignOut(): () => void {
@@ -10,6 +11,7 @@ export function useSignOut(): () => void {
   return useCallback(() => {
     // Local-first: the user is signed out immediately regardless of network state.
     setSession(null);
+    pendingDescriptionDraft.clear();
 
     // Fire-and-forget: a failed request here isn't surfaced yet, so a real
     // cookie-backed session could still be live server-side after this call

@@ -5,12 +5,14 @@ import type { Jurisdiction } from "@/entities/classification";
 // load, so the required select never blocks the form.
 export const FALLBACK_JURISDICTION: Jurisdiction = "US_HTS";
 
+export const DESCRIPTION_MAX_LENGTH = 1000;
+
 export const classifyNewFormSchema = z.object({
   description: z
     .string()
     .trim()
     .min(1, "Enter a product description.")
-    .max(1000, "Use 1000 characters or fewer."),
+    .max(DESCRIPTION_MAX_LENGTH, "Use 1000 characters or fewer."),
   material: z.string().trim().optional(),
   intendedUse: z.string().trim().optional(),
   origin: z.string().trim().optional(),

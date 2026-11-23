@@ -15,6 +15,7 @@ import { EmptyState } from "@/shared/ui/EmptyState";
 import { ErrorState } from "@/shared/ui/ErrorState";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { ApiError } from "@/shared/api";
+import { pendingDescriptionDraft, useSession } from "@/entities/session";
 import { DESTINATIONS, classificationKeys } from "@/entities/classification";
 import type { Jurisdiction } from "@/entities/classification";
 import {
@@ -29,6 +30,7 @@ import type { PlanLimitDetails } from "@/entities/workspace";
 import { routes } from "@/shared/config";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
 import {
+  DESCRIPTION_MAX_LENGTH,
   FALLBACK_JURISDICTION,
   classifyNewFormSchema,
   fieldErrorsFrom,
@@ -60,7 +62,17 @@ export function ClassifyNewPage() {
   const runId = searchParams.get("run") ?? undefined;
   const prefill = searchParams.get("q") ?? "";
 
-  const [description, setDescription] = useState(prefill);
+  const session = useSession();
+  // ?q= wins and leaves any saved draft alone. The draft is only read here, never
+  // cleared, so the initializer is safe to run twice (StrictMode); the effect below
+  // clears it once it has been used.
+  const [initialDescription] = useState(() => {
+    if (prefill) return { text: prefill, isFromDraft: false };
+    if (!session) return { text: "", isFromDraft: false };
+    const draft = pendingDescriptionDraft.read(DESCRIPTION_MAX_LENGTH);
+    return draft ? { text: draft, isFromDraft: true } : { text: "", isFromDraft: false };
+  });
+  const [description, setDescription] = useState(initialDescription.text);
   const [material, setMaterial] = useState("");
   const [intendedUse, setIntendedUse] = useState("");
   const [origin, setOrigin] = useState("Unknown");
@@ -81,6 +93,7 @@ export function ClassifyNewPage() {
     { details: PlanLimitDetails; staleAsOf: number } | undefined
   >(undefined);
   const bannerId = useId();
+  const tipsTitleId = useId();
   const { limit: classificationLimit, period: classificationPeriod } =
     workspace?.limits.classifications ?? {};
   const usedClassifications = workspace?.usage.classificationsUsed;
@@ -113,6 +126,10 @@ export function ClassifyNewPage() {
   const complete = run !== undefined && isRunComplete(run);
   const awaitingAnswer = run !== undefined && needsAnswer(run);
   const formDisabled = createMutation.isPending || (runActive && !complete);
+
+  useEffect(() => {
+    if (initialDescription.isFromDraft) pendingDescriptionDraft.clear();
+  }, [initialDescription]);
 
   useEffect(() => {
     if (run && isRunComplete(run)) {
@@ -202,6 +219,18 @@ export function ClassifyNewPage() {
                 disabled={formDisabled}
               />
             </FormField>
+
+            <div className={styles.tips}>
+              <p id={tipsTitleId} className={styles.tipsTitle}>
+                Tips for a better result
+              </p>
+              <ul aria-labelledby={tipsTitleId}>
+                <li>Say what it is made of.</li>
+                <li>Say what it does or how it is used.</li>
+                <li>Add size, form or state, such as frozen, assembled or sold in sets.</li>
+                <li>Leave out brand names and marketing words.</li>
+              </ul>
+            </div>
 
             <div className={styles.fieldRow}>
               <FormField label="Primary material (optional)">
