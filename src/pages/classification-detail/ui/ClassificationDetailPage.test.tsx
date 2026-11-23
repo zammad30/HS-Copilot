@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -231,5 +231,110 @@ describe("ClassificationDetailPage - citation chips", () => {
         "General Rules of Interpretation 1 and 6 govern classification by heading text and subheading comparison.",
       ),
     ).toBeInTheDocument();
+  });
+});
+
+describe("ClassificationDetailPage - classification path", () => {
+  it("shows the path down to the effective code", async () => {
+    renderPage("/app/classifications/cls_002");
+
+    const block = await screen.findByRole("region", { name: "Classification path" });
+    const items = within(block).getAllByRole("listitem");
+    expect(items).toHaveLength(4);
+    expect(items[0]).toHaveTextContent("85");
+    expect(items[3]).toHaveTextContent("8518.30.0000");
+    expect(within(items[3]).getByText("Sample data")).toBeInTheDocument();
+  });
+
+  it("updates the last level to the new code after an override, without a reload", async () => {
+    const user = userEvent.setup();
+    // cls_006 rather than cls_013: the override test above already changed cls_013
+    // in the shared in-memory store.
+    renderPage("/app/classifications/cls_006");
+
+    const before = await screen.findByRole("region", { name: "Classification path" });
+    const beforeItems = within(before).getAllByRole("listitem");
+    expect(beforeItems[beforeItems.length - 1]).toHaveTextContent("9405.21.0000");
+
+    await user.click(screen.getByRole("button", { name: "Override code" }));
+    const dialog = await screen.findByRole("dialog", { name: "Override classification code" });
+    await user.selectOptions(within(dialog).getByLabelText("HS code"), "8539.52.0000");
+    await user.type(
+      within(dialog).getByLabelText("Reason for override"),
+      "Better matches the product's principal use.",
+    );
+    await user.click(within(dialog).getByRole("button", { name: "Confirm override" }));
+
+    await screen.findByRole("status", {}, { timeout: 5000 });
+    await waitFor(
+      () => {
+        const after = screen.getByRole("region", { name: "Classification path" });
+        const afterItems = within(after).getAllByRole("listitem");
+        expect(afterItems[afterItems.length - 1]).toHaveTextContent("8539.52.0000");
+        expect(afterItems[1]).toHaveTextContent("8539");
+      },
+      { timeout: 5000 },
+    );
+  }, 15000);
+});
+
+describe("ClassificationDetailPage - copy code, print and disclaimer", () => {
+  it("copy code copies the effective code and shows the toast", async () => {
+    const user = userEvent.setup();
+    const writeTextSpy = vi.spyOn(navigator.clipboard, "writeText").mockResolvedValue(undefined);
+    renderPage("/app/classifications/cls_002");
+
+    await screen.findByRole("heading", {
+      level: 1,
+      name: "Wireless Bluetooth earbuds with charging case",
+    });
+    await user.click(screen.getByRole("button", { name: "Copy code" }));
+
+    expect(writeTextSpy).toHaveBeenCalledWith("8518.30.0000");
+    expect(await screen.findByRole("status")).toHaveTextContent("HS code copied");
+  });
+
+  it("Print record calls window.print", async () => {
+    const user = userEvent.setup();
+    const printSpy = vi.spyOn(window, "print").mockImplementation(() => {});
+    renderPage("/app/classifications/cls_002");
+
+    await screen.findByRole("heading", {
+      level: 1,
+      name: "Wireless Bluetooth earbuds with charging case",
+    });
+    await user.click(screen.getByRole("button", { name: "Print record" }));
+
+    expect(printSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows the disclaimer exactly once", async () => {
+    renderPage("/app/classifications/cls_002");
+
+    await screen.findByRole("heading", {
+      level: 1,
+      name: "Wireless Bluetooth earbuds with charging case",
+    });
+    expect(
+      screen.getAllByText(
+        "This is a classification suggestion to support your decision. Confirm it with a licensed customs broker or your customs authority before you file.",
+      ),
+    ).toHaveLength(1);
+  });
+
+  it("renders the print-only header and decision history in the document", async () => {
+    renderPage("/app/classifications/cls_002");
+
+    await screen.findByRole("heading", {
+      level: 1,
+      name: "Wireless Bluetooth earbuds with charging case",
+    });
+    expect(screen.getByText("HS Copilot - classification record")).toBeInTheDocument();
+    expect(screen.getByText("cls_002")).toBeInTheDocument();
+    // Hidden on screen by CSS, so role queries cannot see it; find it by its heading text.
+    const heading = await screen.findByText("Decision history");
+    const section = heading.closest("section");
+    if (!section) throw new Error("Decision history section not found");
+    expect(within(section).getByText("Research completed")).toBeInTheDocument();
   });
 });

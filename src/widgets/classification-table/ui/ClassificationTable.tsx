@@ -16,6 +16,7 @@ import { ClassificationStatusBadge, CodeText, effectiveCode } from "@/entities/c
 import type { Classification } from "@/entities/classification";
 import { formatUpdatedDay } from "@/shared/lib/formatDate";
 import { routes } from "@/shared/config";
+import { useCopyToClipboard } from "@/shared/lib/useCopyToClipboard";
 import { useReviewDecision } from "@/features/review-decision";
 import { useDeleteClassification } from "@/features/delete-classification";
 import styles from "./ClassificationTable.module.scss";
@@ -41,6 +42,7 @@ export function ClassificationTable({
   onItemHiddenChange,
 }: ClassificationTableProps) {
   const { show } = useToast();
+  const copyToClipboard = useCopyToClipboard();
   const [deleteTarget, setDeleteTarget] = useState<Classification | null>(null);
   const [hiddenIds, setHiddenIds] = useState<Set<string>>(new Set());
   const deleteReturnFocusRef = useRef<HTMLButtonElement | null>(null);
@@ -62,8 +64,7 @@ export function ClassificationTable({
   }
 
   function handleCopyCode(item: Classification) {
-    void navigator.clipboard?.writeText(effectiveCode(item));
-    show("HS code copied");
+    copyToClipboard(effectiveCode(item), "HS code copied");
   }
 
   function handleDeleteSelected(item: Classification) {

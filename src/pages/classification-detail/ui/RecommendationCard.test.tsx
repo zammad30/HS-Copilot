@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { Classification, Evidence } from "@/entities/classification";
+import { ToastProvider } from "@/shared/ui/Toast";
 import { RecommendationCard } from "./RecommendationCard";
 
 const EVIDENCE: Evidence[] = [
@@ -68,5 +69,29 @@ describe("RecommendationCard - citation chips", () => {
     expect(onOpenEvidence).toHaveBeenCalledTimes(1);
     expect(onOpenEvidence.mock.calls[0][0]).toMatchObject({ reference: "GRI 1 and 6" });
     expect(onOpenEvidence.mock.calls[0][1]).toBeInstanceOf(HTMLButtonElement);
+  });
+});
+
+describe("RecommendationCard - copy code", () => {
+  it("copies the effective code and shows the toast, using the overridden code when overridden", async () => {
+    const user = userEvent.setup();
+    const writeTextSpy = vi.spyOn(navigator.clipboard, "writeText").mockResolvedValue(undefined);
+    render(
+      <ToastProvider>
+        <RecommendationCard
+          classification={{
+            ...makeClassification(),
+            overridden: true,
+            finalCode: "9617.10",
+          }}
+          onOpenEvidence={vi.fn()}
+        />
+      </ToastProvider>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Copy code" }));
+
+    expect(writeTextSpy).toHaveBeenCalledWith("9617.10");
+    expect(await screen.findByRole("status")).toHaveTextContent("HS code copied");
   });
 });

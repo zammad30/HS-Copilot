@@ -1,0 +1,42 @@
+@use "@/shared/styles/abstracts" as *;
+
+.header {
+  display: none;
+
+  @media print {
+    display: block;
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: var(--border);
+    break-inside: avoid;
+  }
+}
+
+.title {
+  margin: 0;
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin: var(--space-1) 0 0;
+
+  dt {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+  }
+
+  dd {
+    margin: 0;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 20px;
+  }
+}

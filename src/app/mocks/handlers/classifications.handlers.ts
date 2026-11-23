@@ -12,6 +12,7 @@ import {
 import { membersStore } from "../fixtures/members.fixtures";
 import { applyClassificationListParams } from "../support/classificationQuery";
 import { applyApproveTransition } from "../support/decisionTransitions";
+import { serializeClassification } from "../support/serializeClassification";
 import { isExpired, isExpiringSoon, withExpiresAt } from "../support/classificationExpiry";
 
 interface DecisionRequestBody {
@@ -78,7 +79,7 @@ export const classificationsHandlers = [
 
     const item = classificationsStore.find((candidate) => candidate.id === params.id);
     if (!item || isExpired(item)) return notFound();
-    return HttpResponse.json(withExpiresAt(item));
+    return HttpResponse.json(serializeClassification(item));
   }),
 
   http.post(`${env.apiBaseUrl}/classifications/:id/decision`, async ({ request, params }) => {
@@ -192,7 +193,7 @@ export const classificationsHandlers = [
       }
     }
 
-    return HttpResponse.json(withExpiresAt(item));
+    return HttpResponse.json(serializeClassification(item));
   }),
 
   http.delete(`${env.apiBaseUrl}/classifications/:id`, async ({ request, params }) => {

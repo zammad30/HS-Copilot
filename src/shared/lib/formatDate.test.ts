@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { formatDay, formatRelativeStart, formatTime, formatUpdatedDay } from "./formatDate";
+import {
+  formatDay,
+  formatFullDate,
+  formatRelativeStart,
+  formatTime,
+  formatUpdatedDay,
+} from "./formatDate";
 
 const NOW = new Date("2026-11-19T15:30:00.000Z");
 
@@ -75,5 +81,13 @@ describe("formatRelativeStart", () => {
     expect(formatRelativeStart(new Date("2026-11-12T09:18:00.000Z").toISOString(), NOW)).toBe(
       "on Nov 12",
     );
+  });
+});
+
+describe("formatFullDate", () => {
+  it("includes the year, unlike the relative helpers", () => {
+    const result = formatFullDate(new Date("2026-11-12T12:00:00.000Z").toISOString());
+    expect(result).toContain("2026");
+    expect(result).toContain("Nov");
   });
 });

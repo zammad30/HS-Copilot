@@ -8,6 +8,7 @@ export {
   auditEntrySchema,
   decisionActionSchema,
   modelInfoSchema,
+  pathLevelSchema,
 } from "./model/classification.schema";
 export type {
   Classification,
@@ -19,6 +20,7 @@ export type {
   AuditEntry,
   DecisionAction,
   ModelInfo,
+  PathLevel,
 } from "./model/classification.schema";
 export { classificationKeys } from "./api/classifications.keys";
 export type { ClassificationsListParams } from "./api/classifications.keys";

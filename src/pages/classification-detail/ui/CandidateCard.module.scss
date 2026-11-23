@@ -3,6 +3,10 @@
 .card {
   padding: var(--space-2) var(--space-3);
   margin-top: var(--space-2);
+
+  @media print {
+    break-inside: avoid;
+  }
 }
 
 .row {
@@ -62,6 +66,10 @@
   @include respond-below($bp-mobile) {
     grid-column: 1 / -1;
     justify-self: start;
+  }
+
+  @media print {
+    display: none;
   }
 }
 

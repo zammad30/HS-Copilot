@@ -55,6 +55,14 @@ export const modelInfoSchema = z.object({
 });
 export type ModelInfo = z.infer<typeof modelInfoSchema>;
 
+export const pathLevelSchema = z.object({
+  level: z.enum(["chapter", "heading", "subheading", "national"]),
+  code: z.string(),
+  title: z.string(),
+  isSample: z.boolean().optional(),
+});
+export type PathLevel = z.infer<typeof pathLevelSchema>;
+
 export const classificationSchema = z.object({
   id: z.string(),
   workspaceId: z.string(),
@@ -78,6 +86,7 @@ export const classificationSchema = z.object({
   createdBy: z.string(),
   model: modelInfoSchema.optional(),
   expiresAt: z.string(),
+  path: z.array(pathLevelSchema).optional(),
 });
 export type Classification = z.infer<typeof classificationSchema>;
 

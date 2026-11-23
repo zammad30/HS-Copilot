@@ -4,6 +4,10 @@
   padding: var(--space-4);
   margin-top: var(--space-3);
   border-color: var(--accent);
+
+  @media print {
+    break-inside: avoid;
+  }
 }
 
 .topRow {
@@ -27,8 +31,18 @@
   font-weight: 500;
 }
 
-.codeRow {
-  display: block;
+.codeLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+
+  // Nested so this outranks Button's own single-class `display`.
+  .copyButton {
+    @media print {
+      display: none;
+    }
+  }
 }
 
 .statuses {

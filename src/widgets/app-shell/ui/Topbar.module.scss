@@ -16,6 +16,10 @@
   @include respond-below($bp-mobile) {
     padding: 0 var(--space-2);
   }
+
+  @media print {
+    display: none;
+  }
 }
 
 .start {

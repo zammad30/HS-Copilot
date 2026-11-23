@@ -132,3 +132,22 @@ describe("jurisdictionSchema", () => {
     expect(jurisdictionSchema.safeParse(value).success).toBe(false);
   });
 });
+
+describe("classificationSchema - path", () => {
+  it("accepts a record without a path", () => {
+    expect(classificationSchema.safeParse(VALID_CLASSIFICATION).success).toBe(true);
+  });
+
+  it("accepts a path of known levels and rejects an unknown level", () => {
+    const level = { level: "chapter", code: "61", title: "Apparel" };
+    expect(classificationSchema.safeParse({ ...VALID_CLASSIFICATION, path: [level] }).success).toBe(
+      true,
+    );
+    expect(
+      classificationSchema.safeParse({
+        ...VALID_CLASSIFICATION,
+        path: [{ ...level, level: "section" }],
+      }).success,
+    ).toBe(false);
+  });
+});

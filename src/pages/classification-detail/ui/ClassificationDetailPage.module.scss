@@ -10,6 +10,31 @@
   margin-bottom: var(--space-2);
 }
 
+// Nested under .page so these outrank the single-class `display` of the
+// shared Button and PageHeader on paper.
+.page {
+  .back,
+  .headerActions {
+    @media print {
+      display: none;
+    }
+  }
+}
+
+.headerActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.disclaimer {
+  margin: var(--space-4) 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 20px;
+  max-width: 72ch;
+}
+
 .skeletonCard {
   padding: var(--space-3);
   margin-top: var(--space-3);

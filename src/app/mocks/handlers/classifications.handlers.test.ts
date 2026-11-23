@@ -369,3 +369,53 @@ describe("classifications handlers", () => {
     });
   });
 });
+
+describe("classifications handlers - path on full records", () => {
+  beforeEach(() => {
+    resetClassificationsStore();
+  });
+
+  it("GET /classifications/:id returns a path whose last level is the effective code", async () => {
+    const item = await http.get<Classification>("/classifications/cls_002");
+
+    expect(item.path?.map((level) => level.level)).toEqual([
+      "chapter",
+      "heading",
+      "subheading",
+      "national",
+    ]);
+    expect(item.path?.[3].code).toBe("8518.30.0000");
+  });
+
+  it("every decision response carries a path that matches the new effective code", async () => {
+    const overridden = await http.post<Classification>("/classifications/cls_013/decision", {
+      action: "override",
+      code: "4202.32.0000",
+      reason: "Better matches the principal use.",
+    });
+    expect(overridden.path?.[3].code).toBe("4202.32.0000");
+    expect(overridden.path?.[1].code).toBe("4202");
+
+    const undone = await http.post<Classification>("/classifications/cls_013/decision", {
+      action: "undo",
+    });
+    expect(undone.path?.[3].code).toBe("3926.90.0000");
+
+    const approved = await http.post<Classification>("/classifications/cls_013/decision", {
+      action: "approve",
+    });
+    expect(approved.path?.[3].code).toBe("3926.90.0000");
+
+    const rejected = await http.post<Classification>("/classifications/cls_013/decision", {
+      action: "reject",
+      reason: "Does not match.",
+    });
+    expect(rejected.path?.[3].code).toBe("3926.90.0000");
+
+    const infoRequested = await http.post<Classification>("/classifications/cls_013/decision", {
+      action: "request_info",
+      assigneeId: membersFixtures[0].id,
+    });
+    expect(infoRequested.path?.[3].code).toBe("3926.90.0000");
+  });
+});

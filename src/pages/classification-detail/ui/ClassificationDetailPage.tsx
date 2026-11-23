@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
-import { ArrowLeft, FolderSearch2, PanelRight } from "lucide-react";
+import { ArrowLeft, FolderSearch2, PanelRight, Printer } from "lucide-react";
 import { PageHeader } from "@/shared/ui/PageHeader";
 import { Button } from "@/shared/ui/Button";
 import { Card } from "@/shared/ui/Card";
@@ -29,6 +29,9 @@ import { CandidateCard } from "./CandidateCard";
 import { EvidenceGrid } from "./EvidenceGrid";
 import { AuditTrailView } from "./AuditTrailView";
 import { EvidenceDetailView } from "./EvidenceDetailView";
+import { ClassificationPath } from "./ClassificationPath";
+import { PrintHeader } from "./PrintHeader";
+import { PrintHistory } from "./PrintHistory";
 import styles from "./ClassificationDetailPage.module.scss";
 
 type DrawerView = { type: "audit" } | { type: "evidence"; evidence: Evidence };
@@ -103,6 +106,10 @@ export function ClassificationDetailPage() {
     );
   }
 
+  function handlePrint() {
+    window.print();
+  }
+
   function openAudit() {
     drawerReturnFocusRef.current = auditTriggerRef.current;
     setDrawerView({ type: "audit" });
@@ -172,6 +179,7 @@ export function ClassificationDetailPage() {
     (a, b) => b.confidence - a.confidence,
   );
   const assignees = membersQuery.data?.items ?? [];
+  const printedAt = new Date().toISOString();
 
   const drawerTitle =
     drawerView?.type === "audit"
@@ -184,23 +192,32 @@ export function ClassificationDetailPage() {
     <div className={styles.page}>
       {backButton}
 
+      <PrintHeader classification={classification} printedAt={printedAt} />
+
       <PageHeader
         eyebrow="Classification result"
         title={classification.description}
         description={description}
         action={
-          <Button
-            ref={auditTriggerRef}
-            variant="secondary"
-            icon={<PanelRight aria-hidden="true" />}
-            onClick={openAudit}
-          >
-            Audit trail
-          </Button>
+          <div className={styles.headerActions}>
+            <Button variant="secondary" icon={<Printer aria-hidden="true" />} onClick={handlePrint}>
+              Print record
+            </Button>
+            <Button
+              ref={auditTriggerRef}
+              variant="secondary"
+              icon={<PanelRight aria-hidden="true" />}
+              onClick={openAudit}
+            >
+              Audit trail
+            </Button>
+          </div>
         }
       />
 
       <RecommendationCard classification={classification} onOpenEvidence={openEvidence} />
+
+      <ClassificationPath path={classification.path} />
 
       <ReviewActions
         classification={classification}
@@ -252,6 +269,13 @@ export function ClassificationDetailPage() {
           />
         </>
       )}
+
+      <PrintHistory classificationId={classification.id} />
+
+      <p className={styles.disclaimer}>
+        This is a classification suggestion to support your decision. Confirm it with a licensed
+        customs broker or your customs authority before you file.
+      </p>
 
       <Drawer
         open={drawerView !== null}

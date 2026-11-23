@@ -35,6 +35,14 @@ export function formatDay(iso: string, now: Date = new Date()): string {
   return `on ${new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(date)}`;
 }
 
+const fullDateFormatter = new Intl.DateTimeFormat(undefined, { dateStyle: "medium" });
+
+/** `Nov 23, 2026`, always with the year, for printed records (the other
+ * helpers say "today" or drop the year, which does not survive on paper). */
+export function formatFullDate(iso: string): string {
+  return fullDateFormatter.format(new Date(iso));
+}
+
 const shortDateFormatter = new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" });
 
 /** `Today`, `Yesterday`, or a short date like `Nov 12`, for table "Updated" columns. */

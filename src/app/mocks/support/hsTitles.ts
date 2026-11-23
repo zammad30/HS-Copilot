@@ -1,0 +1,51 @@
+/** Abbreviated HS chapter and heading wording for the codes the mock records
+ * use (and their candidate alternatives). Only the first 4 digits are real HS
+ * data; this is a small lookup, not a tariff database, so a code outside it
+ * simply gets no path. */
+export const HS_CHAPTER_TITLES: Record<string, string> = {
+  "09": "Coffee, tea, mate and spices",
+  "21": "Miscellaneous edible preparations",
+  "39": "Plastics and articles thereof",
+  "42": "Articles of leather; travel goods, handbags and similar containers",
+  "44": "Wood and articles of wood",
+  "61": "Articles of apparel and clothing accessories, knitted or crocheted",
+  "62": "Articles of apparel and clothing accessories, not knitted or crocheted",
+  "63": "Other made up textile articles",
+  "64": "Footwear, gaiters and the like; parts of such articles",
+  "69": "Ceramic products",
+  "73": "Articles of iron or steel",
+  "82": "Tools, implements and cutlery of base metal",
+  "85": "Electrical machinery and equipment and parts thereof",
+  "94": "Furniture; lamps and lighting fittings; prefabricated buildings",
+  "96": "Miscellaneous manufactured articles",
+};
+
+export const HS_HEADING_TITLES: Record<string, string> = {
+  "0901": "Coffee, whether or not roasted or decaffeinated",
+  "2101": "Extracts, essences and concentrates of coffee, tea or mate",
+  "3923": "Articles for the conveyance or packing of goods, of plastics",
+  "3924": "Tableware, kitchenware and other household articles, of plastics",
+  "3926": "Other articles of plastics",
+  "4202": "Trunks, suitcases, handbags and similar containers",
+  "4419": "Tableware and kitchenware, of wood",
+  "6101": "Men's or boys' overcoats and similar articles, knitted or crocheted",
+  "6109": "T-shirts, singlets and other vests, knitted or crocheted",
+  "6110": "Jerseys, pullovers, cardigans and similar articles, knitted or crocheted",
+  "6201": "Men's or boys' overcoats and similar articles, not knitted or crocheted",
+  "6307": "Other made up articles, including dress patterns",
+  "6402": "Other footwear with outer soles and uppers of rubber or plastics",
+  "6404": "Footwear with outer soles of rubber or plastics and uppers of textile materials",
+  "6911": "Ceramic tableware and kitchenware, of porcelain or china",
+  "6912": "Ceramic tableware and kitchenware, other than of porcelain or china",
+  "6914": "Other ceramic articles",
+  "7323": "Table, kitchen or other household articles of iron or steel",
+  "8211": "Knives with cutting blades, and blades thereof",
+  "8501": "Electric motors and generators",
+  "8518": "Microphones, loudspeakers, headphones and earphones",
+  "8527": "Reception apparatus for radio-broadcasting",
+  "8539": "Electric filament or discharge lamps, including LED lamps",
+  "8541": "Semiconductor devices, including photovoltaic cells",
+  "9403": "Other furniture and parts thereof",
+  "9405": "Luminaires and lighting fittings",
+  "9617": "Vacuum flasks and other vacuum vessels, complete with cases",
+};

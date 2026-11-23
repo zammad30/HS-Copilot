@@ -8,6 +8,11 @@
   @include respond-below($bp-mobile) {
     grid-template-columns: 1fr;
   }
+
+  @media print {
+    display: block;
+    min-height: 0;
+  }
 }
 
 .skipLink {
@@ -27,6 +32,10 @@
   &:focus-visible {
     top: var(--space-2);
   }
+
+  @media print {
+    display: none;
+  }
 }
 
 .sidebar {
@@ -36,6 +45,10 @@
   border-right: 1px solid var(--chrome-line);
 
   @include respond-below($bp-mobile) {
+    display: none;
+  }
+
+  @media print {
     display: none;
   }
 }
@@ -63,5 +76,10 @@
 
   @include respond-below($bp-mobile) {
     padding: var(--space-3) var(--space-2) var(--space-6);
+  }
+
+  @media print {
+    max-width: none;
+    padding: 0;
   }
 }

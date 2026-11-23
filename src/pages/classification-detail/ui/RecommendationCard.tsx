@@ -1,7 +1,9 @@
-import { BookOpen, History } from "lucide-react";
+import { BookOpen, Copy, History } from "lucide-react";
+import { Button } from "@/shared/ui/Button";
 import { Card } from "@/shared/ui/Card";
 import { Meter } from "@/shared/ui/Meter";
 import { StatusIndicator } from "@/shared/ui/StatusIndicator";
+import { useCopyToClipboard } from "@/shared/lib/useCopyToClipboard";
 import { ClassificationStatusBadge, CodeText, effectiveCode } from "@/entities/classification";
 import type { Classification, Evidence } from "@/entities/classification";
 import styles from "./RecommendationCard.module.scss";
@@ -17,15 +19,24 @@ function chipLabel(reference: string, title: string): string {
 
 export function RecommendationCard({ classification, onOpenEvidence }: RecommendationCardProps) {
   const code = effectiveCode(classification);
+  const copyToClipboard = useCopyToClipboard();
 
   return (
     <Card className={styles.card}>
       <div className={styles.topRow}>
         <div>
           <span className={styles.label}>Recommended code</span>
-          <CodeText size="hero" className={styles.codeRow}>
-            {code}
-          </CodeText>
+          <div className={styles.codeLine}>
+            <CodeText size="hero">{code}</CodeText>
+            <Button
+              variant="ghost"
+              icon={<Copy aria-hidden="true" size={16} />}
+              className={styles.copyButton}
+              onClick={() => copyToClipboard(code, "HS code copied")}
+            >
+              Copy code
+            </Button>
+          </div>
           <div className={styles.statuses}>
             <ClassificationStatusBadge status={classification.status} />
             {classification.overridden && <StatusIndicator status="overridden" />}

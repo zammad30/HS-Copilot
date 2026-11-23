@@ -1,0 +1,25 @@
+// Global print rules. Component-specific print rules live beside their component.
+@media print {
+  html,
+  body {
+    background: var(--white);
+    color: var(--ink);
+  }
+
+  // Toasts and banners. The attribute selector sits one element above a single
+  // class so it wins over their `display: flex` without !important. No element
+  // the printed record keeps uses role="status" (checked at the time of writing).
+  div[role="status"] {
+    display: none;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+}
