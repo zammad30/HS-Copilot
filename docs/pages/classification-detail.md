@@ -241,3 +241,15 @@ None. CD-1 to CD-10 are resolved above.
 - [ ] No raw colors or off-scale spacing; `docs/component-inventory.md` updated (`ErrorState`, `Modal`/`Toast` if built here, `CodeText`; no `Button` change).
 - [ ] Tests: reducer-free mutation tests per action against MSW (success + 422 + network error), the three dialogs (validation, submit, cancel, focus return), page states (loading, not found, error, each status matrix row), audit drawer ordering and live update.
 - [ ] `npm run check` passes.
+
+## Path, copy, print and disclaimer (plans, limits and expiry, step 5)
+
+- **Classification path**: a "Classification path" section under the recommendation card. Semantic `<ol>`, one `<li>` per level (Chapter, Heading, Subheading, National line) with its code (`CodeText`) and title, flat with borders only. The last level is the effective code (the overridden code when overridden). `SampleLabel` follows any level with `isSample` (the national digits of a sample code). Renders nothing when `path` is missing or empty, never an error. Data: optional `Classification.path` (see docs/api-contract.md, Classification path); the mock attaches it to `GET /classifications/:id` and to every decision response through `serializeClassification`, so the block follows approve, override, reject, request info and undo without a reload.
+- **Copy code**: a ghost "Copy code" button beside the code in the recommendation card. Same behavior and toast ("HS code copied") as the Library row menu, both through `shared/lib/useCopyToClipboard`. Copies the effective code.
+- **Print record**: a secondary "Print record" button in the page header action (next to "Audit trail") calling `window.print()`. Print rules (`@media print`):
+  - Hidden: app sidebar, topbar and skip link (`AppShellLayout.module.scss`, `Topbar.module.scss`), toasts and banners (`div[role="status"]` in `shared/styles/base/_print.scss`), Back, the header actions, the review actions row, Copy code, "View reasoning" and the evidence link buttons.
+  - Shown only on paper (`display: none` on screen): `PrintHeader` ("HS Copilot - classification record", record ID, destination, printed date) and `PrintHistory` (decision history, from the same `useClassification` query and key as the audit drawer; renders nothing while that query loads or has failed).
+  - Kept: description, effective code, status, confidence, path, candidates (collapsed), evidence, decision history, disclaimer. Blocks use `break-inside: avoid`; the shell collapses to a single column with no padding.
+- **Disclaimer**: one muted line below the content, also printed: "This is a classification suggestion to support your decision. Confirm it with a licensed customs broker or your customs authority before you file." No icon, banner or bold.
+- Not in this step: the "Find a customs broker" link (moves to step 8).
+- Deviation: print text uses `--ink` and `--text` (near black from the tokens), not pure black, because design.md forbids raw color values.

@@ -28,6 +28,10 @@ Check here before creating any component. Update this file whenever a shared or 
 | Logo, SampleLabel                        | small primitives; Logo is a button with aria-label, SampleLabel defaults to "Sample data"                                                                                                                                                                                                                                                  | built   |
 | Eyebrow                                  | label style, 12/16 500, no uppercase/tracking, `--muted`                                                                                                                                                                                                                                                                                   | built   |
 
+## shared/lib
+
+`useCopyToClipboard()` returns `copy(text, message)`: writes to the clipboard and shows a toast with `message`. Used by the classification table row menu and the detail page. `formatFullDate(iso)` in `formatDate.ts` gives a dated string with the year for printed records.
+
 ## entities/*/ui
 
 `classification`: ClassificationStatusBadge, CodeText (`size="default"|"hero"`, mono font, tabular numerals; `ConfidenceMeter` not built - the raw shared `Meter` is used directly, as Home already does). `batch`: BatchProgress. `member`: RoleSelect, MemberAvatar. `workspace`: PlanLimitNotice (`message`, optional `id` for aria-describedby; composes the shared Banner, not dismissible, plus a "See plans" link to `routes.pricing`; used by Classify new, Batch upload, Settings Members and Review rules).

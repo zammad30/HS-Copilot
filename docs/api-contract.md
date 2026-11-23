@@ -52,6 +52,13 @@ interface Classification {
   createdBy: string;
   model?: { version: string; isSample?: boolean };
   expiresAt: string;
+  path?: PathLevel[];
+}
+interface PathLevel {
+  level: "chapter" | "heading" | "subheading" | "national";
+  code: string;
+  title: string;
+  isSample?: boolean;
 }
 interface Candidate {
   code: string;
@@ -188,6 +195,10 @@ Digits only; separators (dots, spaces, hyphens) are ignored when counting. The f
 Backend phase: only destinations with a verified data source will return real codes; the others stay sample only. Nothing in the frontend depends on this yet.
 
 Mock rule: a sample code has the real first 6 digits of the mock result and placeholder national digits (for example `8518.30.0000`). The placeholder digits are sample data (`isSample` on the model and evidence as today) and must never be presented as real tariff codes.
+
+## Classification path
+
+`Classification.path` is optional and lists the hierarchy of the effective code (`finalCode ?? suggestedCode`) from the chapter down to the national line, in that order: `chapter` (2 digits), `heading` (4), `subheading` (6), `national` (the full import code). Each level has its `code` and a `title`; the last level's `code` equals the effective code. The server recomputes the path whenever a decision changes the effective code (`approve` with a code, `override`, `reject`, `undo`), so every response that returns a full `Classification` (`GET /classifications/:id` and `POST /classifications/:id/decision`) carries a path that matches its current code. The list endpoint does not need to include it. A record with no known path omits the field and the UI renders nothing for the block, never an error. `isSample: true` on a level marks placeholder data (for example the national digits of a sample code, see Destinations).
 
 ## Decision rules
 
