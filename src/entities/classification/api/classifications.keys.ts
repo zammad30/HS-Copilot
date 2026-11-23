@@ -4,6 +4,8 @@ export interface ClassificationsListParams {
   search?: string;
   status?: Status[];
   sort?: string;
+  /** Only records inside the expiring window (docs/api-contract.md, Expiry). */
+  expiring?: boolean;
   page?: number;
   pageSize?: number;
 }

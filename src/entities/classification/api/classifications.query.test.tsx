@@ -36,4 +36,15 @@ describe("useClassifications", () => {
       expect(["needs_review", "pending"]).toContain(item.status);
     }
   });
+
+  it("sends expiring=true and returns only records inside the window", async () => {
+    const { result } = renderHook(() => useClassifications({ expiring: true, pageSize: 1 }), {
+      wrapper,
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    // Team (the mock default) has nothing inside its 30 day window.
+    expect(result.current.data?.total).toBe(0);
+  });
 });

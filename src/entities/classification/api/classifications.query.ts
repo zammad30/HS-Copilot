@@ -9,6 +9,7 @@ function buildQueryString(params: ClassificationsListParams): string {
   if (params.search) query.set("search", params.search);
   if (params.status?.length) query.set("status", params.status.join(","));
   if (params.sort) query.set("sort", params.sort);
+  if (params.expiring) query.set("expiring", "true");
   if (params.page) query.set("page", String(params.page));
   if (params.pageSize) query.set("pageSize", String(params.pageSize));
   const queryString = query.toString();

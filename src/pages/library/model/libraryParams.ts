@@ -28,3 +28,8 @@ export function parsePageParam(raw: string | null): number {
   const value = Number(raw);
   return Number.isInteger(value) && value >= 1 ? value : 1;
 }
+
+/** The `expiring` URL param is a flag: only the exact value "true" turns it on. */
+export function parseExpiringParam(raw: string | null): boolean {
+  return raw === "true";
+}

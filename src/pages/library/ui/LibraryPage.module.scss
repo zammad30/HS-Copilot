@@ -28,6 +28,25 @@
   }
 }
 
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-05);
+  min-height: var(--control-height);
+  padding-left: var(--space-15);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+.chipRemove {
+  flex-shrink: 0;
+}
+
 .search {
   width: 320px;
   flex-shrink: 0;

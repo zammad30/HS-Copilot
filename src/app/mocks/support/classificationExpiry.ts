@@ -5,7 +5,9 @@ import type { StoredClassification } from "../fixtures/classifications.fixtures"
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-/** `min(30, auditRetentionDays / 3)`, per docs/api-contract.md's Expiry
+/** Same rule as entities/workspace/lib/expiringWindow.ts (UI code cannot import
+ * from the mock layer); both follow the contract's Expiry section.
+ * `min(30, auditRetentionDays / 3)`, per docs/api-contract.md's Expiry
  * section - without the cap, every Free record would always count as
  * expiring, since Free's own retention is already short. */
 export function expiringWindowDays(auditRetentionDays: number): number {

@@ -30,6 +30,7 @@ export {
   formatResetsOn,
   formatUsageCount,
 } from "./lib/formatUsage";
+export { expiringWindowDays } from "./lib/expiringWindow";
 export { parsePlanLimitError, planLimitMessage } from "./lib/planLimit";
 export { PlanLimitNotice } from "./ui/PlanLimitNotice";
 export type { PlanLimitNoticeProps } from "./ui/PlanLimitNotice";

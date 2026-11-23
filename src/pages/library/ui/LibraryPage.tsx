@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import { FolderSearch2, Plus, SearchX } from "lucide-react";
+import { FolderSearch2, Plus, SearchX, X } from "lucide-react";
 import { PageHeader } from "@/shared/ui/PageHeader";
 import { Card } from "@/shared/ui/Card";
 import { SearchField } from "@/shared/ui/SearchField";
@@ -9,15 +9,18 @@ import { Skeleton } from "@/shared/ui/Skeleton";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { ErrorState } from "@/shared/ui/ErrorState";
 import { Button } from "@/shared/ui/Button";
+import { IconButton } from "@/shared/ui/IconButton";
 import { Pagination } from "@/shared/ui/Pagination";
 import { useClassifications } from "@/entities/classification";
 import type { Status } from "@/entities/classification";
 import { routes } from "@/shared/config";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
 import { ClassificationTable } from "@/widgets/classification-table";
+import { ExpiringBanner } from "@/widgets/expiring-banner";
 import {
   PAGE_SIZE,
   STATUS_FILTER_OPTIONS,
+  parseExpiringParam,
   parsePageParam,
   parseStatusParam,
 } from "../model/libraryParams";
@@ -33,6 +36,7 @@ export function LibraryPage() {
   const qParam = searchParams.get("q") ?? "";
   const statuses = parseStatusParam(searchParams.get("status"));
   const page = parsePageParam(searchParams.get("page"));
+  const isExpiring = parseExpiringParam(searchParams.get("expiring"));
 
   const [searchText, setSearchText] = useState(qParam);
   const [syncedQParam, setSyncedQParam] = useState(qParam);
@@ -65,6 +69,7 @@ export function LibraryPage() {
   const { data, isPending, isFetching, isError, refetch } = useClassifications({
     search: qParam || undefined,
     status: statuses.length > 0 ? statuses : undefined,
+    expiring: isExpiring || undefined,
     page,
     pageSize: PAGE_SIZE,
     sort: "-updatedAt",
@@ -104,16 +109,27 @@ export function LibraryPage() {
     const next = new URLSearchParams(searchParams);
     next.delete("q");
     next.delete("status");
+    next.delete("expiring");
     next.delete("page");
     setSearchParams(next);
     searchInputRef.current?.focus();
   }
 
-  const hasActiveFilters = qParam !== "" || statuses.length > 0;
+  function handleClearExpiring() {
+    const next = new URLSearchParams(searchParams);
+    next.delete("expiring");
+    next.delete("page");
+    setSearchParams(next);
+  }
+
+  const hasActiveFilters = qParam !== "" || statuses.length > 0 || isExpiring;
+  const isOnlyExpiring = isExpiring && qParam === "" && statuses.length === 0;
 
   return (
     <div className={styles.page}>
       <PageHeader title="Classification library" description="Search every reviewed decision." />
+
+      {!isExpiring && <ExpiringBanner />}
 
       <div className={styles.controls}>
         <SearchField
@@ -137,6 +153,17 @@ export function LibraryPage() {
             ))}
           </div>
         </fieldset>
+        {isExpiring && (
+          <div className={styles.chip}>
+            <span>Expiring soon</span>
+            <IconButton
+              icon={<X aria-hidden="true" size={16} />}
+              aria-label="Remove filter: Expiring soon"
+              onClick={handleClearExpiring}
+              className={styles.chipRemove}
+            />
+          </div>
+        )}
         {hasActiveFilters && (
           <Button variant="secondary" onClick={handleClearFilters} className={styles.clearFilters}>
             Clear filters
@@ -159,7 +186,17 @@ export function LibraryPage() {
                 showUpdated
                 isFetching={isFetching}
                 emptyState={
-                  hasActiveFilters ? (
+                  isOnlyExpiring ? (
+                    <EmptyState
+                      icon={<SearchX />}
+                      title="No records are expiring soon."
+                      action={
+                        <Button variant="secondary" onClick={handleClearExpiring}>
+                          Clear filter
+                        </Button>
+                      }
+                    />
+                  ) : hasActiveFilters ? (
                     <EmptyState
                       icon={<SearchX />}
                       title="No classifications match these filters."

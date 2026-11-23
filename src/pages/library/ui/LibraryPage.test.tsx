@@ -22,6 +22,8 @@ vi.mock("@/features/review-decision", async () => {
   return { ...actual, useReviewDecision: vi.fn() };
 });
 vi.mock("@/features/delete-classification", () => ({ useDeleteClassification: vi.fn() }));
+// The banner has its own data hooks and tests; here it is out of the way.
+vi.mock("@/widgets/expiring-banner", () => ({ ExpiringBanner: () => null }));
 
 const mockedUseClassifications = vi.mocked(useClassifications);
 const mockedUseReviewDecision = vi.mocked(useReviewDecision);

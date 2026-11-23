@@ -1,4 +1,5 @@
 import { useId, useState } from "react";
+import { Link } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/shared/ui/Card";
 import { FormField } from "@/shared/ui/FormField";
@@ -13,12 +14,14 @@ import { useToast } from "@/shared/ui/Toast";
 import { useSession } from "@/entities/session";
 import {
   PlanLimitNotice,
+  formatCount,
   parsePlanLimitError,
   planLimitMessage,
   useWorkspace,
   workspaceKeys,
 } from "@/entities/workspace";
 import type { PlanLimitDetails } from "@/entities/workspace";
+import { routes } from "@/shared/config";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
 import { useReviewRules, SECOND_APPROVER_CHAPTER_OPTIONS } from "@/entities/review-rule";
 import type { ReviewRules } from "@/entities/review-rule";
@@ -39,7 +42,11 @@ export function SettingsRulesPage() {
   const updateMutation = useUpdateReviewRules();
 
   const queryClient = useQueryClient();
-  const { data: workspace, dataUpdatedAt: workspaceUpdatedAt } = useWorkspace();
+  const {
+    data: workspace,
+    dataUpdatedAt: workspaceUpdatedAt,
+    isPending: isWorkspacePending,
+  } = useWorkspace();
   // Unknown while loading or failed: the form then behaves as it always did.
   const hasNoSecondApprover = workspace?.limits.secondApprover === false;
   const noticeId = useId();
@@ -163,6 +170,21 @@ export function SettingsRulesPage() {
         <p className={styles.description}>
           Set thresholds and safeguards for classification decisions.
         </p>
+
+        {/* Read-only plan text, not a form control. Nothing is shown if the workspace fails. */}
+        {isWorkspacePending ? (
+          <Skeleton lines={1} />
+        ) : (
+          workspace && (
+            <p className={styles.retention}>
+              Records are kept for {formatCount(workspace.limits.auditRetentionDays)} days on your
+              plan. After that they are removed from your workspace.{" "}
+              <Link to={routes.pricing} className={styles.link}>
+                See plans
+              </Link>
+            </p>
+          )
+        )}
 
         {isError ? (
           <ErrorState title="We couldn't load settings" onRetry={() => refetch()} />

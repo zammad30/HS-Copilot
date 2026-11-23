@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { parsePageParam, parseStatusParam, serializeStatusParam } from "./libraryParams";
+import {
+  parseExpiringParam,
+  parsePageParam,
+  parseStatusParam,
+  serializeStatusParam,
+} from "./libraryParams";
 
 describe("parseStatusParam", () => {
   it("returns an empty array for null or empty input", () => {
@@ -40,5 +45,15 @@ describe("parsePageParam", () => {
 
   it("rejects non-integer values", () => {
     expect(parsePageParam("1.5")).toBe(1);
+  });
+});
+
+describe("parseExpiringParam", () => {
+  it("is on only for the exact value true", () => {
+    expect(parseExpiringParam("true")).toBe(true);
+    expect(parseExpiringParam(null)).toBe(false);
+    expect(parseExpiringParam("")).toBe(false);
+    expect(parseExpiringParam("1")).toBe(false);
+    expect(parseExpiringParam("false")).toBe(false);
   });
 });

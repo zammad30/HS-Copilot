@@ -14,6 +14,7 @@ import { useClassifications, ClassificationStatusBadge } from "@/entities/classi
 import { routes } from "@/shared/config";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
 import { ClassificationTable } from "@/widgets/classification-table";
+import { ExpiringBanner } from "@/widgets/expiring-banner";
 import styles from "./HomePage.module.scss";
 
 function getGreeting(): string {
@@ -91,6 +92,8 @@ export function HomePage() {
           </Button>
         }
       />
+
+      <ExpiringBanner />
 
       <div className={styles.grid}>
         <Card className={styles.reviewCard}>

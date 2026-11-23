@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router";
@@ -64,7 +64,9 @@ describe("SettingsRulesPage - plan without a second approver", () => {
 
     const notice = await screen.findByRole("status");
     expect(notice).toHaveTextContent("This is not included in your plan.");
-    expect(screen.getByRole("link", { name: "See plans" })).toHaveAttribute("href", "/pricing");
+    expect(
+      within(screen.getByRole("status")).getByRole("link", { name: "See plans" }),
+    ).toHaveAttribute("href", "/pricing");
     expect(screen.getByText(HELPER)).toBeInTheDocument();
     expect(secondApproverSwitch()).toBeDisabled();
     expect(secondApproverSwitch()).not.toBeChecked();
@@ -117,7 +119,7 @@ describe("SettingsRulesPage - plan with a second approver", () => {
     await waitForForm();
     await waitFor(() => expect(secondApproverSwitch()).toBeEnabled());
 
-    expect(screen.queryByRole("link", { name: "See plans" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
     expect(screen.queryByText(HELPER)).not.toBeInTheDocument();
     expect(
       screen.getByText("Choose the chapters that need a second approver."),
