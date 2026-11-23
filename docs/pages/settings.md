@@ -210,3 +210,9 @@ Read-only block on the General tab, between "Workspace defaults" and "Account". 
 - **States**: Skeleton under the heading while the workspace or plan names load. If the workspace fails, the block is not rendered at all (the "Workspace defaults" card keeps its own error state). If only the plan names fail, the Plan row is hidden and the rest shows.
 - **Dates**: `formatDay` already contains the word "on" for dates, so copy is built as "Resets " + `formatDay(...)`. It never reads "resets on on".
 - **Card "Demo plan"** (mock mode only, `env.useMocks`): `Select` "Demo plan" with the plan names, helper "Mock mode only. Switches the sample plan so you can try limits and expiry." Changing it calls `PUT /__mock/plan { plan }` (page-local mutation `pages/settings/api/demoPlan.mutation.ts`), invalidates all queries, then shows the toast "Demo plan changed to {name}." On failure the toast reads "We couldn't change the demo plan. Try again." in the info tone, because Toast has no error tone (debt). Hidden until both the workspace and plans have loaded.
+
+## Review rules: plan text (plans, limits and expiry, step 4)
+
+- The old audit retention field is gone. At the top of the Review rules card, under the description, a read-only paragraph from `useWorkspace`: "Records are kept for {days} days on your plan. After that they are removed from your workspace." followed by a "See plans" text link to `routes.pricing`. `{days}` is the plan's `auditRetentionDays` as a plain number (30, 365, 730), not `formatRetention`, which would turn 365 into "1 year" and break the sentence.
+- Not a form control: no label, no disabled input. The link uses the same underline and accent style as `PlanLimitNotice` but is plain text, not a banner.
+- **States**: Skeleton while the workspace loads. If the workspace fails to load, nothing is shown for this block (no error); the rest of the form is unaffected.

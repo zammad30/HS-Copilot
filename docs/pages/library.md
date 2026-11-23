@@ -176,3 +176,11 @@ None. LB-1 to LB-6 are resolved above.
 - [ ] Responsive at 375 / 768 / 1280; table scrolls inside its card at `<=720px`; no raw colors or off-scale spacing.
 - [ ] Tests: URL-state parsing and serialisation, debounce, pagination boundaries, each state, row menu actions, delete+Undo timing, `Pagination` unit tests.
 - [ ] `npm run check` passes.
+
+## Expiring filter and banner (plans, limits and expiry, step 4)
+
+- **URL**: `?expiring=true` is stored in the URL like `q`, `status` and `page` (only the exact value "true" turns it on). When on, the list request sends `expiring=true` and combines with search and status.
+- **Chip**: "Expiring soon" in the controls row, with a remove button named "Remove filter: Expiring soon". Removing it deletes `expiring` and resets to page 1. "Clear filters" also removes `expiring`. The chip is page-local (white, 1px `--line-strong` border, `--radius`), since there is no shared chip component.
+- **Banner**: the same `widgets/expiring-banner` as Home, shown only while the filter is off; with the filter on, the chip replaces it.
+- **Empty state**: when `expiring` is the only filter and nothing matches: "No records are expiring soon." with a "Clear filter" button. With other filters also on, the existing "No classifications match these filters." state is used.
+- Pagination is unchanged; changing the filter resets to page 1.

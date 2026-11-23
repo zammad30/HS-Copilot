@@ -218,3 +218,11 @@ No `Tabs`, `Pagination`, or `FilterDropdown` this task.
 - [ ] No raw colors/off-scale spacing; `docs/component-inventory.md` updated for every new shared/ui and widget component.
 - [ ] `npm run check` passes.
 - [ ] Responsive at 375/1280 against the two existing screenshots.
+
+## Expiring-soon banner (plans, limits and expiry, step 4)
+
+- `widgets/expiring-banner` renders above the content grid, under the page header. It is shared with Library, so it is a widget (it composes `entities/classification` and `entities/workspace`).
+- Data: `useClassifications({ expiring: true, pageSize: 1 })`, reading `total` (its own query key, so it is cached apart from the Recent list). The window is `expiringWindowDays(limits.auditRetentionDays)` from `entities/workspace/lib`: `min(30, retention / 3)`, so 10 days on Free and 30 on Solo and Team.
+- Copy: the shared `Banner` (warning tone, not dismissible): "{n} record will expire within {window} days." or "{n} records will expire within {window} days.", followed by a "Show them" link to `/app/library?expiring=true`.
+- States: nothing while loading, on error, or when the count is 0. It never blocks the page. Approve, reject, override and delete already invalidate `classificationKeys.lists()` or `.all`, which cover the banner key, so the count refreshes.
+- Mock counts for `expiring=true`: Free 1, Solo 1, Team 0 (no banner on Team).
