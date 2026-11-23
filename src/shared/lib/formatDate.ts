@@ -43,6 +43,16 @@ export function formatFullDate(iso: string): string {
   return fullDateFormatter.format(new Date(iso));
 }
 
+const fullDateTimeFormatter = new Intl.DateTimeFormat(undefined, {
+  dateStyle: "medium",
+  timeStyle: "short",
+});
+
+/** `Nov 23, 2026, 8:22 PM`, date with year plus time, never "today" or time-only. */
+export function formatFullDateTime(iso: string): string {
+  return fullDateTimeFormatter.format(new Date(iso));
+}
+
 const shortDateFormatter = new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" });
 
 /** `Today`, `Yesterday`, or a short date like `Nov 12`, for table "Updated" columns. */

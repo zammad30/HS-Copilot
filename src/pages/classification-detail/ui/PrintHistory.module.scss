@@ -9,6 +9,12 @@
   }
 }
 
+.history h2 {
+  @media print {
+    break-after: avoid;
+  }
+}
+
 .entries {
   margin: var(--space-15) 0 0;
   list-style: none;

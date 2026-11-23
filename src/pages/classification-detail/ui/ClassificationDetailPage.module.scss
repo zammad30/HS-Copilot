@@ -40,6 +40,22 @@
   margin-top: var(--space-3);
 }
 
+// Paper keeps the result, path, evidence and history; the ranked list is
+// screen-only. The wrapper has no competing `display`, so no nesting needed.
+.candidates {
+  @media print {
+    display: none;
+  }
+}
+
+// Chrome ignores break-after: avoid on children of a flex container, so a
+// heading could be left alone at the foot of a page. Block flow honours it.
+.page {
+  @media print {
+    display: block;
+  }
+}
+
 .candidatesHeading {
   margin-top: var(--space-6);
 }

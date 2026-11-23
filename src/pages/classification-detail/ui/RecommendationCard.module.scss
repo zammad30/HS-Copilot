@@ -50,10 +50,25 @@
   align-items: center;
   gap: var(--space-2);
   margin-top: var(--space-1);
+
+  // The dot is the aria-hidden span inside each shared StatusIndicator; browsers
+  // drop background colors on paper unless told otherwise.
+  > span > [aria-hidden="true"] {
+    @media print {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
 }
 
+// Same for the confidence meter's track and fill (both are backgrounds).
 .confidenceBlock {
   min-width: 180px;
+
+  @media print {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
 
 .description {

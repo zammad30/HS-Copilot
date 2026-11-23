@@ -338,3 +338,18 @@ describe("ClassificationDetailPage - copy code, print and disclaimer", () => {
     expect(within(section).getByText("Research completed")).toBeInTheDocument();
   });
 });
+
+describe("ClassificationDetailPage - subtitle", () => {
+  it("reads 'Researched <date and time>' once, without a repeated 'on' or 'at'", async () => {
+    renderPage("/app/classifications/cls_008");
+
+    await screen.findByRole("heading", { level: 1 });
+    const subtitle = await screen.findByText(/· Researched /);
+    const text = subtitle.textContent ?? "";
+
+    expect(text).toMatch(/^.+ · Researched \S/);
+    expect(text).not.toMatch(/Researched (on|at|today at|yesterday at) /);
+    expect(text.match(/Researched/g)).toHaveLength(1);
+    expect(text).not.toMatch(/ at /);
+  });
+});
