@@ -85,7 +85,7 @@ Static marketing content, no network request - no loading/empty/error state need
 - Nav "Methodology" → `/methodology`. "Sign in" → `/signin`.
 - "Open demo" / "Open demo workspace" → `/app` when `VITE_USE_MOCKS=true` (auto-provisioned mock session via `entities/session`), otherwise → `/signin`. The cold-start "waking" presentation on first entry into `/app` is driven by a real `GET /health` check, never a timer (prototype shortcut #4 corrected here).
 - Hamburger opens the mobile overlay; close button or clicking a nav link inside it closes it. **Correction added**: the prototype's overlay has no Esc-to-close and doesn't return focus to the hamburger button on close - CLAUDE.md §7 requires both for any overlay; `widgets/public-shell` adds them.
-- Try-box: controlled `TextInput` (default-filled with the sample description). On submit: trim the value; if empty, show an inline `FormField` error ("Enter a product description.") and do not navigate; otherwise cap the trimmed length (reuse the same max the `/try` brief will define - truncate silently rather than block submission) and navigate to `/try?q=<encoded trimmed text>`.
+- Try-box: controlled `TextInput` (default-filled with the sample description). On submit: trim the value; if empty, show an inline `FormField` error ("Enter a product description.") and do not navigate; otherwise cap the trimmed length at 200 (truncate silently rather than block submission), save it with `pendingDescriptionDraft` (`entities/session`, capped at `DESCRIPTION_MAX_LENGTH`) and navigate to `/try` with no query string. If sessionStorage throws, the save is skipped and the visitor still reaches `/try`, which then shows its no-draft note (see `docs/pages/try.md`).
 - "Read our methodology →" → `/methodology`.
 - FAQ rows: native disclosure toggle (click summary, or Enter/Space when focused - native `<details>` already gives this for free); visible focus ring added on `summary`.
 - Footer links: same destinations as nav (Methodology, Privacy, Terms).
@@ -109,7 +109,7 @@ Static marketing content, no network request - no loading/empty/error state need
 
 ## Decisions (resolved 2026-11-10)
 
-1. **Hero "Classify" destination** - `/try?q=<trimmed, length-capped text>`; empty input shows an inline `FormField` error instead of navigating.
+1. **Hero "Classify" destination** - `/try`, with the trimmed, length-capped text kept in sessionStorage (never the URL; changed in step 6b); empty input shows an inline `FormField` error instead of navigating.
 2. **"Open demo" destination** - `/app` with an auto mock session when `VITE_USE_MOCKS=true`; otherwise `/signin`. Waking screen driven by the real `/health` check.
 3. **Accuracy stats** - hardcoded in one page-local constants file, contract-shaped field names, `isSample: true`, rendered through `SampleLabel`. No entity this task.
 4. **FAQ** - page-local native `<details>`/`<summary>`, with a visible focus ring added on `summary`. No new shared component.
@@ -122,9 +122,13 @@ Static marketing content, no network request - no loading/empty/error state need
 - [ ] Renders all 7 sections with the exact copy above, matching `landing.png` / `landing.mobile.png` at 1280 and 375 widths.
 - [ ] All nav/footer/hero links are real `react-router` routes (verifiable by refresh/deep-link, not just click).
 - [ ] Mobile hamburger opens the `MobileMenu` overlay; Esc and the close button both close it; focus returns to the hamburger afterward.
-- [ ] Try-box input is a controlled `TextInput` wrapped in `FormField` with a visible label; empty submit shows an inline error and does not navigate; non-empty submit navigates to `/try?q=...` with the trimmed, capped text.
+- [ ] Try-box input is a controlled `TextInput` wrapped in `FormField` with a visible label; empty submit shows an inline error and does not navigate; non-empty submit saves the trimmed, capped text as the pending draft and navigates to `/try` with no query string.
 - [ ] "Open demo" navigates to `/app` (mock session) or `/signin` depending on `VITE_USE_MOCKS`.
 - [ ] FAQ rows are keyboard-operable (native `<details>` gives this for free), show a visible focus ring on `summary`, and show/hide the answer correctly.
 - [ ] No raw hex/spacing in new SCSS; `Eyebrow` and `widgets/public-shell` each have tests; `Eyebrow` has a `/_kit` entry; `docs/component-inventory.md` updated for both.
 - [ ] `npm run check` passes.
 - [ ] Responsive: single collapse point at 720px, verified at 375/768/1280 per `docs/workflow.md`'s Definition of Done (768 should look identical to 1280 here, since the Make CSS has no 1000px rule for this page - confirms nothing is missed, doesn't require new behavior).
+
+### Known gaps
+
+- Home still hands text to Classify new through `?q=` (a signed-in handoff; debt).

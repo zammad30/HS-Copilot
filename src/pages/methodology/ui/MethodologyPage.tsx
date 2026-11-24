@@ -5,6 +5,7 @@ import { Eyebrow } from "@/shared/ui/Eyebrow";
 import { PageHeader } from "@/shared/ui/PageHeader";
 import { SampleLabel } from "@/shared/ui/SampleLabel";
 import { routes } from "@/shared/config";
+import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
 import { evaluationSummary } from "@/entities/evaluation";
 import styles from "./MethodologyPage.module.scss";
 
@@ -32,6 +33,7 @@ const METHOD_STEPS = [
 ] as const;
 
 export function MethodologyPage() {
+  useDocumentTitle("Methodology | HS Copilot");
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const hamburgerRef = useRef<HTMLButtonElement>(null);

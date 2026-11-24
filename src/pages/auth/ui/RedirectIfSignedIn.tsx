@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { Navigate } from "react-router";
+import { Navigate, useSearchParams } from "react-router";
 import { useSession } from "@/entities/session";
-import { routes } from "@/shared/config";
+import { returnPathFrom } from "../model/returnPath";
 
 export interface RedirectIfSignedInProps {
   children: ReactNode;
@@ -9,9 +9,10 @@ export interface RedirectIfSignedInProps {
 
 export function RedirectIfSignedIn({ children }: RedirectIfSignedInProps) {
   const session = useSession();
+  const [searchParams] = useSearchParams();
 
   if (session) {
-    return <Navigate to={routes.home} replace />;
+    return <Navigate to={returnPathFrom(searchParams)} replace />;
   }
 
   return <>{children}</>;

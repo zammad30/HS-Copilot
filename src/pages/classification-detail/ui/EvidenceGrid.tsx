@@ -20,7 +20,7 @@ export function EvidenceGrid({ evidence, onOpenSource, onOpenRuling }: EvidenceG
     <div className={styles.grid}>
       {tariffText && (
         <Card className={styles.card}>
-          <Eyebrow>Tariff text</Eyebrow>
+          <Eyebrow className={styles.eyebrow}>Tariff text</Eyebrow>
           <h3>{tariffText.title}</h3>
           <blockquote>{tariffText.excerpt}</blockquote>
           <button
@@ -34,7 +34,7 @@ export function EvidenceGrid({ evidence, onOpenSource, onOpenRuling }: EvidenceG
       )}
       {ruling && (
         <Card className={styles.card}>
-          <Eyebrow>Similar past ruling</Eyebrow>
+          <Eyebrow className={styles.eyebrow}>Similar past ruling</Eyebrow>
           <h3>
             {ruling.reference}
             {ruling.isSample && <SampleLabel />}

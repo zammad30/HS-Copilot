@@ -1,5 +1,5 @@
 import { auditActionLabel, useClassification } from "@/entities/classification";
-import { formatTime } from "@/shared/lib/formatDate";
+import { formatFullDateTime } from "@/shared/lib/formatDate";
 import styles from "./PrintHistory.module.scss";
 
 export interface PrintHistoryProps {
@@ -24,7 +24,7 @@ export function PrintHistory({ classificationId }: PrintHistoryProps) {
       <ol className={styles.entries}>
         {entries.map((entry) => (
           <li key={entry.id}>
-            <span className={styles.time}>{formatTime(entry.at)}</span>
+            <span className={styles.time}>{formatFullDateTime(entry.at)}</span>
             <strong>{auditActionLabel(entry.action)}</strong>
             <p>{entry.detail}</p>
           </li>

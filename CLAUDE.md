@@ -8,9 +8,9 @@ Read this file before every task. It is the source of truth for architecture, st
 @docs/component-inventory.md
 @docs/api-contract.md
 
-## 1. Product context
+## 1. Product context 
 
-HS Copilot helps importers and customs brokers classify products into HS tariff codes. AI suggests ranked codes with cited evidence; a human reviewer approves, rejects or overrides each one. This repository is the frontend only. The NestJS API and the FastAPI + LangGraph AI service come later. Until then every page runs on realistic mock data served by MSW.
+HS Copilot helps importers and customs brokers classify products into HS tariff codes. AI suggests ranked codes with cited evidence; a human reviewer approves, rejects or overrides each one. This repository is the frontend only. The NestJS API and the FastAPI + LangGraph AI service come later. Until then every page runs on realistic mock data served by the MSW.
 
 ## 2. Fixed stack
 

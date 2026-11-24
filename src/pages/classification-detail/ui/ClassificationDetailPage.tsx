@@ -21,7 +21,7 @@ import {
 } from "@/features/review-decision";
 import { routes } from "@/shared/config";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
-import { formatDay, formatTime } from "@/shared/lib/formatDate";
+import { formatTime } from "@/shared/lib/formatDate";
 import { useMembers } from "@/entities/member";
 import { RecommendationCard } from "./RecommendationCard";
 import { ReviewActions } from "./ReviewActions";
@@ -172,7 +172,7 @@ export function ClassificationDetailPage() {
     (entry) => entry.action === "research_completed",
   );
   const researchAt = researchEntry?.at ?? classification.createdAt;
-  const description = `${jurisdictionLabel(classification.jurisdiction)} · Researched ${formatDay(researchAt)} at ${formatTime(researchAt)}`;
+  const description = `${jurisdictionLabel(classification.jurisdiction)} · Researched ${formatTime(researchAt)}`;
   const approvedByName = latestApprovalActor(classification.auditTrail);
   const effectiveClassificationCode = effectiveCode(classification);
   const sortedCandidates = [...classification.candidates].sort(
@@ -243,24 +243,26 @@ export function ClassificationDetailPage() {
         />
       ) : (
         <>
-          <div className={styles.candidatesHeading}>
-            <Eyebrow>Ranked candidates</Eyebrow>
-            <h2>Top suggestions</h2>
+          <div className={styles.candidates}>
+            <div className={styles.candidatesHeading}>
+              <Eyebrow>Ranked candidates</Eyebrow>
+              <h2>Top suggestions</h2>
+            </div>
+            {sortedCandidates.map((candidate, index) => (
+              <CandidateCard
+                key={candidate.code}
+                candidate={candidate}
+                rank={index + 1}
+                isSelected={candidate.code === effectiveClassificationCode}
+                isOpen={openReasoningCode === candidate.code}
+                onToggle={() =>
+                  setOpenReasoningCode((current) =>
+                    current === candidate.code ? null : candidate.code,
+                  )
+                }
+              />
+            ))}
           </div>
-          {sortedCandidates.map((candidate, index) => (
-            <CandidateCard
-              key={candidate.code}
-              candidate={candidate}
-              rank={index + 1}
-              isSelected={candidate.code === effectiveClassificationCode}
-              isOpen={openReasoningCode === candidate.code}
-              onToggle={() =>
-                setOpenReasoningCode((current) =>
-                  current === candidate.code ? null : candidate.code,
-                )
-              }
-            />
-          ))}
 
           <EvidenceGrid
             evidence={classification.evidence}

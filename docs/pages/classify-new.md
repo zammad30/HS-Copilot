@@ -174,3 +174,10 @@ None. CN-1 to CN-6 are resolved above.
 - **Stale usage**: if `POST /classifications` still answers 403 `plan_limit_reached`, the same banner is shown from the error details instead of the generic create error, and the workspace is refetched. The server-driven banner lasts only until the refetched workspace arrives. If that workspace shows `used < limit`, the banner clears and submit is enabled again. If it still shows the limit, the banner stays and is driven by the workspace data.
 - **After a successful create**, the workspace query is invalidated (in `useCreateClassification`), so the quota line updates.
 - Dates: `formatDay` already contains "on", so the copy never reads "resets on on".
+
+## Tips and kept draft (plans, limits and expiry, step 6)
+
+- **Tips**: under the description field, a static muted list titled "Tips for a better result" (13/20, title weight 500, no icon, no modal), shown once. Points: "Say what it is made of." / "Say what it does or how it is used." / "Add size, form or state, such as frozen, assembled or sold in sets." / "Leave out brand names and marketing words." It is a plain list labelled by its title (`aria-labelledby` on the `ul`), not linked to the textarea with `aria-describedby`, so the field's announcement stays short.
+- **Prefill precedence** on mount: (1) `?q=` text wins and leaves any saved draft untouched. (2) Otherwise, if a session exists, a valid draft from `pendingDescriptionDraft` (`entities/session`) fills the empty description, and the draft is cleared once it has been used. (3) An expired (30 minutes), corrupt or empty draft is ignored and cleared. With no session nothing is read or cleared. The Destination default is never touched.
+- The draft is read in the state initializer (a pure read, so there is no flash and React StrictMode's double run is harmless) and cleared in an effect.
+- The draft is capped at `DESCRIPTION_MAX_LENGTH` (1000, the form's own limit) and lives in sessionStorage only, never in the URL or router state. Signing out clears it.

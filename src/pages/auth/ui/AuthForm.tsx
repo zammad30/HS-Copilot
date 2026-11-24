@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Eyebrow } from "@/shared/ui/Eyebrow";
 import { FormField } from "@/shared/ui/FormField";
@@ -10,6 +10,7 @@ import { Banner } from "@/shared/ui/Banner";
 import { routes } from "@/shared/config";
 import { useSetSession } from "@/entities/session";
 import { fieldErrorsFrom, resetSchema, signInSchema, signUpSchema } from "../model/auth.schema";
+import { returnPathFrom, withReturnPath } from "../model/returnPath";
 import { useSignIn } from "../api/signIn.mutation";
 import { useSignUp } from "../api/signUp.mutation";
 import { useResetPassword } from "../api/resetPassword.mutation";
@@ -53,6 +54,8 @@ const BANNER_COPY: Record<AuthMode, string> = {
 
 export function AuthForm({ mode }: AuthFormProps) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const returnPath = returnPathFrom(searchParams);
   const setSession = useSetSession();
 
   const [name, setName] = useState("");
@@ -94,7 +97,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       signUp.mutate(result.data, {
         onSuccess: (session) => {
           setSession(session);
-          navigate(routes.home);
+          navigate(returnPath, { replace: true });
         },
         onError: () => {
           setBannerError(BANNER_COPY["sign-up"]);
@@ -115,7 +118,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       signIn.mutate(result.data, {
         onSuccess: (session) => {
           setSession(session);
-          navigate(routes.home);
+          navigate(returnPath, { replace: true });
         },
         onError: () => {
           setBannerError(BANNER_COPY["sign-in"]);
@@ -213,13 +216,13 @@ export function AuthForm({ mode }: AuthFormProps) {
       {mode === "sign-in" && (
         <div className={styles.switchLine}>
           <span>New to HS Copilot?</span>
-          <Link to={routes.signUp}>Create account</Link>
+          <Link to={withReturnPath(routes.signUp, searchParams)}>Create account</Link>
         </div>
       )}
       {mode === "sign-up" && (
         <div className={styles.switchLine}>
           <span>Already have an account?</span>
-          <Link to={routes.signIn}>Sign in</Link>
+          <Link to={withReturnPath(routes.signIn, searchParams)}>Sign in</Link>
         </div>
       )}
       {mode === "reset" && (

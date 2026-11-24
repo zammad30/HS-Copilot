@@ -1,0 +1,22 @@
+@use "@/shared/styles/abstracts" as *;
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.homeLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-height);
+  color: var(--accent);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}

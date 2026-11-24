@@ -4,5 +4,6 @@ export { useSession } from "./model/useSession";
 export { useSetSession } from "./model/useSetSession";
 export { useSignOut } from "./model/useSignOut";
 export { RequireSession } from "./ui/RequireSession";
+export { pendingDescriptionDraft } from "./model/pendingDescriptionDraft";
 export { sessionSchema } from "./model/session.schema";
 export type { Session } from "./model/session.schema";
