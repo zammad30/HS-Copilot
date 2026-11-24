@@ -11,6 +11,8 @@ import { Button } from "@/shared/ui/Button";
 import { SampleLabel } from "@/shared/ui/SampleLabel";
 import { routes } from "@/shared/config";
 import { evaluationSummary } from "@/entities/evaluation";
+import { DESCRIPTION_MAX_LENGTH } from "@/entities/classification";
+import { pendingDescriptionDraft } from "@/entities/session";
 import styles from "./LandingPage.module.scss";
 
 const TRY_TEXT_MAX_LENGTH = 200;
@@ -69,7 +71,10 @@ export function LandingPage() {
     }
 
     setTryError(undefined);
-    navigate(`${routes.try}?q=${encodeURIComponent(trimmed.slice(0, TRY_TEXT_MAX_LENGTH))}`);
+    // The text goes through sessionStorage, never the URL. A failed save is swallowed
+    // by the helper, so the visitor still reaches /try (which then shows its no-draft note).
+    pendingDescriptionDraft.save(trimmed.slice(0, TRY_TEXT_MAX_LENGTH), DESCRIPTION_MAX_LENGTH);
+    navigate(routes.try);
   }
 
   function goHome() {

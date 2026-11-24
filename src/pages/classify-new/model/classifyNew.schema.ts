@@ -1,11 +1,12 @@
 import { z } from "zod";
+import { DESCRIPTION_MAX_LENGTH } from "@/entities/classification";
 import type { Jurisdiction } from "@/entities/classification";
 
 // Starting destination while the workspace default is loading or failed to
 // load, so the required select never blocks the form.
 export const FALLBACK_JURISDICTION: Jurisdiction = "US_HTS";
 
-export const DESCRIPTION_MAX_LENGTH = 1000;
+export { DESCRIPTION_MAX_LENGTH };
 
 export const classifyNewFormSchema = z.object({
   description: z
