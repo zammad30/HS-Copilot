@@ -10,6 +10,7 @@ import { TextInput } from "@/shared/ui/TextInput";
 import { Button } from "@/shared/ui/Button";
 import { SampleLabel } from "@/shared/ui/SampleLabel";
 import { routes } from "@/shared/config";
+import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
 import { evaluationSummary } from "@/entities/evaluation";
 import { DESCRIPTION_MAX_LENGTH } from "@/entities/classification";
 import { pendingDescriptionDraft } from "@/entities/session";
@@ -53,6 +54,7 @@ const FAQS = [
 ] as const;
 
 export function LandingPage() {
+  useDocumentTitle("HS Copilot | Classify products with evidence");
   const navigate = useNavigate();
   const [tryText, setTryText] = useState("Men's 100% cotton knitted crew-neck T-shirt");
   const [tryError, setTryError] = useState<string | undefined>(undefined);

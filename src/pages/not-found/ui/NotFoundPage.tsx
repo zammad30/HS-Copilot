@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ArrowLeft } from "lucide-react";
 import { PublicHeader, PublicFooter, MobileMenu } from "@/widgets/public-shell";
+import { StatusScreen } from "@/widgets/route-error";
 import { routes } from "@/shared/config";
 import { useDocumentTitle } from "@/shared/lib/useDocumentTitle";
 import styles from "./NotFoundPage.module.scss";
@@ -37,13 +38,16 @@ export function NotFoundPage() {
       />
       {menuOpen && <MobileMenu onClose={closeMenu} onLogoClick={goHome} onOpenDemo={goToApp} />}
 
-      <div className={styles.flowState}>
-        <h1>Page not found</h1>
-        <p>The link may be outdated or the page may have moved.</p>
-        <Link className={styles.backHome} to={routes.landing}>
-          <ArrowLeft size={16} aria-hidden="true" /> Back home
-        </Link>
-      </div>
+      <main id="main-content" className={styles.main}>
+        <StatusScreen
+          title="Page not found"
+          description="The link may be outdated or the page may have moved."
+        >
+          <Link className={styles.backHome} to={routes.landing}>
+            <ArrowLeft size={16} aria-hidden="true" /> Back home
+          </Link>
+        </StatusScreen>
+      </main>
 
       <PublicFooter onLogoClick={goHome} />
     </div>

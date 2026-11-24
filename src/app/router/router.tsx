@@ -1,7 +1,10 @@
 import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router";
+import type { RouteObject } from "react-router";
 import { RequireSession } from "@/entities/session";
 import { routes } from "@/shared/config";
+import { AppNotFoundScreen } from "@/widgets/route-error";
+import { RouteErrorElement } from "./RouteErrorElement";
 
 const LazyAppShellLayout = lazy(() =>
   import("@/widgets/app-shell").then((m) => ({ default: m.AppShellLayout })),
@@ -84,40 +87,60 @@ const devOnlyRoutes = import.meta.env.DEV
     ]
   : [];
 
-export const router = createBrowserRouter([
-  { path: routes.landing, Component: LandingPage },
-  { path: routes.methodology, Component: MethodologyPage },
-  { path: routes.pricing, Component: PricingPage },
-  { path: routes.signIn, Component: SignInPage },
-  { path: routes.signUp, Component: SignUpPage },
-  { path: routes.resetPassword, Component: ResetPasswordPage },
-  { path: routes.privacy, Component: PrivacyPage },
-  { path: routes.terms, Component: TermsPage },
-  { path: routes.try, Component: TryPage },
+// Exported so the route tree can be rendered in a memory router in tests.
+export const appRoutes: RouteObject[] = [
   {
-    Component: RequireSession,
+    // Root boundary: catches anything the in-shell boundary below does not, including a
+    // failure of the shell layout itself.
+    errorElement: <RouteErrorElement scope="root" />,
     children: [
+      { path: routes.landing, Component: LandingPage },
+      { path: routes.methodology, Component: MethodologyPage },
+      { path: routes.pricing, Component: PricingPage },
+      { path: routes.signIn, Component: SignInPage },
+      { path: routes.signUp, Component: SignUpPage },
+      { path: routes.resetPassword, Component: ResetPasswordPage },
+      { path: routes.privacy, Component: PrivacyPage },
+      { path: routes.terms, Component: TermsPage },
+      { path: routes.try, Component: TryPage },
       {
-        Component: AppShellLayout,
+        Component: RequireSession,
         children: [
-          { path: routes.home, Component: HomePage },
-          { path: routes.classifyNew, Component: ClassifyNewPage },
-          { path: "/app/classifications/:id", Component: ClassificationDetailPage },
-          { path: routes.batchUpload, Component: BatchUploadPage },
-          { path: "/app/batches/:id", Component: BatchReviewPage },
-          { path: routes.library, Component: LibraryPage },
           {
-            Component: SettingsLayout,
+            Component: AppShellLayout,
             children: [
-              { path: routes.settingsGeneral, Component: SettingsGeneralPage },
-              { path: routes.settingsMembers, Component: SettingsMembersPage },
-              { path: routes.settingsRules, Component: SettingsRulesPage },
+              {
+                // Sits below the layout so a failing page renders in the shell's outlet
+                // and the sidebar and topbar stay.
+                errorElement: <RouteErrorElement scope="app" />,
+                children: [
+                  { path: routes.home, Component: HomePage },
+                  { path: routes.classifyNew, Component: ClassifyNewPage },
+                  { path: "/app/classifications/:id", Component: ClassificationDetailPage },
+                  { path: routes.batchUpload, Component: BatchUploadPage },
+                  { path: "/app/batches/:id", Component: BatchReviewPage },
+                  { path: routes.library, Component: LibraryPage },
+                  {
+                    Component: SettingsLayout,
+                    children: [
+                      { path: routes.settingsGeneral, Component: SettingsGeneralPage },
+                      { path: routes.settingsMembers, Component: SettingsMembersPage },
+                      { path: routes.settingsRules, Component: SettingsRulesPage },
+                    ],
+                  },
+                  // Scoped to /app/*: a bare "*" under this pathless parent would swallow
+                  // every unknown URL, public ones included.
+                  { path: "/app/*", Component: AppNotFoundScreen },
+                ],
+              },
             ],
           },
         ],
       },
+      ...devOnlyRoutes,
+      { path: "*", Component: NotFoundPage },
     ],
   },
-  ...devOnlyRoutes,
-  { path: "*", Component: NotFoundPage },
-]);
+];
+
+export const router = createBrowserRouter(appRoutes);
