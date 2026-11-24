@@ -145,6 +145,4 @@ This is the first page requiring an actual mutation, not just static content. Pe
 
 ### Known gaps
 
-- `/try` is still a placeholder page (no brief yet), so nothing links to sign-up with a `next` path or saves a draft today.
-- Landing still passes the typed text in `?q=` to `/try` (to fix in step 6b).
 - Home still hands text to Classify new through `?q=`. It is a signed-in handoff, accepted as debt.
