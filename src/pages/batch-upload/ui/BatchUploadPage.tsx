@@ -68,7 +68,7 @@ function formatFileSize(bytes: number): string {
 }
 
 export function BatchUploadPage() {
-  useDocumentTitle("Upload batch");
+  useDocumentTitle("Upload batch | HS Copilot");
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
 

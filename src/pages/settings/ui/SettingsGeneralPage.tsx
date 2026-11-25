@@ -21,7 +21,7 @@ import { DemoPlanCard } from "./DemoPlanCard";
 import styles from "./SettingsGeneralPage.module.scss";
 
 export function SettingsGeneralPage() {
-  useDocumentTitle("Settings · General");
+  useDocumentTitle("Settings · General | HS Copilot");
   const session = useSession();
   const setSession = useSetSession();
   const signOut = useSignOut();

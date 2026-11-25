@@ -18,7 +18,7 @@ import styles from "./TryPage.module.scss";
 const NEXT_SEARCH = `?next=${encodeURIComponent(safeReturnPath(routes.classifyNew))}`;
 
 export function TryPage() {
-  useDocumentTitle("Sample result");
+  useDocumentTitle("Sample result | HS Copilot");
   const navigate = useNavigate();
   const session = useSession();
   // Read once and never cleared here: Classify new clears it when it uses the text.
@@ -49,7 +49,7 @@ export function TryPage() {
       />
       {menuOpen && <MobileMenu onClose={closeMenu} onLogoClick={goHome} onOpenDemo={goToApp} />}
 
-      <main className={styles.article}>
+      <main id="main-content" className={styles.article}>
         <PageHeader
           className={styles.pageHeader}
           eyebrow="Sample result"

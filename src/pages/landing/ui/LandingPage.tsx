@@ -102,7 +102,7 @@ export function LandingPage() {
       />
       {menuOpen && <MobileMenu onClose={closeMenu} onLogoClick={goHome} onOpenDemo={goToApp} />}
 
-      <main>
+      <main id="main-content">
         <section className={styles.hero}>
           <Eyebrow className={styles.heroEyebrow}>Human-reviewed tariff classification</Eyebrow>
           <h1 className={clsx(styles.heroTitle, "text-display")}>

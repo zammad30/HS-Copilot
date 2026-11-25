@@ -61,7 +61,7 @@ export function MethodologyPage() {
       />
       {menuOpen && <MobileMenu onClose={closeMenu} onLogoClick={goHome} onOpenDemo={goToApp} />}
 
-      <main className={styles.article}>
+      <main id="main-content" className={styles.article}>
         <PageHeader
           className={styles.pageHeader}
           eyebrow="Methodology & accuracy"

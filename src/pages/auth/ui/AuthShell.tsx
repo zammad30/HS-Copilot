@@ -23,12 +23,14 @@ export function AuthShell({ children }: AuthShellProps) {
         </Link>
       </header>
 
-      <Card className={styles.card}>{children}</Card>
+      <main id="main-content" className={styles.main}>
+        <Card className={styles.card}>{children}</Card>
 
-      <p className={styles.note}>
-        <ShieldCheck size={16} aria-hidden="true" /> Suggestions require human approval before they
-        are final.
-      </p>
+        <p className={styles.note}>
+          <ShieldCheck size={16} aria-hidden="true" /> Suggestions require human approval before
+          they are final.
+        </p>
+      </main>
     </div>
   );
 }
