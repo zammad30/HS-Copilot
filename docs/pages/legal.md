@@ -34,6 +34,7 @@ Yes - in the export, **both** Privacy and Terms render through the same `StaticP
 ### Not-found
 
 Decided: uses the full `widgets/public-shell` header and footer (deviation from the bare export/screenshots, same kind of deliberate addition as Privacy/Terms's footer). Below the header: a centered full-viewport state (`flow-state` pattern, shared visually with empty/error states elsewhere, though those aren't built yet): big accent "404", H1 "Page not found" (also the document `<title>`/page title), the message "The link may be outdated or the page may have moved.", and a "Back home" link to `/`. Decided specifics:
+
 - No redirect - the catch-all route renders this page in place; it never auto-navigates anywhere.
 - No typed path is echoed back (the export doesn't show the attempted URL either; not adding it).
 - "Back home" is a real link to `/`, not a timed or automatic redirect.
@@ -56,13 +57,13 @@ Decided: uses the full `widgets/public-shell` header and footer (deviation from 
 
 ## Components
 
-| Element | Component | Existing / New (+ proposed props) |
-| --- | --- | --- |
-| Header, mobile menu, footer (Privacy/Terms **and** Not-found) | `widgets/public-shell` | Existing, reused as-is on all three pages (decided - see Layout above). |
-| "Back" link (Privacy/Terms), "Back home" link (Not-found) | react-router `Link` | Both are plain real-route links, matching `widgets/public-shell`'s own link styling pattern. Not-found's is a `Link`, not a `Button`, per this round's decision. |
-| Placeholder-text notice | `SampleLabel` (existing, custom children "Sample text") + a plain paragraph | No new component - see decision above. |
-| `StaticPage` wrapper | page-local, `pages/legal/ui/StaticPage.tsx` | New file, not a new design - ports the export's wrapper 1:1 (title + back-link + children), composed with `widgets/public-shell` per the decision above. |
-| 404 big number + heading + message | page-local markup | Not a shared-component candidate (single consumer, matches the `flow-state` pattern that empty/error states will likely reuse later, but those don't exist yet - not pre-building for them). |
+| Element                                                       | Component                                                                   | Existing / New (+ proposed props)                                                                                                                                                            |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Header, mobile menu, footer (Privacy/Terms **and** Not-found) | `widgets/public-shell`                                                      | Existing, reused as-is on all three pages (decided - see Layout above).                                                                                                                      |
+| "Back" link (Privacy/Terms), "Back home" link (Not-found)     | react-router `Link`                                                         | Both are plain real-route links, matching `widgets/public-shell`'s own link styling pattern. Not-found's is a `Link`, not a `Button`, per this round's decision.                             |
+| Placeholder-text notice                                       | `SampleLabel` (existing, custom children "Sample text") + a plain paragraph | No new component - see decision above.                                                                                                                                                       |
+| `StaticPage` wrapper                                          | page-local, `pages/legal/ui/StaticPage.tsx`                                 | New file, not a new design - ports the export's wrapper 1:1 (title + back-link + children), composed with `widgets/public-shell` per the decision above.                                     |
+| 404 big number + heading + message                            | page-local markup                                                           | Not a shared-component candidate (single consumer, matches the `flow-state` pattern that empty/error states will likely reuse later, but those don't exist yet - not pre-building for them). |
 
 No new shared/ui components.
 
@@ -72,7 +73,7 @@ None. Fully static content, no entities, no mutations, no MSW.
 
 ## States
 
-Static pages - no loading/empty/error states of their own. Not-found *is* itself the "page doesn't exist" state for the whole app.
+Static pages - no loading/empty/error states of their own. Not-found _is_ itself the "page doesn't exist" state for the whole app.
 
 ## Interactions
 
