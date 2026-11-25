@@ -114,3 +114,5 @@ Static page, no network request - no loading/empty/error state needed.
 - [ ] No raw hex/off-scale spacing in new SCSS; any new components have tests + `/_kit` entries; `docs/component-inventory.md` updated.
 - [ ] `npm run check` passes.
 - [ ] Responsive: single collapse point at 720px, verified at 375/768/1280.
+
+**Landmarks (step 7b)**: `<main id="main-content">`; `PublicHeader` renders the "Skip to main content" skip link first.

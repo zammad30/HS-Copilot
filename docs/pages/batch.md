@@ -186,3 +186,5 @@ Read from `useWorkspace` (limits, usage). The server enforces the same rules; it
 - [ ] No raw colors/off-scale spacing; no new shared/ui component added beyond what's already `built`.
 - [ ] Responsive at 375/768/1280 on both pages.
 - [ ] `npm run check` passes.
+
+**Titles (step 7b)**: "Upload batch | HS Copilot" and "Batch review | HS Copilot".

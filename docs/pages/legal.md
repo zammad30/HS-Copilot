@@ -109,3 +109,5 @@ Single 720px breakpoint, same generic `shell-width`/`article-page` rules as ever
 - [ ] No raw hex/off-scale spacing in new SCSS; `docs/component-inventory.md` updated only if `StaticPage` changes the inventory (it won't - it's page-local, not shared).
 - [ ] `npm run check` passes.
 - [ ] Responsive: single collapse point at 720px, verified at 375/768/1280 against the six existing screenshots.
+
+**Landmarks (step 7b)**: `StaticPage` renders `<main id="main-content">`; `PublicHeader` renders the "Skip to main content" skip link first.

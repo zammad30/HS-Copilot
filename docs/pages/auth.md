@@ -146,3 +146,5 @@ This is the first page requiring an actual mutation, not just static content. Pe
 ### Known gaps
 
 - Home still hands text to Classify new through `?q=`. It is a signed-in handoff, accepted as debt.
+
+**Landmarks (step 7b)**: `AuthShell` wraps the card and the note in `<main id="main-content">`; the header stays outside it. One `main` per auth page.
