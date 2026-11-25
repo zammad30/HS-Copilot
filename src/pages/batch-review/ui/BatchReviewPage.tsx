@@ -37,7 +37,7 @@ const DEBOUNCE_MS = 300;
 
 export function BatchReviewPage() {
   const { id = "" } = useParams();
-  useDocumentTitle("Batch review");
+  useDocumentTitle("Batch review | HS Copilot");
   const navigate = useNavigate();
   const { show } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();

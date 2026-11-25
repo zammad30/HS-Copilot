@@ -27,23 +27,28 @@ export function PublicHeader({
   hamburgerRef,
 }: PublicHeaderProps) {
   return (
-    <nav className={styles.nav}>
-      <Logo onClick={onLogoClick} />
-      <div className={styles.links}>
-        {NAV_LINKS.map((link) => (
-          <Link key={link.to} to={link.to} className={styles.navLink}>
-            {link.label}
-          </Link>
-        ))}
-        <Button onClick={onOpenDemo}>Open demo</Button>
-      </div>
-      <IconButton
-        ref={hamburgerRef}
-        className={styles.mobileMenuButton}
-        icon={<Menu />}
-        aria-label="Open menu"
-        onClick={onOpenMenu}
-      />
-    </nav>
+    <>
+      <a href="#main-content" className={styles.skipLink}>
+        Skip to main content
+      </a>
+      <nav className={styles.nav}>
+        <Logo onClick={onLogoClick} />
+        <div className={styles.links}>
+          {NAV_LINKS.map((link) => (
+            <Link key={link.to} to={link.to} className={styles.navLink}>
+              {link.label}
+            </Link>
+          ))}
+          <Button onClick={onOpenDemo}>Open demo</Button>
+        </div>
+        <IconButton
+          ref={hamburgerRef}
+          className={styles.mobileMenuButton}
+          icon={<Menu />}
+          aria-label="Open menu"
+          onClick={onOpenMenu}
+        />
+      </nav>
+    </>
   );
 }

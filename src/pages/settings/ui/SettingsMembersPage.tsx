@@ -48,7 +48,7 @@ const ROLE_PERMISSIONS = [
 ] as const;
 
 export function SettingsMembersPage() {
-  useDocumentTitle("Settings · Members");
+  useDocumentTitle("Settings · Members | HS Copilot");
   const session = useSession();
   const isAdmin = session?.role === "admin";
   const { show } = useToast();

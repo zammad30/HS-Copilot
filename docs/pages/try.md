@@ -81,3 +81,5 @@ Single column. The code and its meter stack. Candidates stack. The evidence card
 ### Known gaps
 
 - Layout at 390px and a keyboard walkthrough are not yet checked in a browser.
+
+**Landmarks and title (step 7b)**: `<main id="main-content">`, skip link from `PublicHeader`; document title is "Sample result | HS Copilot".

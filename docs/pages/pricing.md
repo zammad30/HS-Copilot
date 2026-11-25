@@ -122,3 +122,5 @@ No new shared/ui components, and no change to any shared component.
 - [ ] Skeleton while plans load; `ErrorState` with a working "Try again" on failure.
 - [ ] Checked at 375 / 768 / 1280.
 - [ ] `npm run check` passes.
+
+**Landmarks (step 7b)**: `<main id="main-content">`; `PublicHeader` renders the "Skip to main content" skip link first.

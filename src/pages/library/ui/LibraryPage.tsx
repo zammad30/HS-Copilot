@@ -29,7 +29,7 @@ import styles from "./LibraryPage.module.scss";
 const DEBOUNCE_MS = 300;
 
 export function LibraryPage() {
-  useDocumentTitle("Library");
+  useDocumentTitle("Library | HS Copilot");
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 

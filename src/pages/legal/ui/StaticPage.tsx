@@ -43,7 +43,7 @@ export function StaticPage({ title, children }: StaticPageProps) {
       />
       {menuOpen && <MobileMenu onClose={closeMenu} onLogoClick={goHome} onOpenDemo={goToApp} />}
 
-      <main className={styles.article}>
+      <main id="main-content" className={styles.article}>
         <Link className={styles.backLink} to={routes.landing}>
           <ArrowLeft size={16} aria-hidden="true" /> Back
         </Link>

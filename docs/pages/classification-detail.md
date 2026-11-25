@@ -253,3 +253,5 @@ None. CD-1 to CD-10 are resolved above.
 - **Disclaimer**: one muted line below the content, also printed: "This is a classification suggestion to support your decision. Confirm it with a licensed customs broker or your customs authority before you file." No icon, banner or bold.
 - Not in this step: the "Find a customs broker" link (moves to step 8).
 - Deviation: print text uses `--ink` and `--text` (near black from the tokens), not pure black, because design.md forbids raw color values.
+
+**Title (step 7b)**: "{description} · Classification | HS Copilot", fallback "Classification | HS Copilot".

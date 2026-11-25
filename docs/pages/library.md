@@ -184,3 +184,5 @@ None. LB-1 to LB-6 are resolved above.
 - **Banner**: the same `widgets/expiring-banner` as Home, shown only while the filter is off; with the filter on, the chip replaces it.
 - **Empty state**: when `expiring` is the only filter and nothing matches: "No records are expiring soon." with a "Clear filter" button. With other filters also on, the existing "No classifications match these filters." state is used.
 - Pagination is unchanged; changing the filter resets to page 1.
+
+**Title (step 7b)**: document title is "Library | HS Copilot".

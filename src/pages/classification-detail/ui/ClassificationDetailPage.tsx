@@ -69,7 +69,7 @@ export function ClassificationDetailPage() {
 
   useDocumentTitle(
     classification
-      ? `${classification.description} · Classification`
+      ? `${classification.description} · Classification | HS Copilot`
       : "Classification | HS Copilot",
   );
 

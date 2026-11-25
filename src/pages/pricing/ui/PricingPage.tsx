@@ -186,7 +186,7 @@ export function PricingPage() {
       />
       {menuOpen && <MobileMenu onClose={closeMenu} onLogoClick={goHome} onOpenDemo={goToApp} />}
 
-      <main className={styles.main}>
+      <main id="main-content" className={styles.main}>
         <header className={styles.header}>
           <Eyebrow>Pricing</Eyebrow>
           <h1>Plans and limits</h1>

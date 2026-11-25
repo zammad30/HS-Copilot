@@ -132,3 +132,5 @@ Static marketing content, no network request - no loading/empty/error state need
 ### Known gaps
 
 - Home still hands text to Classify new through `?q=` (a signed-in handoff; debt).
+
+**Landmarks (step 7b)**: `<main id="main-content">`; `PublicHeader` renders the "Skip to main content" skip link first.

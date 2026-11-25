@@ -33,7 +33,7 @@ function arraysEqual(a: string[], b: string[]): boolean {
 }
 
 export function SettingsRulesPage() {
-  useDocumentTitle("Settings · Review rules");
+  useDocumentTitle("Settings · Review rules | HS Copilot");
   const session = useSession();
   const isAdmin = session?.role === "admin";
   const { show } = useToast();
